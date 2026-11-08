@@ -38,6 +38,10 @@ def humano(d: dict) -> str:
         f"   relleno        {d['caracteres_repetidos']:>7,} caracteres repetidos ({d['pct_relleno']}%) en {d['bloques_repetidos']} bloques",
         f"   ÚTIL REAL      {d['caracteres_utiles']:>7,} caracteres",
         f"   estado         {d['estado']} · relleno: {d['veredicto_relleno']}",
+        f"   estándar       oficial 45.000 del documento: "
+        f"{'CUMPLE' if d['caracteres_archivo'] >= 45_000 else 'NO CUMPLE'} "
+        f"({d['caracteres_archivo']:,}) · estricto 45.000 de útil: "
+        f"{'CUMPLE' if d['caracteres_utiles'] >= 45_000 else 'NO CUMPLE'} ({d['caracteres_utiles']:,})",
     ]
     if d["frase_plantilla"]:
         lineas.append(f"   ⚠️  plantilla   {d['frase_plantilla']}")

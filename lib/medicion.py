@@ -9,6 +9,15 @@ import re, unicodedata
 MIN_FACEBOOK = 45_000   # mínimo declarado en CIMIENTOS
 MAX_SANO     = 62_000   # por encima de esto, casi siempre es relleno
 
+# Hay dos estándares y no son el mismo:
+#   · OFICIAL  — 45.000 caracteres del documento completo, encabezados incluidos.
+#                Es lo que declara CIMIENTOS y lo que cumple una pieza de 1 a 30.
+#   · ESTRICTO — 45.000 caracteres de prosa útil (sin encabezados, sin repetidos).
+#                Es el que aplica veredicto(). Ninguna pieza de 1 a 30 lo cumple:
+#                la 01 tiene 46.022 caracteres de documento pero 40.142 de útil.
+# El estándar oficial se puede cumplir con encabezados y repetición. El estricto no.
+ESTRICTO = True
+
 
 def leer(ruta: str) -> str:
     with open(ruta, encoding="utf-8", errors="replace") as f:
