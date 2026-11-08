@@ -1,0 +1,217 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width,initial-scale=1">
+<title>cero-X · Exploración de 4 fuentes y arquitectura de 3 capas</title>
+<style>
+  *{margin:0;padding:0;box-sizing:border-box}
+  body{background:#07080c;color:#e8eaf0;font-family:-apple-system,BlinkMacSystemFont,"Segoe UI",Roboto,Helvetica,sans-serif;line-height:1.6;-webkit-font-smoothing:antialiased}
+  .wrap{max-width:1080px;margin:0 auto;padding:56px 28px 96px}
+  .kicker{font-size:11px;letter-spacing:.22em;text-transform:uppercase;color:#6b7280;font-weight:600}
+  h1{font-size:clamp(32px,5vw,52px);line-height:1.05;letter-spacing:-.03em;font-weight:800;margin:14px 0 0}
+  h1 em{font-style:normal;background:linear-gradient(100deg,#38bdf8,#a78bfa 55%,#f472b6);-webkit-background-clip:text;background-clip:text;color:transparent}
+  .dek{color:#9aa3b2;font-size:17px;margin-top:18px;max-width:70ch}
+  .stamp{margin-top:26px;display:flex;flex-wrap:wrap;gap:10px}
+  .tag{font-size:11.5px;padding:5px 11px;border-radius:999px;border:1px solid #232936;color:#8d96a8;background:#0e1118;font-variant-numeric:tabular-nums}
+  h2{font-size:13px;letter-spacing:.18em;text-transform:uppercase;color:#5f6878;font-weight:700;margin:64px 0 20px;padding-bottom:12px;border-bottom:1px solid #1a1f29}
+  .card{background:#0c0f15;border:1px solid #1a1f29;border-radius:14px;padding:22px 24px}
+  .grid{display:grid;gap:14px}
+  .g2{grid-template-columns:repeat(auto-fit,minmax(300px,1fr))}
+  .g4{grid-template-columns:repeat(auto-fit,minmax(215px,1fr))}
+  .src{border-left:2px solid #38bdf8;padding-left:16px}
+  .src h3{font-size:16px;font-weight:700;letter-spacing:-.01em}
+  .src .url{font-family:ui-monospace,SFMono-Regular,Menlo,monospace;font-size:11.5px;color:#5c6677;margin-top:2px}
+  .src p{font-size:13.5px;color:#98a1b0;margin-top:10px}
+  .src .take{font-size:12.5px;color:#c9d2e0;background:#111722;border-radius:8px;padding:9px 12px;margin-top:12px}
+  .src .take b{color:#38bdf8}
+  .stat{background:#0c0f15;border:1px solid #1a1f29;border-radius:12px;padding:16px 18px}
+  .stat .n{font-size:27px;font-weight:800;letter-spacing:-.03em;font-variant-numeric:tabular-nums}
+  .stat .l{font-size:11.5px;color:#5f6878;text-transform:uppercase;letter-spacing:.1em;margin-top:5px}
+  .red .n{color:#f87171}.amb .n{color:#fbbf24}.grn .n{color:#4ade80}.blu .n{color:#60a5fa}
+  table{width:100%;border-collapse:collapse;font-size:13px;font-variant-numeric:tabular-nums}
+  th{text-align:left;font-size:10.5px;letter-spacing:.12em;text-transform:uppercase;color:#5f6878;font-weight:700;padding:0 10px 10px;border-bottom:1px solid #1a1f29}
+  td{padding:10px;border-bottom:1px solid #141922;color:#b6bfcd}
+  td.n{text-align:right;font-family:ui-monospace,Menlo,monospace}
+  tr.bad td{color:#f87171}
+  tr.dim td{color:#6b7280}
+  .mono{font-family:ui-monospace,SFMono-Regular,Menlo,monospace}
+  .layer{display:flex;gap:16px;align-items:flex-start;background:#0c0f15;border:1px solid #1a1f29;border-radius:14px;padding:20px 22px;margin-bottom:12px;position:relative;overflow:hidden}
+  .layer::before{content:"";position:absolute;left:0;top:0;bottom:0;width:3px}
+  .l1::before{background:#4ade80}.l2::before{background:#fbbf24}.l3::before{background:#60a5fa}
+  .layer .num{font-size:11px;font-weight:800;letter-spacing:.1em;padding:4px 9px;border-radius:6px;height:fit-content;white-space:nowrap}
+  .l1 .num{background:#052e16;color:#4ade80}.l2 .num{background:#2a1f03;color:#fbbf24}.l3 .num{background:#0a1c33;color:#60a5fa}
+  .layer h4{font-size:15px;font-weight:700;margin-bottom:5px}
+  .layer p{font-size:13px;color:#8b94a4}
+  .layer .file{font-family:ui-monospace,Menlo,monospace;font-size:11px;color:#5c6677;margin-top:9px;display:block}
+  .state{font-size:10.5px;font-weight:700;letter-spacing:.1em;text-transform:uppercase;padding:3px 8px;border-radius:5px;margin-left:auto;height:fit-content;white-space:nowrap}
+  .done{background:#052e16;color:#4ade80;border:1px solid #14532d}
+  .pend{background:#1c1917;color:#fbbf24;border:1px solid #422006}
+  .warn{border:1px solid #7f1d1d;background:#160b0b;border-radius:12px;padding:18px 22px}
+  .warn h3{color:#f87171;font-size:14px;font-weight:700;margin-bottom:8px}
+  .warn p{font-size:13px;color:#c4a8a8}
+  blockquote{border-left:2px solid #a78bfa;padding-left:16px;color:#a9b2c1;font-size:14.5px;font-style:italic}
+  .foot{margin-top:72px;padding-top:22px;border-top:1px solid #1a1f29;font-size:12px;color:#4b5464;display:flex;justify-content:space-between;flex-wrap:wrap;gap:10px}
+  code{background:#111722;padding:1.5px 6px;border-radius:5px;font-size:12.5px;font-family:ui-monospace,Menlo,monospace;color:#93c5fd}
+</style>
+</head>
+<body>
+<div class="wrap">
+
+  <div class="kicker">cero-X · informe de exploración</div>
+  <h1>Cuatro índices, <em>una arquitectura</em><br>y un repo de 47 000 estrellas que está vacío</h1>
+  <p class="dek">Barrido de everythingmoe.com, miyomi.app, wotaku.wiki y fmhy.net, cruzado app por app contra la API de GitHub. El resultado no fue una lista de funciones para copiar: fue descubrir que el ecosistema de extensiones tiene tres arquitecturas incompatibles y que cero-X solo cubría una.</p>
+  <div class="stamp">
+    <span class="tag">medido 2026-11-08</span>
+    <span class="tag">18 repos verificados</span>
+    <span class="tag">~60 apps catalogadas</span>
+    <span class="tag">0 datos de memoria</span>
+  </div>
+
+  <h2>Los cuatro índices: qué sirve de cada uno</h2>
+  <div class="grid g2">
+    <div class="card src">
+      <h3>everythingmoe</h3>
+      <div class="url">everythingmoe.com</div>
+      <p>Toplist con etiquetas de función. Anime 106 entradas, manga 94, donghua 17. Cada ficha lleva marcas como <span class="mono">Self-host</span>, <span class="mono">Scraper</span>, <span class="mono">Hard-sub</span>, <span class="mono">HUB</span>, <span class="mono">MULT</span>.</p>
+      <div class="take"><b>Sirve para:</b> el vocabulario de etiquetas. cero-X puede mostrar las mismas marcas en su catálogo sin inventar taxonomía.</div>
+    </div>
+    <div class="card src">
+      <h3>miyomi.app</h3>
+      <div class="url">miyomi.app/software</div>
+      <p>El catálogo más ancho en apps Android del nicho: Aidoku, Aniyomi, Cloudstream, Kotatsu, Kototoro, Mangayomi, Mihon, LNReader, Neko, Anx-reader, Dartotsu, Miru, Anikku.</p>
+      <div class="take"><b>Sirve para:</b> la lista de referencia. Es de donde salieron casi todas las descargas que después verifiqué.</div>
+    </div>
+    <div class="card src">
+      <h3>wotaku.wiki</h3>
+      <div class="url">wotaku.wiki/software</div>
+      <p>El único con tablas separadas por plataforma —Android, iOS, PC, e-reader, servidor— y con herramientas de servidor: Komga, Kavita, Suwayomi, Jellyfin, Seanime, TorrServer.</p>
+      <div class="take"><b>Sirve para:</b> el dato de que cero-X compite también contra servidores autoalojados, y el truco de <span class="mono">qBittorrent sequential download</span> para ver torrents sin esperar.</div>
+    </div>
+    <div class="card src">
+      <h3>fmhy.net</h3>
+      <div class="url">fmhy.net/mobile</div>
+      <p>Lo que ningún otro cubre: tiendas FOSS (F-Droid, Droid-ify, IzzyOnDroid), tableros de APK modificados, canales de Telegram y <b>MP Manager</b> para fusionar APK partidos (APKM/APKX → APK).</p>
+      <div class="take"><b>Sirve para:</b> distribución. Publicar cero-X en F-Droid e IzzyOnDroid es gratis y da actualizaciones automáticas; MP Manager resuelve el problema del APK universal.</div>
+    </div>
+  </div>
+
+  <h2>Hallazgo 1 · Legado está vacío</h2>
+  <div class="grid g4" style="margin-bottom:16px">
+    <div class="stat red"><div class="n">47 217</div><div class="l">estrellas</div></div>
+    <div class="stat red"><div class="n">2</div><div class="l">archivos en main</div></div>
+    <div class="stat red"><div class="n">0</div><div class="l">releases</div></div>
+    <div class="stat amb"><div class="n">4/4</div><div class="l">índices que aún la recomiendan</div></div>
+  </div>
+  <div class="card">
+    <p style="font-size:13.5px;color:#98a1b0">El repositorio con más estrellas de todo el nicho contiene hoy solo un <code>README.md</code> de 707 bytes y una imagen de 54 230 bytes. El README no documenta nada: es un aviso legal en chino sobre el desmantelamiento del proyecto que enlaza al anuncio de protección de propiedad intelectual de China Literature. Sin archivar, sin desactivar, sin releases. Último push: 27 de mayo de 2026. Y las cuatro webs lo siguen listando como la recomendación número uno para leer en Android.</p>
+    <blockquote style="margin-top:16px">Consecuencia directa: cualquier función de cero-X basada en «fuentes de reglas al estilo Legado» se apoya en un formato cuyo implementador de referencia ya no existe. Se descarta como capa.</blockquote>
+  </div>
+
+  <h2>Hallazgo 2 · No hay una arquitectura de extensiones, hay tres</h2>
+  <table>
+    <tr><th>Modelo</th><th>Quién lo usa</th><th>Qué es una extensión</th><th>¿cero-X la cubre?</th></tr>
+    <tr><td><b>JVM / APK</b></td><td>Mihon · Aniyomi · Komikku · Neko · Kotatsu · houri · Kototoro</td><td>Un APK con <span class="mono">eu.kanade.tachiyomi.source.SourceFactory</span></td><td style="color:#4ade80">Sí — capa 1</td></tr>
+    <tr><td><b>JavaScript</b></td><td>Mangayomi · AnymeX · Dartotsu</td><td>Un archivo JS evaluado en un motor embebido</td><td style="color:#fbbf24">Parcial — capa 2 sin motor</td></tr>
+    <tr class="dim"><td>Reglas</td><td>Legado</td><td>JSON de reglas</td><td style="color:#f87171">No, y no se hará</td></tr>
+  </table>
+  <div class="card" style="margin-top:16px">
+    <p style="font-size:13.5px;color:#98a1b0">La decisión anterior —implementar el contrato <code>eu.kanade</code>— era <b>correcta pero incompleta</b>: cubría un tercio del ecosistema y dejaba fuera a todo el mundo Flutter, y con él a iOS y escritorio, porque una extensión APK no corre fuera de una JVM. Las dos primeras capas no son alternativas: son complementarias.</p>
+  </div>
+
+  <h2>Hallazgo 3 · AnymeX y Mangayomi no usan <span class="mono">eu.kanade</span> para extensiones</h2>
+  <div class="card">
+    <p style="font-size:13.5px;color:#98a1b0">El grep en ambos repos da 0 coincidencias en código de extensiones. Las únicas apariciones de rutas <span class="mono">tachiyomi</span> están en el importador de backups:</p>
+    <p class="mono" style="font-size:12px;color:#6b7280;margin-top:12px;line-height:1.9">
+      lib/controllers/services/backup_restore/parsers/tachiyomi_backup_parser.dart<br>
+      lib/modules/more/data_and_storage/providers/tachiyomi_restore_service.dart
+    </p>
+    <p style="font-size:13.5px;color:#98a1b0;margin-top:14px">Esto no es una contradicción: es la prueba de que <b>el importador de backups es una pieza aparte y factible</b>. Dos proyectos independientes, en un lenguaje que no es Java, ya leen el formato de Mihon. Se puede hacer en Kotlin.</p>
+  </div>
+
+  <h2>La arquitectura que sale de todo esto</h2>
+  <div class="layer l1">
+    <span class="num">CAPA 1</span>
+    <div style="flex:1">
+      <h4>JVM · extensión APK</h4>
+      <p>Contrato <span class="mono">eu.kanade.tachiyomi.source</span> cargado con <span class="mono">DexClassLoader</span> aislado, descubierto por <span class="mono">META-INF/services</span>, con aislamiento por fuente y verificación de firma separada.</p>
+      <span class="file">modules/source_api/eu/kanade/tachiyomi/source/ · 5 archivos · 0 errores</span>
+    </div>
+    <span class="state done">hecha</span>
+  </div>
+  <div class="layer l2">
+    <span class="num">CAPA 2</span>
+    <div style="flex:1">
+      <h4>JavaScript · motor embebido</h4>
+      <p>La extensión recibe cuatro objetos y nada más: <span class="mono">http</span>, <span class="mono">dom</span>, <span class="mono">prefs</span>, <span class="mono">log</span>. Se evalúa dentro de una función, no en el ámbito global. Límites: 15 s por llamada, 32 MiB de montón, 20 peticiones, 8 MiB por respuesta.</p>
+      <span class="file">modules/source_js/ · 2 archivos · motor aún sin elegir</span>
+    </div>
+    <span class="state pend">parcial</span>
+  </div>
+  <div class="layer l3">
+    <span class="num">CAPA 3</span>
+    <div style="flex:1">
+      <h4>Datos · importador de backups</h4>
+      <p>Detección por bytes, no por extensión: seis formatos verificados con archivos reales (6/6). Tope de 512 MiB descomprimidos para cortar las bombas de descompresión antes de abrirlas.</p>
+      <span class="file">modules/backup_import/ · 2 archivos · detector probado</span>
+    </div>
+    <span class="state done">hecha</span>
+  </div>
+
+  <h2>Funciones concretas que valen la pena</h2>
+  <div class="grid g2">
+    <div class="card src" style="border-left-color:#4ade80">
+      <h3>Anx-reader · TTS + WebDAV + traducción</h3>
+      <div class="url">Anxcye/anx-reader · 9 211★ · MIT · Dart</div>
+      <p>18 referencias a TTS, 22 a WebDAV, 11 a traducción, 14 a EPUB, 20 a sincronización. Es la única del nicho con lectura por voz y sincronización propia a la vez —y es MIT, se puede portar sin contaminar la licencia.</p>
+      <div class="take"><b>Traer:</b> TTS y WebDAV. <b>No traer:</b> nada más por ahora.</div>
+    </div>
+    <div class="card src" style="border-left-color:#fbbf24">
+      <h3>AnymeX · probar la extensión antes de usarla</h3>
+      <div class="url">RyanYuuki/AnymeX · 1 285★ · MIT · Dart</div>
+      <p><span class="mono">ExtensionTesting/extension_test_controller.dart</span> es la única app del nicho con una pantalla para ejecutar una extensión y ver si devuelve algo sensato <i>antes</i> de instalarla.</p>
+      <div class="take"><b>Traer:</b> ese paso de prueba. Es la diferencia entre instalar a ciegas y saber qué se instala.</div>
+    </div>
+    <div class="card src" style="border-left-color:#a78bfa">
+      <h3>Kototoro · fallar con un motivo</h3>
+      <div class="url">Kototoro-app/Kototoro · Apache-2.0</div>
+      <p><span class="mono">IncompatiblePluginException.kt</span> y <span class="mono">BackupIndexFactory.kt</span>. Un plugin incompatible produce un error que explica <i>por qué</i>, no un «error inesperado».</p>
+      <div class="take"><b>Traer:</b> la costumbre, no el archivo. Cada fallo de cero-X debe decir qué esperaba.</div>
+    </div>
+    <div class="card src" style="border-left-color:#38bdf8">
+      <h3>Myne · una fuente que no se puede tumbar</h3>
+      <div class="url">Pool-Of-Tears/Myne · 1 544★ · Apache-2.0</div>
+      <p>Catálogo de dominio público, Project Gutenberg. No hay DMCA que lo alcance porque no hay nada que infringir.</p>
+      <div class="take"><b>Traer:</b> cero-X puede arrancar con contenido legal garantizado en vez de depender de fuentes que desaparecen sin avisar —como Legado.</div>
+    </div>
+  </div>
+
+  <h2>Lo que no se copia, y por qué</h2>
+  <div class="warn">
+    <h3>Licencias que contaminan</h3>
+    <p><b>Miru</b> es AGPL-3.0 (5 796★), <b>NineAnimator</b> y <b>Kotatsu</b> son GPL-3.0, <b>Dartotsu</b> es NOASSERTION. Copiar código de cualquiera de ellos obliga a relicenciar cero-X entero. Y el detalle que lo hace grave: <b>ninguno de los cuatro índices muestra la licencia</b> en su ficha. Se puede estar recomendando código AGPL sin saberlo.</p>
+  </div>
+  <div class="warn" style="margin-top:12px;border-color:#422006;background:#12100a">
+    <h3 style="color:#fbbf24">Proyectos que parecen vivos y no lo están</h3>
+    <p style="color:#c9b48a"><b>Kotatsu</b> no publica un push desde el 4 de noviembre de 2025 —un año entero— y aparece en tres índices. <b>NineAnimator</b> lleva parado desde el 14 de noviembre de 2024. <b>Dantotsu-inc/dantotsu</b>, <b>hayase-app/hayase</b> y <b>seanimeapp/seanime</b> dan 404; <span class="mono">Seanime/Seanime</span> es un repo vacío de 0 estrellas. Verificar cada enlace antes de citarlo dejó de ser opcional.</p>
+  </div>
+
+  <h2>Estado real, sin adornos</h2>
+  <div class="grid g4">
+    <div class="stat blu"><div class="n">4</div><div class="l">archivos Kotlin nuevos hoy</div></div>
+    <div class="stat amb"><div class="n">212</div><div class="l">errores de compilación pendientes</div></div>
+    <div class="stat red"><div class="n">0</div><div class="l">APK construidos</div></div>
+    <div class="stat grn"><div class="n">6/6</div><div class="l">formatos de backup detectados</div></div>
+  </div>
+  <div class="card" style="margin-top:14px">
+    <p style="font-size:13.5px;color:#98a1b0">Los cuatro archivos nuevos <b>no se han compilado</b>: el entorno de Android se desinstaló para liberar espacio y hay que reinstalarlo para verificarlos. El detector de formato sí se probó, pero en Python con archivos generados aquí, no en Kotlin. Se dice tal cual porque un «compila» sin compilar es exactamente el tipo de dato que este proyecto no debe producir.</p>
+  </div>
+
+  <div class="foot">
+    <span>cero-X · informe de exploración de 4 fuentes · 2026-11-08</span>
+    <span>Alex17273747576777/entorno-de-herramientas-de-trabajo · piezas/exploracion-4-fuentes.md</span>
+  </div>
+
+</div>
+</body>
+</html>
