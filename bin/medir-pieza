@@ -1,0 +1,77 @@
+#!/usr/bin/env python3
+"""medir-pieza — ¿esta publicación de verdad tiene lo que dice tener?
+
+Uso:
+    medir-pieza archivo.md                 # medición completa
+    medir-pieza archivo.md --json          # salida para máquinas
+    medir-pieza *.md --tabla               # lote, tabla compacta
+"""
+import argparse, json, sys, pathlib
+sys.path.insert(0, str(pathlib.Path(__file__).resolve().parent.parent))
+from lib import medicion, auditoria
+
+
+def analizar(ruta: str) -> dict:
+    m = medicion.medir(ruta)
+    a = auditoria.auditar(ruta)
+    estado, notas = medicion.veredicto(m)
+    real = a["caracteres_repetidos"]
+    return {
+        **m,
+        "pct_relleno": a["pct_relleno"],
+        "bloques_repetidos": a["bloques_repetidos"],
+        "caracteres_repetidos": real,
+        "caracteres_utiles": m["caracteres_prosa"] - real,
+        "estado": estado,
+        "notas": notas,
+        "veredicto_relleno": a["veredicto"],
+        "peores": a["peores"],
+        "frase_plantilla": auditoria.frase_repetida(ruta),
+    }
+
+
+def humano(d: dict) -> str:
+    lineas = [
+        f"📄 {pathlib.Path(d['ruta']).name}",
+        f"   archivo        {d['bytes']:>9,} bytes · {d['caracteres_archivo']:>7,} caracteres",
+        f"   prosa (sin #)  {d['caracteres_prosa']:>7,} caracteres · {d['palabras']:>6,} palabras · {d['parrafos']} párrafos",
+        f"   relleno        {d['caracteres_repetidos']:>7,} caracteres repetidos ({d['pct_relleno']}%) en {d['bloques_repetidos']} bloques",
+        f"   ÚTIL REAL      {d['caracteres_utiles']:>7,} caracteres",
+        f"   estado         {d['estado']} · relleno: {d['veredicto_relleno']}",
+    ]
+    if d["frase_plantilla"]:
+        lineas.append(f"   ⚠️  plantilla   {d['frase_plantilla']}")
+    for nota in d["notas"]:
+        lineas.append(f"   → {nota}")
+    for n, largo, txt in d["peores"][:3]:
+        lineas.append(f"   ↳ repetido ×{n} ({largo} car.) {txt[:78]}…")
+    return "\n".join(lineas)
+
+
+def main() -> int:
+    ap = argparse.ArgumentParser(add_help=True)
+    ap.add_argument("archivos", nargs="+")
+    ap.add_argument("--json", action="store_true")
+    ap.add_argument("--tabla", action="store_true")
+    args = ap.parse_args()
+
+    resultados = [analizar(r) for r in args.archivos]
+
+    if args.json:
+        print(json.dumps(resultados, ensure_ascii=False, indent=2))
+        return 0
+    if args.tabla:
+        print(f"{'pieza':<34}{'prosa':>9}{'útil':>9}{'relleno':>9}{'estado':>10}")
+        print("-" * 71)
+        for d in resultados:
+            print(f"{pathlib.Path(d['ruta']).name[:33]:<34}{d['caracteres_prosa']:>9,}"
+                  f"{d['caracteres_utiles']:>9,}{str(d['pct_relleno'])+'%':>9}{d['estado']:>10}")
+        return 0
+    for d in resultados:
+        print(humano(d))
+        print()
+    return 0
+
+
+if __name__ == "__main__":
+    raise SystemExit(main())
