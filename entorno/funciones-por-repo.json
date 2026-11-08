@@ -1,0 +1,481 @@
+{
+  "salmanbappi/AniZen": {
+    "conteo": {
+      "feed": 0,
+      "sugerencias": 0,
+      "IA": 10,
+      "sync": 50,
+      "velocidad": 2,
+      "lector": 2,
+      "extensiones": 130
+    },
+    "muestras": {
+      "feed": [],
+      "sugerencias": [],
+      "IA": [
+        "app/src/main/java/eu/kanade/domain/ai/AiPreferences.kt",
+        "app/src/main/java/eu/kanade/presentation/more/settings/screen/ai/AiAssistantScreen.kt",
+        "app/src/main/java/eu/kanade/tachiyomi/data/ai/AiManager.kt",
+        "app/src/main/java/eu/kanade/tachiyomi/data/ai/everythingmoe/EverythingMoeModel.kt",
+        "app/src/main/java/eu/kanade/tachiyomi/data/ai/everythingmoe/EverythingMoeScraper.kt"
+      ],
+      "sync": [
+        "app/src/main/java/eu/kanade/domain/sync/SyncPreferences.kt",
+        "app/src/main/java/eu/kanade/domain/sync/models/SyncSettings.kt",
+        "app/src/main/java/eu/kanade/tachiyomi/data/backup/BackupDecoder.kt",
+        "app/src/main/java/eu/kanade/tachiyomi/data/backup/BackupDetector.kt",
+        "app/src/main/java/eu/kanade/tachiyomi/data/backup/BackupFileValidator.kt"
+      ],
+      "velocidad": [
+        "app/src/main/java/eu/kanade/tachiyomi/data/cache/ChapterCache.kt",
+        "app/src/main/java/eu/kanade/tachiyomi/data/cache/CoverCache.kt"
+      ],
+      "lector": [
+        "app/src/main/java/eu/kanade/tachiyomi/ui/reader/SaveImageNotifier.kt",
+        "app/src/main/java/eu/kanade/tachiyomi/ui/reader/viewer/ReaderPageImageView.kt"
+      ],
+      "extensiones": [
+        "app/src/main/java/eu/kanade/domain/extension/interactor/GetExtensionLanguages.kt",
+        "app/src/main/java/eu/kanade/domain/extension/interactor/GetExtensionSources.kt",
+        "app/src/main/java/eu/kanade/domain/extension/interactor/GetExtensionsByType.kt",
+        "app/src/main/java/eu/kanade/domain/extension/interactor/TrustExtension.kt",
+        "app/src/main/java/eu/kanade/domain/extension/model/Extensions.kt"
+      ]
+    }
+  },
+  "Harrys-HQ/ShinKu": {
+    "conteo": {
+      "feed": 9,
+      "sugerencias": 1,
+      "IA": 14,
+      "sync": 46,
+      "velocidad": 5,
+      "lector": 1399,
+      "extensiones": 174
+    },
+    "muestras": {
+      "feed": [
+        "app/src/main/java/com/shinku/reader/ui/browse/feed/FeedRequests.kt",
+        "app/src/main/java/com/shinku/reader/ui/browse/feed/FeedScreenModel.kt",
+        "app/src/main/java/com/shinku/reader/ui/browse/feed/FeedTab.kt",
+        "app/src/main/java/com/shinku/reader/ui/browse/feed/GenreFilterHelper.kt",
+        "app/src/main/java/com/shinku/reader/ui/browse/feed/SourcePageCursor.kt"
+      ],
+      "sugerencias": [
+        "app/src/main/java/com/shinku/reader/exh/md/similar/MangaDexSimilarPagingSource.kt"
+      ],
+      "IA": [
+        "app/src/main/java/com/shinku/reader/data/ai/AiClusteringJob.kt",
+        "app/src/main/java/com/shinku/reader/data/ai/EmbeddingInputFingerprint.kt",
+        "app/src/main/java/com/shinku/reader/data/ai/MangaEmbeddingJob.kt",
+        "app/src/main/java/com/shinku/reader/data/ai/ModelFilePublisher.kt",
+        "data/src/main/java/com/shinku/reader/data/ai/AiRepositoryImpl.kt"
+      ],
+      "sync": [
+        "app/src/main/java/com/shinku/reader/data/backup/BackupDecoder.kt",
+        "app/src/main/java/com/shinku/reader/data/backup/BackupFileValidator.kt",
+        "app/src/main/java/com/shinku/reader/data/backup/BackupNotifier.kt",
+        "app/src/main/java/com/shinku/reader/data/backup/create/BackupCreateJob.kt",
+        "app/src/main/java/com/shinku/reader/data/backup/create/BackupCreator.kt"
+      ],
+      "velocidad": [
+        "app/src/androidTest/java/com/shinku/reader/data/cache/TranslationGeometryTest.kt",
+        "app/src/main/java/com/shinku/reader/data/cache/ChapterCache.kt",
+        "app/src/main/java/com/shinku/reader/data/cache/CoverCache.kt",
+        "app/src/main/java/com/shinku/reader/data/cache/PagePreviewCache.kt",
+        "app/src/main/java/com/shinku/reader/data/cache/TranslationDiskCache.kt"
+      ],
+      "lector": [
+        "app/src/androidTest/java/com/shinku/reader/data/cache/TranslationGeometryTest.kt",
+        "app/src/androidTest/java/com/shinku/reader/data/category/CategoryCountsTest.kt",
+        "app/src/androidTest/java/com/shinku/reader/ui/MockupControlsTest.kt",
+        "app/src/androidTest/java/com/shinku/reader/ui/download/DownloadQueueTest.kt",
+        "app/src/dev/java/com/shinku/reader/core/firebase/FirebaseConfig.kt"
+      ],
+      "extensiones": [
+        "app/src/main/java/com/shinku/reader/domain/extension/interactor/GetExtensionLanguages.kt",
+        "app/src/main/java/com/shinku/reader/domain/extension/interactor/GetExtensionSources.kt",
+        "app/src/main/java/com/shinku/reader/domain/extension/interactor/GetExtensionsByType.kt",
+        "app/src/main/java/com/shinku/reader/domain/extension/interactor/TrustExtension.kt",
+        "app/src/main/java/com/shinku/reader/domain/extension/model/Extensions.kt"
+      ]
+    }
+  },
+  "Kototoro-app/Kototoro": {
+    "conteo": {
+      "feed": 14,
+      "sugerencias": 35,
+      "IA": 0,
+      "sync": 138,
+      "velocidad": 15,
+      "lector": 392,
+      "extensiones": 206
+    },
+    "muestras": {
+      "feed": [
+        "app/src/androidTest/kotlin/org/skepsun/kototoro/tracker/domain/feed/FeedSnapshotStoreTest.kt",
+        "app/src/main/kotlin/org/skepsun/kototoro/tracker/domain/feed/FeedCardMapper.kt",
+        "app/src/main/kotlin/org/skepsun/kototoro/tracker/domain/feed/FeedSnapshotStore.kt",
+        "app/src/main/kotlin/org/skepsun/kototoro/tracker/ui/feed/FeedMenuProvider.kt",
+        "app/src/main/kotlin/org/skepsun/kototoro/tracker/ui/feed/FeedViewModel.kt"
+      ],
+      "sugerencias": [
+        "app/src/main/kotlin/org/skepsun/kototoro/discover/ui/DiscoverViewModel.kt",
+        "app/src/main/kotlin/org/skepsun/kototoro/discover/ui/TrackingDiscoverActivity.kt",
+        "app/src/main/kotlin/org/skepsun/kototoro/discover/ui/category/DiscoverCategoryActivity.kt",
+        "app/src/main/kotlin/org/skepsun/kototoro/discover/ui/category/DiscoverCategoryScreen.kt",
+        "app/src/main/kotlin/org/skepsun/kototoro/discover/ui/category/DiscoverCategoryViewModel.kt"
+      ],
+      "IA": [],
+      "sync": [
+        "app/src/androidTest/kotlin/org/koitharu/kotatsu/settings/backup/AppBackupAgentTest.kt",
+        "app/src/androidTest/kotlin/org/skepsun/kototoro/backups/data/RestoreCheckpointTest.kt",
+        "app/src/androidTest/kotlin/org/skepsun/kototoro/sync/ui/SyncProviderProjectionTest.kt",
+        "app/src/main/kotlin/org/skepsun/kototoro/backups/data/BackupRepository.kt",
+        "app/src/main/kotlin/org/skepsun/kototoro/backups/data/model/BackupIndexFactory.kt"
+      ],
+      "velocidad": [
+        "app/src/benchmark/kotlin/org/skepsun/kototoro/reader/benchmark/ReaderProductionBenchmarkActivity.kt",
+        "app/src/benchmark/kotlin/org/skepsun/kototoro/reader/benchmark/ReaderRendererBenchmarkActivity.kt",
+        "app/src/main/kotlin/org/skepsun/kototoro/core/cache/ExpiringLruCache.kt",
+        "app/src/main/kotlin/org/skepsun/kototoro/core/cache/ExpiringValue.kt",
+        "app/src/main/kotlin/org/skepsun/kototoro/core/cache/MemoryContentCache.kt"
+      ],
+      "lector": [
+        "app/src/androidTest/kotlin/org/skepsun/kototoro/reader/ReaderOptionsPanelSpaceTest.kt",
+        "app/src/androidTest/kotlin/org/skepsun/kototoro/reader/SceneAnimatedImageTest.kt",
+        "app/src/androidTest/kotlin/org/skepsun/kototoro/reader/SceneAnimatedLifecycleTest.kt",
+        "app/src/androidTest/kotlin/org/skepsun/kototoro/reader/SceneContinuousResizeTest.kt",
+        "app/src/androidTest/kotlin/org/skepsun/kototoro/reader/SceneContinuousViewportSemanticsTest.kt"
+      ],
+      "extensiones": [
+        "app/src/main/kotlin/com/lagradost/cloudstream3/ui/settings/extensions/RepositoryData.kt",
+        "app/src/main/kotlin/eu/kanade/tachiyomi/source/CatalogueSource.kt",
+        "app/src/main/kotlin/eu/kanade/tachiyomi/source/ConfigurableSource.kt",
+        "app/src/main/kotlin/eu/kanade/tachiyomi/source/NovelSource.kt",
+        "app/src/main/kotlin/eu/kanade/tachiyomi/source/PreferenceScreen.kt"
+      ]
+    }
+  },
+  "Noirero/Miyorare": {
+    "conteo": {
+      "feed": 8,
+      "sugerencias": 26,
+      "IA": 0,
+      "sync": 47,
+      "velocidad": 6,
+      "lector": 144,
+      "extensiones": 102
+    },
+    "muestras": {
+      "feed": [
+        "app/src/main/kotlin/org/koitharu/kotatsu/tracker/ui/feed/FeedFragment.kt",
+        "app/src/main/kotlin/org/koitharu/kotatsu/tracker/ui/feed/FeedMenuProvider.kt",
+        "app/src/main/kotlin/org/koitharu/kotatsu/tracker/ui/feed/FeedSelectionDecoration.kt",
+        "app/src/main/kotlin/org/koitharu/kotatsu/tracker/ui/feed/FeedViewModel.kt",
+        "app/src/main/kotlin/org/koitharu/kotatsu/tracker/ui/feed/adapter/FeedAdapter.kt"
+      ],
+      "sugerencias": [
+        "app/src/main/kotlin/org/koitharu/kotatsu/search/ui/suggestion/SearchSuggestionItemCallback.kt",
+        "app/src/main/kotlin/org/koitharu/kotatsu/search/ui/suggestion/SearchSuggestionListener.kt",
+        "app/src/main/kotlin/org/koitharu/kotatsu/search/ui/suggestion/SearchSuggestionListenerImpl.kt",
+        "app/src/main/kotlin/org/koitharu/kotatsu/search/ui/suggestion/SearchSuggestionMenuProvider.kt",
+        "app/src/main/kotlin/org/koitharu/kotatsu/search/ui/suggestion/SearchSuggestionViewModel.kt"
+      ],
+      "IA": [],
+      "sync": [
+        "app/src/androidTest/kotlin/org/koitharu/kotatsu/backup/local/LocalBackupIdentityTest.kt",
+        "app/src/androidTest/kotlin/org/koitharu/kotatsu/settings/backup/AppBackupAgentTest.kt",
+        "app/src/androidTest/kotlin/org/koitharu/kotatsu/sync/data/GoogleDriveAuthRecoveryTest.kt",
+        "app/src/androidTest/kotlin/org/koitharu/kotatsu/sync/data/SyncSettingsAuthStateTest.kt",
+        "app/src/androidTest/kotlin/org/koitharu/kotatsu/sync/ui/BrowserDriveAuthCallbackRoutingTest.kt"
+      ],
+      "velocidad": [
+        "app/src/androidTest/kotlin/org/koitharu/kotatsu/core/cache/ChapterPageMetadataCacheTest.kt",
+        "app/src/main/kotlin/org/koitharu/kotatsu/core/cache/ChapterPageMetadataCache.kt",
+        "app/src/main/kotlin/org/koitharu/kotatsu/core/cache/ExpiringLruCache.kt",
+        "app/src/main/kotlin/org/koitharu/kotatsu/core/cache/ExpiringValue.kt",
+        "app/src/main/kotlin/org/koitharu/kotatsu/core/cache/MemoryContentCache.kt"
+      ],
+      "lector": [
+        "app/src/androidTest/kotlin/org/koitharu/kotatsu/details/ui/pager/ChapterSortDirectionTestFixture.kt",
+        "app/src/androidTest/kotlin/org/koitharu/kotatsu/reader/domain/ReaderCustomTintRuntimeTest.kt",
+        "app/src/androidTest/kotlin/org/koitharu/kotatsu/reader/ui/config/ModernReaderSheetChromeProbeTest.kt",
+        "app/src/androidTest/kotlin/org/koitharu/kotatsu/reader/ui/epub/translation/NovelTranslationLanguagePickerVisualTest.kt",
+        "app/src/main/kotlin/org/koitharu/kotatsu/details/ui/pager/ChapterGroupingMode.kt"
+      ],
+      "extensiones": [
+        "app/src/androidTest/kotlin/org/koitharu/kotatsu/settings/sources/migration/MigrationBatchControlsTest.kt",
+        "app/src/androidTest/kotlin/org/koitharu/kotatsu/settings/sources/migration/MigrationFlowScreenTest.kt",
+        "app/src/androidTest/kotlin/org/koitharu/kotatsu/settings/sources/migration/MigrationLandingScreenTest.kt",
+        "app/src/main/kotlin/eu/kanade/tachiyomi/source/CatalogueSource.kt",
+        "app/src/main/kotlin/eu/kanade/tachiyomi/source/ConfigurableSource.kt"
+      ]
+    }
+  },
+  "HuzaifaKhalid1311/DropSauce": {
+    "conteo": {
+      "feed": 8,
+      "sugerencias": 25,
+      "IA": 0,
+      "sync": 40,
+      "velocidad": 4,
+      "lector": 105,
+      "extensiones": 53
+    },
+    "muestras": {
+      "feed": [
+        "app/src/main/kotlin/org/koitharu/kotatsu/tracker/ui/feed/FeedFragment.kt",
+        "app/src/main/kotlin/org/koitharu/kotatsu/tracker/ui/feed/FeedMenuProvider.kt",
+        "app/src/main/kotlin/org/koitharu/kotatsu/tracker/ui/feed/FeedSelectionDecoration.kt",
+        "app/src/main/kotlin/org/koitharu/kotatsu/tracker/ui/feed/FeedViewModel.kt",
+        "app/src/main/kotlin/org/koitharu/kotatsu/tracker/ui/feed/adapter/FeedAdapter.kt"
+      ],
+      "sugerencias": [
+        "app/src/main/kotlin/org/koitharu/kotatsu/search/ui/suggestion/SearchSuggestionListener.kt",
+        "app/src/main/kotlin/org/koitharu/kotatsu/search/ui/suggestion/SearchSuggestionListenerImpl.kt",
+        "app/src/main/kotlin/org/koitharu/kotatsu/search/ui/suggestion/SearchSuggestionMenuProvider.kt",
+        "app/src/main/kotlin/org/koitharu/kotatsu/search/ui/suggestion/SearchSuggestionViewModel.kt",
+        "app/src/main/kotlin/org/koitharu/kotatsu/search/ui/suggestion/adapter/SearchSuggestionAdapter.kt"
+      ],
+      "IA": [],
+      "sync": [
+        "app/src/androidTest/kotlin/org/koitharu/kotatsu/settings/backup/AppBackupAgentTest.kt",
+        "app/src/main/kotlin/org/koitharu/kotatsu/backup/MihonBackupExporter.kt",
+        "app/src/main/kotlin/org/koitharu/kotatsu/backup/MihonBackupManager.kt",
+        "app/src/main/kotlin/org/koitharu/kotatsu/backup/local/data/LocalBackupRepository.kt",
+        "app/src/main/kotlin/org/koitharu/kotatsu/backup/local/data/model/BackupModels.kt"
+      ],
+      "velocidad": [
+        "app/src/main/kotlin/org/koitharu/kotatsu/core/cache/ExpiringLruCache.kt",
+        "app/src/main/kotlin/org/koitharu/kotatsu/core/cache/ExpiringValue.kt",
+        "app/src/main/kotlin/org/koitharu/kotatsu/core/cache/MemoryContentCache.kt",
+        "app/src/main/kotlin/org/koitharu/kotatsu/core/cache/SafeDeferred.kt"
+      ],
+      "lector": [
+        "app/src/main/kotlin/org/koitharu/kotatsu/details/ui/pager/ChapterPagesMenuProvider.kt",
+        "app/src/main/kotlin/org/koitharu/kotatsu/details/ui/pager/ChaptersPagesAdapter.kt",
+        "app/src/main/kotlin/org/koitharu/kotatsu/details/ui/pager/ChaptersPagesSheet.kt",
+        "app/src/main/kotlin/org/koitharu/kotatsu/details/ui/pager/ChaptersPagesViewModel.kt",
+        "app/src/main/kotlin/org/koitharu/kotatsu/details/ui/pager/EmptyMangaReason.kt"
+      ],
+      "extensiones": [
+        "app/src/main/kotlin/eu/kanade/tachiyomi/source/CatalogueSource.kt",
+        "app/src/main/kotlin/eu/kanade/tachiyomi/source/ConfigurableSource.kt",
+        "app/src/main/kotlin/eu/kanade/tachiyomi/source/NovelSource.kt",
+        "app/src/main/kotlin/eu/kanade/tachiyomi/source/PreferenceScreen.kt",
+        "app/src/main/kotlin/eu/kanade/tachiyomi/source/RateLimited.kt"
+      ]
+    }
+  },
+  "unseensnick/Reikai": {
+    "conteo": {
+      "feed": 5,
+      "sugerencias": 0,
+      "IA": 0,
+      "sync": 64,
+      "velocidad": 4,
+      "lector": 219,
+      "extensiones": 215
+    },
+    "muestras": {
+      "feed": [
+        "app/src/main/java/reikai/presentation/browse/feed/FeedDialogs.kt",
+        "app/src/main/java/reikai/presentation/browse/feed/FeedOrderList.kt",
+        "app/src/main/java/reikai/presentation/browse/feed/FeedProvider.kt",
+        "app/src/main/java/reikai/presentation/browse/feed/FeedViewModel.kt",
+        "app/src/main/java/reikai/presentation/browse/feed/ReikaiFeedTab.kt"
+      ],
+      "sugerencias": [],
+      "IA": [],
+      "sync": [
+        "app/src/main/java/eu/kanade/tachiyomi/data/backup/BackupFileValidator.kt",
+        "app/src/main/java/eu/kanade/tachiyomi/data/backup/BackupNotifier.kt",
+        "app/src/main/java/eu/kanade/tachiyomi/data/backup/BackupProtoReader.kt",
+        "app/src/main/java/eu/kanade/tachiyomi/data/backup/create/BackupCreateWorker.kt",
+        "app/src/main/java/eu/kanade/tachiyomi/data/backup/create/BackupCreator.kt"
+      ],
+      "velocidad": [
+        "app/src/main/java/eu/kanade/tachiyomi/data/cache/ChapterCache.kt",
+        "app/src/main/java/eu/kanade/tachiyomi/data/cache/CoverCache.kt",
+        "app/src/main/java/eu/kanade/tachiyomi/data/cache/PagePreviewCache.kt",
+        "app/src/main/java/reikai/data/cache/LegacyNovelCustomCover.kt"
+      ],
+      "lector": [
+        "app/src/androidTest/java/reikai/presentation/reader/AnimationsOffRule.kt",
+        "app/src/androidTest/java/reikai/presentation/reader/NovelTapZonesTest.kt",
+        "app/src/androidTest/java/reikai/presentation/reader/NovelTextViewportWindowTest.kt",
+        "app/src/androidTest/java/reikai/presentation/reader/NovelWebViewportGateTest.kt",
+        "app/src/androidTest/java/reikai/presentation/reader/PageSlideTest.kt"
+      ],
+      "extensiones": [
+        "app/src/main/java/eu/kanade/domain/extension/interactor/GetExtensionLanguages.kt",
+        "app/src/main/java/eu/kanade/domain/extension/interactor/GetExtensionSources.kt",
+        "app/src/main/java/eu/kanade/domain/extension/interactor/GetExtensionsByType.kt",
+        "app/src/main/java/eu/kanade/domain/extension/interactor/TrustExtension.kt",
+        "app/src/main/java/eu/kanade/domain/extension/model/Extensions.kt"
+      ]
+    }
+  },
+  "PineappleTwilight/houri": {
+    "conteo": {
+      "feed": 5,
+      "sugerencias": 1,
+      "IA": 0,
+      "sync": 51,
+      "velocidad": 9,
+      "lector": 143,
+      "extensiones": 203
+    },
+    "muestras": {
+      "feed": [
+        "app/src/main/java/eu/kanade/tachiyomi/ui/browse/feed/AnizenMultiFeedViewModel.kt",
+        "app/src/main/java/eu/kanade/tachiyomi/ui/browse/feed/FeedTab.kt",
+        "app/src/main/java/eu/kanade/tachiyomi/ui/browse/feed/FeedViewModel.kt",
+        "app/src/main/java/eu/kanade/tachiyomi/ui/browse/source/feed/SourceFeedScreen.kt",
+        "app/src/main/java/eu/kanade/tachiyomi/ui/browse/source/feed/SourceFeedViewModel.kt"
+      ],
+      "sugerencias": [
+        "app/src/main/java/exh/md/similar/MangaDexSimilarPagingSource.kt"
+      ],
+      "IA": [],
+      "sync": [
+        "app/src/main/java/eu/kanade/domain/sync/SyncPreferences.kt",
+        "app/src/main/java/eu/kanade/domain/sync/models/SyncSettings.kt",
+        "app/src/main/java/eu/kanade/tachiyomi/data/backup/BackupDecoder.kt",
+        "app/src/main/java/eu/kanade/tachiyomi/data/backup/BackupFileValidator.kt",
+        "app/src/main/java/eu/kanade/tachiyomi/data/backup/BackupIntegrityHandler.kt"
+      ],
+      "velocidad": [
+        "app/src/main/java/eu/kanade/tachiyomi/data/cache/ChapterCache.kt",
+        "app/src/main/java/eu/kanade/tachiyomi/data/cache/ChapterCacheRetention.kt",
+        "app/src/main/java/eu/kanade/tachiyomi/data/cache/CoverCache.kt",
+        "app/src/main/java/eu/kanade/tachiyomi/data/cache/PagePreviewCache.kt"
+      ],
+      "lector": [
+        "app/src/main/java/eu/kanade/presentation/reader/ChapterListDialog.kt",
+        "app/src/main/java/eu/kanade/presentation/reader/ChapterTransition.kt",
+        "app/src/main/java/eu/kanade/presentation/reader/DisplayRefreshHost.kt",
+        "app/src/main/java/eu/kanade/presentation/reader/MtlTranslationOverlay.kt",
+        "app/src/main/java/eu/kanade/presentation/reader/NovelImageViewerDialog.kt"
+      ],
+      "extensiones": [
+        "app/src/main/java/eu/kanade/domain/extension/interactor/GetExtensionLanguages.kt",
+        "app/src/main/java/eu/kanade/domain/extension/interactor/GetExtensionSources.kt",
+        "app/src/main/java/eu/kanade/domain/extension/interactor/GetExtensionsByType.kt",
+        "app/src/main/java/eu/kanade/domain/extension/interactor/TrustExtension.kt",
+        "app/src/main/java/eu/kanade/domain/extension/model/Extensions.kt"
+      ]
+    }
+  },
+  "ifritraen/kisara": {
+    "conteo": {
+      "feed": 8,
+      "sugerencias": 33,
+      "IA": 5,
+      "sync": 67,
+      "velocidad": 9,
+      "lector": 278,
+      "extensiones": 390
+    },
+    "muestras": {
+      "feed": [
+        "app/src/main/java/eu/kanade/tachiyomi/ui/browse/anime/feed/AnimeFeedScreenModel.kt",
+        "app/src/main/java/eu/kanade/tachiyomi/ui/browse/anime/feed/AnimeFeedTab.kt",
+        "app/src/main/java/eu/kanade/tachiyomi/ui/browse/feed/FeedScreenModel.kt",
+        "app/src/main/java/eu/kanade/tachiyomi/ui/browse/feed/FeedTab.kt",
+        "app/src/main/java/eu/kanade/tachiyomi/ui/browse/novel/feed/NovelFeedScreenModel.kt"
+      ],
+      "sugerencias": [
+        "app/src/main/java/eu/kanade/tachiyomi/data/suggestions/HomeFeedWorker.kt",
+        "app/src/main/java/eu/kanade/tachiyomi/data/suggestions/SuggestionModels.kt",
+        "app/src/main/java/eu/kanade/tachiyomi/data/suggestions/SuggestionsReport.kt",
+        "app/src/main/java/eu/kanade/tachiyomi/data/suggestions/SuggestionsWorker.kt",
+        "app/src/main/java/eu/kanade/tachiyomi/data/suggestions/anime/AnimeSuggestionsReport.kt"
+      ],
+      "IA": [
+        "app/src/main/java/eu/kanade/tachiyomi/data/ai/AiModelManager.kt",
+        "app/src/main/java/eu/kanade/tachiyomi/data/ai/ColorizeImageUtils.kt",
+        "app/src/main/java/eu/kanade/tachiyomi/data/ai/MangaColorizeEngine.kt",
+        "app/src/main/java/eu/kanade/tachiyomi/data/ai/SuperResolutionEngine.kt"
+      ],
+      "sync": [
+        "app/src/main/java/eu/kanade/domain/sync/SyncPreferences.kt",
+        "app/src/main/java/eu/kanade/domain/sync/models/SyncSettings.kt",
+        "app/src/main/java/eu/kanade/tachiyomi/data/backup/BackupDecoder.kt",
+        "app/src/main/java/eu/kanade/tachiyomi/data/backup/BackupFileValidator.kt",
+        "app/src/main/java/eu/kanade/tachiyomi/data/backup/BackupNotifier.kt"
+      ],
+      "velocidad": [
+        "app/src/main/java/eu/kanade/tachiyomi/data/cache/AnimeBackgroundCache.kt",
+        "app/src/main/java/eu/kanade/tachiyomi/data/cache/AnimeCoverCache.kt",
+        "app/src/main/java/eu/kanade/tachiyomi/data/cache/ChapterCache.kt",
+        "app/src/main/java/eu/kanade/tachiyomi/data/cache/CoverCache.kt",
+        "app/src/main/java/eu/kanade/tachiyomi/data/cache/NovelCoverCache.kt"
+      ],
+      "lector": [
+        "app/src/main/java/eu/kanade/presentation/reader/ChapterListDialog.kt",
+        "app/src/main/java/eu/kanade/presentation/reader/ChapterTransition.kt",
+        "app/src/main/java/eu/kanade/presentation/reader/ColorFilterConfigDialog.kt",
+        "app/src/main/java/eu/kanade/presentation/reader/DisplayRefreshHost.kt",
+        "app/src/main/java/eu/kanade/presentation/reader/OrientationSelectDialog.kt"
+      ],
+      "extensiones": [
+        "app/src/main/java/eu/kanade/domain/extension/anime/interactor/GetAnimeExtensionLanguages.kt",
+        "app/src/main/java/eu/kanade/domain/extension/anime/interactor/GetAnimeExtensionSources.kt",
+        "app/src/main/java/eu/kanade/domain/extension/anime/interactor/GetAnimeExtensionsByType.kt",
+        "app/src/main/java/eu/kanade/domain/extension/anime/interactor/TrustAnimeExtension.kt",
+        "app/src/main/java/eu/kanade/domain/extension/anime/model/AnimeExtensions.kt"
+      ]
+    }
+  },
+  "komikku-app/komikku": {
+    "conteo": {
+      "feed": 4,
+      "sugerencias": 1,
+      "IA": 0,
+      "sync": 49,
+      "velocidad": 3,
+      "lector": 72,
+      "extensiones": 179
+    },
+    "muestras": {
+      "feed": [
+        "app/src/main/java/eu/kanade/tachiyomi/ui/browse/feed/FeedScreenModel.kt",
+        "app/src/main/java/eu/kanade/tachiyomi/ui/browse/feed/FeedTab.kt",
+        "app/src/main/java/eu/kanade/tachiyomi/ui/browse/source/feed/SourceFeedScreen.kt",
+        "app/src/main/java/eu/kanade/tachiyomi/ui/browse/source/feed/SourceFeedScreenModel.kt"
+      ],
+      "sugerencias": [
+        "app/src/main/java/exh/md/similar/MangaDexSimilarPagingSource.kt"
+      ],
+      "IA": [],
+      "sync": [
+        "app/src/main/java/eu/kanade/domain/sync/SyncPreferences.kt",
+        "app/src/main/java/eu/kanade/domain/sync/models/SyncSettings.kt",
+        "app/src/main/java/eu/kanade/tachiyomi/data/backup/BackupDecoder.kt",
+        "app/src/main/java/eu/kanade/tachiyomi/data/backup/BackupFileValidator.kt",
+        "app/src/main/java/eu/kanade/tachiyomi/data/backup/BackupNotifier.kt"
+      ],
+      "velocidad": [
+        "app/src/main/java/eu/kanade/tachiyomi/data/cache/ChapterCache.kt",
+        "app/src/main/java/eu/kanade/tachiyomi/data/cache/CoverCache.kt",
+        "app/src/main/java/eu/kanade/tachiyomi/data/cache/PagePreviewCache.kt"
+      ],
+      "lector": [
+        "app/src/main/java/eu/kanade/presentation/reader/ChapterListDialog.kt",
+        "app/src/main/java/eu/kanade/presentation/reader/ChapterTransition.kt",
+        "app/src/main/java/eu/kanade/presentation/reader/DisplayRefreshHost.kt",
+        "app/src/main/java/eu/kanade/presentation/reader/OrientationSelectDialog.kt",
+        "app/src/main/java/eu/kanade/presentation/reader/ReaderContentOverlay.kt"
+      ],
+      "extensiones": [
+        "app/src/main/java/eu/kanade/domain/extension/interactor/GetExtensionLanguages.kt",
+        "app/src/main/java/eu/kanade/domain/extension/interactor/GetExtensionSources.kt",
+        "app/src/main/java/eu/kanade/domain/extension/interactor/GetExtensionsByType.kt",
+        "app/src/main/java/eu/kanade/domain/extension/interactor/TrustExtension.kt",
+        "app/src/main/java/eu/kanade/domain/extension/model/Extensions.kt"
+      ]
+    }
+  }
+}

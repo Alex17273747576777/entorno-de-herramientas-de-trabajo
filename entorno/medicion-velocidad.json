@@ -1,0 +1,42 @@
+[
+  {
+    "repo": "unseensnick/Reikai",
+    "estrellas": 47,
+    "archivos_kt": 2972,
+    "tests_ui": 25,
+    "tests_de_lector": 21,
+    "archivos_webview": 28,
+    "prefetch": 0,
+    "caches": 6
+  },
+  {
+    "repo": "komikku-app/komikku",
+    "estrellas": 5001,
+    "archivos_kt": 1365,
+    "tests_ui": 0,
+    "tests_de_lector": 0,
+    "archivos_webview": 8,
+    "prefetch": 0,
+    "caches": 3
+  },
+  {
+    "repo": "null2264/yokai",
+    "estrellas": 1922,
+    "archivos_kt": 883,
+    "tests_ui": 0,
+    "tests_de_lector": 0,
+    "archivos_webview": 8,
+    "prefetch": 0,
+    "caches": 2
+  },
+  {
+    "repo": "PineappleTwilight/houri",
+    "estrellas": 45,
+    "archivos_kt": 1795,
+    "tests_ui": 0,
+    "tests_de_lector": 0,
+    "archivos_webview": 10,
+    "prefetch": 2,
+    "caches": 4
+  }
+]
