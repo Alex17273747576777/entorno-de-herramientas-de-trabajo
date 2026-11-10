@@ -48,11 +48,22 @@ check("largo no apto", estado2 == "NO APTO" and any("EXCESO" in n for n in notas
 estado3, _ = medicion.veredicto({"caracteres_prosa": 50_000})
 check("en banda apto", estado3 == "APTO")
 
+print("· estricto sin repetidos")
+p = "Prosa repetida suficientemente larga como para superar el filtro de párrafos. " * 4
+ruta.write_text("\n\n".join([p] * 200), encoding="utf-8")
+mr = medicion.medir(str(ruta))
+check("relleno supera mínimo bruto", mr["caracteres_prosa"] >= medicion.MIN_FACEBOOK)
+check("útil cuenta una copia", mr["caracteres_utiles"] == len(p.strip()))
+check("relleno no sale APTO", medicion.veredicto(mr)[0] == "NO APTO")
+
 print("· cli")
 out = subprocess.run([sys.executable, str(RAIZ / "bin" / "medir-pieza"), str(ruta), "--json"],
                      capture_output=True, text=True)
-check("cli json corre", out.returncode == 0 and '"pct_relleno"' in out.stdout)
+check("cli json corre", out.returncode == 1 and '"pct_relleno"' in out.stdout)
 
+for formato in ([], ["--tabla"]):
+    result = subprocess.run([sys.executable, str(RAIZ / "bin/medir-pieza"), str(ruta), *formato], capture_output=True, text=True)
+    check("cli rechaza relleno " + str(formato), result.returncode == 1)
 ruta.unlink(missing_ok=True)
 print()
 print("TODO BIEN" if fallos == 0 else f"{fallos} FALLOS")

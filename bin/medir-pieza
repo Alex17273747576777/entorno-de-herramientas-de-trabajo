@@ -61,20 +61,22 @@ def main() -> int:
 
     resultados = [analizar(r) for r in args.archivos]
 
+    codigo = 1 if any(d["estado"] != "APTO" for d in resultados) else 0
+
     if args.json:
         print(json.dumps(resultados, ensure_ascii=False, indent=2))
-        return 0
+        return codigo
     if args.tabla:
         print(f"{'pieza':<34}{'prosa':>9}{'útil':>9}{'relleno':>9}{'estado':>10}")
         print("-" * 71)
         for d in resultados:
             print(f"{pathlib.Path(d['ruta']).name[:33]:<34}{d['caracteres_prosa']:>9,}"
                   f"{d['caracteres_utiles']:>9,}{str(d['pct_relleno'])+'%':>9}{d['estado']:>10}")
-        return 0
+        return codigo
     for d in resultados:
         print(humano(d))
         print()
-    return 0
+    return codigo
 
 
 if __name__ == "__main__":

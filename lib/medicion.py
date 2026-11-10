@@ -55,12 +55,13 @@ def medir(ruta: str) -> dict:
         "parrafos": len(ps),
         "parrafos_unicos": len(set(ps)),
         "caracteres_prosa": sum(len(p) for p in ps),
+        "caracteres_utiles": sum(len(p) for p in set(ps)),
     }
 
 
 def veredicto(m: dict, minimo: int = MIN_FACEBOOK, maximo: int = MAX_SANO) -> tuple[str, list[str]]:
     notas = []
-    c = m["caracteres_prosa"]
+    c = m.get("caracteres_utiles", m["caracteres_prosa"]) if ESTRICTO else m["caracteres_prosa"]
     if c < minimo:
         notas.append(f"FALTA: {minimo - c:,} caracteres de prosa para el mínimo ({c:,}/{minimo:,})")
     if c > maximo:
