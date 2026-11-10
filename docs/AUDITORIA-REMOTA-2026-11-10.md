@@ -55,3 +55,9 @@ Se validaron de forma independiente las 14.819 huellas del lote nuevo contra el 
 7. **Despliegue del proxy:** hay que configurar un secreto nuevo `PROXY_TOKEN`, `ALLOWED_HOSTS` y clientes compatibles en el proveedor de despliegue. El código rechaza tráfico sin esa configuración. El despliegue en vivo no se declaró verificado.
 
 La auditoría queda abierta para estos bloqueos. Un verde de CI no se usa para darles cierre ficticio.
+
+## Cierre de comprobación del sello
+
+La corrida [42869190307](https://github.com/Alex17273747576777/la-bandita-archivo/actions/runs/42869190307) terminó en **success** sobre `4d257e9c902258e076359d77226f93e6d08942f2`, confirmado como HEAD de main. Las etapas de firma, verificación oficial y conservación del artefacto se ejecutaron y aprobaron; no estaban omitidas.
+
+Se descargó el artefacto a memoria y se comprobó que el digest del bundle corresponde exactamente al TSV adjunto y al manifiesto vivo de ese commit: `a89a3ff5c7256c131054389f4be7f306d2755159331fd93955ed7fb2504dce5e`. La tabla cubre 14.819 archivos. La verificación oficial de cosign en CI comprobó identidad/issuer y confianza de Sigstore. El resultado no se presenta como una firma de archivos fuera de esa cobertura.
