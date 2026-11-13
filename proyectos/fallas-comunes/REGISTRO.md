@@ -12,16 +12,26 @@ con cómo se detectaron y qué las caza ahora. Éstas salieron al montar esta ca
 | C5 | Un comprobador que pasa porque no encontró nada que comprobar | camino 4 de la prueba: sin manifiestos, la versión obvia del script imprimiría éxito | `comprobar-copias.sh` sale con **2** y escribe `COPIAS_SIN_MANIFIESTO`. Es el cero silencioso aplicado al propio verificador: 0 coincidencias puede significar «limpio» o «no miré» |
 | C6 | `make copias` apuntando al script que se acababa de sustituir | `make: …/comprobar-copias.sh: No such file or directory`, Error 127 | al reemplazar una herramienta, grep del repo buscando quién la invoca. La llamada rota apareció en el mismo turno porque se ejecutó `make` después del cambio, no antes |
 | C7 | Comprobador auto-referencial: `comprobar-copias.sh` comparaba las copias contra un manifiesto generado de esas mismas copias, así que sólo podía cazar a quien editaba la copia sin tocar el manifiesto | al republicar cuatro herramientas de cero-X el 2026-11-13: el espejo estaba cuatro ficheros atrás de su repo de origen y el script imprimía `ok cero-X (6 ficheros sin derivar)` con EXIT=0. Decía la verdad sobre la pregunta que contestaba y mentía sobre la única que importaba | cada `MANIFIESTO.sha256` declara `# origen-repo/rama/commit` y una `# origen-ruta` por fichero; el script los descarga por URL cruda de GitHub y contesta **dos** preguntas: FIEL al commit registrado (`INFIEL`, sale 1) y AL DÍA con la punta de la rama (`ANTIGUA`, sale 1 con `--estricto-origen`, que es lo que usa CI). Cinco caminos medidos con ruptura deliberada y el código sin pipe: 0, 1, 1, 1 y 3 |
+| C7b | Espejo «al día» con una rama **muerta**: el manifiesto de cero-X en edt apuntaba a `fases-verificadas-2026-11-13` (congelada en `8d531c2` tras la fusión del PR #7), no a `main`. `comprobar-copias.sh --estricto-origen` imprimía `ok … al día` con EXIT=0 | al repuntar el espejo el 2026-11-13: los 6 ficheros resultaron idénticos en `8d531c2` y en `main` (medido con `git rev-parse <sha>:<ruta>`), así que el verde era cierto **ese día**; la trampa es que el día que `main` cambiara un fichero espejado el espejo se quedaría atrás y el script seguiría diciendo «al día» contra la rama que ya no avanza | el manifiesto se repunta a `main` (la punta viva) con el porqué escrito en su propia cabecera para que el siguiente no lo revierta. Es la variante temporal de C7: no comparas contra ti mismo, comparas contra un origen correcto pero congelado. Regla: un espejo apunta a la rama que el origen desarrolla, no a la que usó una vez para un PR |
+| C8 | `org.gradle.caching=true` sirve los resultados de las pruebas: un `clean` + suite dio `> Task :app:testDebugUnitTest FROM-CACHE` en 9,6 s e imprimió «614 pruebas, 0 fallos» sin ejecutar una sola prueba —la caché restauró los XML, y los XML restaurados tienen `mtime` nuevo | dos señales independientes: `MemAvailable` quedó en 548 MB frente a los 29-58 MB de un cierre que sí ejecuta (el fork de pruebas nunca arrancó), y la edad de los XML no cuadraba con el tiempo de pared. Es el `UP-TO-DATE` vacío (regla 18 de cero-X) con otra cara y más difícil de ver | `outputs.cacheIf { false }` en `tasks.withType(Test)`: la caché de build se queda para compilar y empaquetar, nunca para las pruebas. Y el medidor lee el registro de Gradle e informa si las tareas de tipo `Test` se ejecutaron o se sirvieron de `FROM-CACHE`/`UP-TO-DATE`/`SKIPPED` —**la edad de los ficheros no basta**, porque la caché los restaura recientes; lo que no miente es la línea de Gradle. Un verde de N pruebas exige N pruebas ejecutadas |
+| C9 | Bucle que sondea un estado asíncrono comparando contra una **cadena truncada**: se escribió `r["status"][:4]` y se comparaba con `'in_progress'`, así que la condición nunca casaba y el bucle o terminaba al primer intento o daba el estado por otro | al leer la corrida de un push: GitHub devolvía `status=in_progress` y el bucle no lo reconocía, así que se citó un verde que aún no existía | comparar el campo **entero** contra los valores literales de la API (`completed`, `in_progress`, `queued`), nunca un prefijo; y sondear en bucle con espera hasta `completed`, porque CI es asíncrono. La comprobación es `/actions/runs/<id>` y leer `status`+`conclusion`, no dar por supuesto que la primera lectura es la final. Variante del cero silencioso: el corte `[:4]` no falla, simplemente nunca casa y el bucle decide otra cosa |
 
 ## Lo que tienen en común
 
-C1, C2, C3, C5 y C7 son la misma familia que domina el registro de cero-X: **una
-comprobación que devuelve algo que se parece a un éxito y no lo es.** C7 es la variante más
-incómoda, porque el comprobador funcionaba perfectamente: medía la cosa equivocada y lo
-decía con palabras de éxito. La pregunta que hay que hacerle a toda contraparte no es
+C1, C2, C3, C5, C7, C7b, C8, C9 y la mayor parte del registro de cero-X son la misma familia:
+**una comprobación que devuelve algo que se parece a un éxito y no lo es.** C7 es la variante
+más incómoda, porque el comprobador funcionaba perfectamente: medía la cosa equivocada y lo
+decía con palabras de éxito. C7b y C8 son sus dos caras temporales: C7b compara contra un
+origen correcto pero **congelado** (una rama muerta), así que el verde es cierto hoy y falso
+el día que el origen avance; C8 imprime «614 pruebas en verde» sobre unas pruebas que la
+caché **sirvió sin ejecutar**. La pregunta que hay que hacerle a toda contraparte no es
 «¿pasa?» sino **«¿qué afirmación se volvería falsa si esto fallara?»**. Si la respuesta es
-«nada que me importe», la comprobación es decoración. Un pipe que se
-come el código de salida, un runner que recoge cero tests, un test copiado que ya no
-prueba nada, un verificador que no tenía nada que verificar. Ninguno falla de forma
-ruidosa. La defensa no es mirar más, es **ejecutar el camino roto a propósito** y
-comprobar que la herramienta se queja cuando debe.
+«nada que me importe», la comprobación es decoración. Y cuando pasa con palabras de éxito,
+la segunda pregunta es **«¿esto midió el trabajo, o midió un sustituto del trabajo?»**: un
+espejo contra la rama viva o contra la muerta, una prueba ejecutada o restaurada de caché,
+un runner que recogió los tests o que no recogió ninguno. Un pipe que se come el código de
+salida, un verificador que no tenía nada que verificar, un `FROM-CACHE` que cuenta como
+verde, un sondeo que compara `status[:4]` contra `'in_progress'` y por eso nunca lo ve y
+decide que la corrida ya terminó. Ninguno falla de forma ruidosa. La defensa no es mirar
+más, es **ejecutar el camino roto a propósito** y comprobar que la herramienta se queja
+cuando debe.

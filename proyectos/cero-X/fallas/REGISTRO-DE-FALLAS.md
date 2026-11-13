@@ -7,7 +7,7 @@ comprobación.*
 
 ## La familia más repetida: el cero silencioso
 
-Cinco de las dieciséis fallas son la misma: **una medición devuelve 0 o vacío y se lee
+Cinco de las dieciocho fallas son la misma: **una medición devuelve 0 o vacío y se lee
 como «no hay nada» en vez de «lo leí mal»**. Es la clase más cara porque no falla:
 produce un resultado plausible y falso.
 
@@ -40,7 +40,18 @@ produce un resultado plausible y falso.
 | 15 | `find work/ci -name '*.log' \| gzip` rompió cinco rutas citadas por los docs sin `.gz` | el latido siguiente las dio como evidencia ausente | `comprobar_evidencia` verifica que toda ruta `work/ci/…` citada exista |
 | 16 | swap de 12 GiB puesto a mano, por debajo del suelo del script → un rearme lo habría reducido sin avisar | comparar `/proc/swaps` con la receta versionada | la receta elige el tamaño y lo justifica; lo ad-hoc se anota como discrepancia o se versiona |
 
-## Regla que se saca de las dieciséis
+## El verde que no ejecutó nada
+
+Dos fallas del mismo día sobre la misma causa: una comprobación que imprime éxito sobre
+un trabajo que no se hizo. La primera es la cara nueva del `UP-TO-DATE` vacío (regla 18 de
+cero-X); la segunda es el verificador que se añadió para cazarla y que nació cazando de más.
+
+| # | falla | cómo se detectó | contraparte |
+|---|---|---|---|
+| 17 | con `org.gradle.caching=true`, un `clean` + suite dio `> Task :app:testDebugUnitTest FROM-CACHE` y terminó en 9,6 s imprimiendo «614 pruebas, 0 fallos» sin ejecutar **una sola** prueba: la caché restauró los XML de resultados | `MemAvailable` quedó en 548 MB cuando un cierre real la baja a 29-58 MB (el fork de pruebas nunca arrancó), y `tools/medir-build.py` añadió la edad de los XML: en el cierre honesto eran de 7-14 s, en el hueco no había XML nuevos | `outputs.cacheIf { false }` en `tasks.withType(Test)` de `android/app/build.gradle`, y `medir-build.py` lee el registro de Gradle e informa `pruebas_ejecutadas` buscando `FROM-CACHE`/`UP-TO-DATE`/`SKIPPED` en las tareas de tipo `Test`. **La edad de los XML no basta**: la caché los restaura con `mtime` nuevo, así que una corrida que no ejecutó nada parece recién hecha; lo que no miente es la línea de Gradle. Validado contra 11 corridas de veredicto conocido: 11/11 |
+| 18 | la primera versión de ese detector usaba `\S*[Tt]est\S*` y marcaba «no se ejecutaron» en **todas** las corridas, incluidas las verdes | al validarlo contra las 11 corridas: fallaba 8 de 11 porque el regex casaba con `kspDebugUnitTestKotlin`, `compileDebugUnitTestKotlin` y `generateDebugAndroidTestAssets`, que compilan o preparan pero nunca ejecutan una prueba | estrechar el regex a `\S*:(?:test|test\w*UnitTest)` (sólo tareas de tipo `Test`) y admitir `FAILED` como ejecutada —corrió y falló, que es lo contrario de servida de caché. Un detector que siempre grita no se lee: se valida contra casos de veredicto conocido antes de fiarse de él |
+
+## Regla que se saca de las dieciocho
 
 Ninguna de estas fallas la habría cazado una prueba de la aplicación. Todas son del
 **proceso de medir**, y por eso las contrapartes viven en `tools/latido.py`, en

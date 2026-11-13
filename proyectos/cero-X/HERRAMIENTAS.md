@@ -1,10 +1,16 @@
 # cero-X · herramientas
 
 Fuente canónica: [`cero-X-app`](https://github.com/Alex17273747576777/cero-X-app)
-@ `8bf07470dfe1`, rama **`fases-verificadas-2026-11-13`**. El `main` del remoto está en
-`1fdad35` y **diverge**: los detalles y los 8 ficheros a mirar antes de fusionar están en
-[`RESPALDOS.md`](RESPALDOS.md). Copiadas el 2026-11-13. Licencia de la fuente:
-**GPL-3.0**, ver [`../LICENCIAS.md`](../LICENCIAS.md).
+@ `2dc023ef5a72`, rama **`main`**. La divergencia que había con `main` **se fusionó y se
+empujó el 2026-11-13** (PR #7, `merged=True`); el detalle histórico de esa divergencia y
+de la fusión está en [`RESPALDOS.md`](RESPALDOS.md). Copiadas el 2026-11-13 y repuntadas a
+`main` el mismo día. Licencia de la fuente: **GPL-3.0**, ver [`../LICENCIAS.md`](../LICENCIAS.md).
+
+Los 6 ficheros espejados son byte a byte idénticos en el commit viejo de la rama
+(`8d531c2`) y en `main` (`2dc023e`), medido con `git rev-parse <sha>:<ruta>`: el repunte
+cambió la referencia de rama, no el contenido. Aun así se repuntó a `main` porque un
+espejo «al día» con una rama congelada dice verdad hoy y se queda atrás sin avisar el día
+que `main` cambie un fichero espejado (falla C7b del registro común).
 
 ## Cómo se comprueba que no derivaron
 
@@ -37,13 +43,16 @@ script descarga cada fichero por URL cruda de GitHub y contesta dos preguntas:
 | AL DÍA | la copia == el fichero en la punta de la rama | `ANTIGUA`, sale 1 en modo estricto y aviso sin él: hay que republicar |
 
 Los repos son públicos, así que la comparación no necesita credencial. Detalle que costó
-cuatro 404 al montarlo: las herramientas de cero-X **no existen en su rama por defecto**,
-viven en `fases-verificadas-2026-11-13`, y por eso el manifiesto declara la rama.
+cuatro 404 al montarlo: cuando se copió, las herramientas de cero-X **no existían en su
+rama por defecto** (`main`), vivían sólo en `fases-verificadas-2026-11-13`, y por eso el
+manifiesto declaraba esa rama. Tras la fusión del 2026-11-13 ya están en `main`, y el
+manifiesto se repuntó a la rama viva (ver la nota de arriba y la falla C7b).
 
 Cinco caminos medidos con ruptura deliberada, el código sin pipe: sano 0; copia editada
 `DERIVA-INTERNA` 1; commit registrado falso `INFIEL` 1; espejo fiel a un commit viejo
-`ANTIGUA` 1 en estricto y 0 con aviso sin él —éste es el escenario de hoy—; sin red
-`COPIAS_PARCIALES` 3 en estricto y 0 diciendo qué no se comprobó.
+`ANTIGUA` 1 en estricto y 0 con aviso sin él; sin red `COPIAS_PARCIALES` 3 en estricto y 0
+diciendo qué no se comprobó. Tras el repunte a `main` el estado es el sano (0), no el
+`ANTIGUA`: medido el 2026-11-13 con `--estricto-origen`, `COPIAS_OK … al día con main`.
 
 | fichero | bytes | sha256 | qué hace |
 |---|---:|---|---|
@@ -58,5 +67,5 @@ Cinco caminos medidos con ruptura deliberada, el código sin pipe: sano 0; copia
 
 - [`entorno/LIMITES-MEDIDOS.md`](entorno/LIMITES-MEDIDOS.md): qué no se puede hacer en el sandbox, con la medida de cada límite.
 - [`entorno/RECETA-DE-REARME.md`](entorno/RECETA-DE-REARME.md): qué rearmar y en qué orden tras un reinicio.
-- [`fallas/REGISTRO-DE-FALLAS.md`](fallas/REGISTRO-DE-FALLAS.md): 16 fallas reales y la comprobación que caza cada una.
+- [`fallas/REGISTRO-DE-FALLAS.md`](fallas/REGISTRO-DE-FALLAS.md): 18 fallas reales y la comprobación que caza cada una.
 - [`RESPALDOS.md`](RESPALDOS.md): divergencia con el remoto, copias en Drive con sus md5, y autenticación sin escribir el token en ningún sitio.

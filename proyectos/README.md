@@ -50,7 +50,7 @@ Dos reglas para lo que se copia aquí:
 |
 | proyecto | repo | licencia medida | qué hay aquí |
 |---|---|---|---|
-| cero-X | [`cero-X-app`](https://github.com/Alex17273747576777/cero-X-app) | GPL-3.0 | 4 herramientas + licencia y aviso de origen, límites medidos del sandbox, receta de rearme, 16 fallas con contraparte, divergencia del remoto y 3 respaldos |
+| cero-X | [`cero-X-app`](https://github.com/Alex17273747576777/cero-X-app) | GPL-3.0 | 4 herramientas + licencia y aviso de origen, límites medidos del sandbox, receta de rearme, 18 fallas con contraparte, la fusión de la divergencia del remoto (PR #7) y sus respaldos en Drive |
 | gltools-reborn | [`gltools-reborn`](https://github.com/Alex17273747576777/gltools-reborn) | Apache-2.0 | 6 ficheros: censo del APK, auditoría de releases, preparación de firma, verificación de versión y sus dos tests (7 + 15 comprobaciones) |
 | normas-de-diseno | [`normas-de-diseno`](https://github.com/Alex17273747576777/normas-de-diseno) | sin declarar | 5 procedimientos: censar catálogo, elegir y desmontar, cerrar tramo, incidencias, auditar reglas. Sus 3 tests no se copian y el motivo está medido |
 | bandwidth-hero-proxy2 | [`bandwidth-hero-proxy2`](https://github.com/Alex17273747576777/bandwidth-hero-proxy2) | MIT | registro sin copias: sus 4 utilidades sólo tienen sentido dentro del proxy |

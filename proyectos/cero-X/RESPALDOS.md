@@ -1,11 +1,24 @@
 # cero-X · respaldos externos
 
+*Corte 2026-11-13. La cabecera y la tabla de Drive reflejan el estado tras la fusión y el
+empuje a `main` (HEAD `2dc023e`); el bloque marcado como histórico debajo conserva el
+detalle de la divergencia previa a la fusión.*
+
 El repo remoto es `github.com/Alex17273747576777/cero-X-app` (**público**). La
-divergencia **se fusionó el 2026-11-13** en `7bbc2ae` (dos padres: `57538ab` de la rama y
-`1fdad35` de `main`), con los cinco conflictos resueltos leyendo las dos versiones y un
-cierre completo de 88 suites, 614 pruebas, 0 fallos y 14 omitidas más los dos APK. El PR #7
-pasó de `mergeable=false`/`dirty` a `mergeable=true`/`clean`. **`main` sigue sin tocarse:
-fusionarlo es decisión del dueño.** Así estaba antes de eso:
+divergencia **se fusionó y se empujó a `main` el 2026-11-13**: el dueño lo autorizó
+(«Fusionalo»), el PR #7 pasó de `mergeable=false`/`dirty` a `merged=True` tras un
+fast-forward por push, y `main` avanzó de `52619ef` a **`2dc023e`** con el entorno de
+paralelismo y caché medido. La fusión original fue en `7bbc2ae` (dos padres: `57538ab` de
+la rama y `1fdad35` de `main`), con los cinco conflictos resueltos leyendo las dos
+versiones y un cierre completo de 88 suites, 614 pruebas, 0 fallos y 14 omitidas más los
+dos APK. El verde del HEAD empujado se confirmó por SHA en la API de Actions: corrida
+`43437675315` sobre `2dc023e`, `completed`/`success`.
+
+> **Lo que sigue debajo de esta línea es el detalle histórico de la divergencia tal como
+> estaba antes de fusionarse**, conservado porque explica por qué la fusión se hizo leyendo
+> las dos versiones y no con un `merge` a ciegas. Los tiempos verbales en presente («el PR
+> no es fusionable», «`main` sigue sin tocarse») describen el estado de *antes* del
+> 2026-11-13, no el actual. Así estaba antes de eso:
 
 | | commit | qué es |
 |---|---|---|

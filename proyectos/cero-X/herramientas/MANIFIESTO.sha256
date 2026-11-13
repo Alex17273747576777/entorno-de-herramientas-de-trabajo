@@ -4,8 +4,13 @@
 # cada copia contra el repo de origen en el commit registrado, por URL cruda.
 # sha256sum -c --strict ignora los comentarios: el manifiesto sigue siendo válido.
 # origen-repo: Alex17273747576777/cero-X-app
-# origen-rama: fases-verificadas-2026-11-13
-# origen-commit: 8d531c225e2bb5c89b6b8aaff9bad257774c0ed6
+# origen-rama: main
+# Repuntado de fases-verificadas-2026-11-13 a main el 2026-11-13: esa rama quedó
+# congelada en 8d531c2 tras la fusión (PR #7). Un espejo "al día" con una rama muerta
+# dice verdad hoy y se queda atrás sin avisar el día que main cambie un fichero espejado
+# (familia C7 del REGISTRO). Los 6 sha256 de abajo son idénticos en 8d531c2 y en main,
+# medidos con git rev-parse <sha>:<ruta>, así que el repunte no cambia ninguna copia.
+# origen-commit: 2dc023ef5a72e42fbbcf6b5ce84590b0098a7e5e
 # origen-ruta LICENSE-de-origen.txt: LICENSE
 # origen-ruta NOTICE-de-origen.txt: NOTICE
 # origen-ruta comprobar_entorno.py: tools/comprobar_entorno.py
