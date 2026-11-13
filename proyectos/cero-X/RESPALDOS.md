@@ -13,8 +13,24 @@ historial local del sandbox **diverge** del remoto y no se ha fusionado:
 Se empujó a **rama nueva y no a `main`** a propósito: `git merge-base --is-ancestor`
 dijo que `origin/main` no es ancestro del HEAD local, o sea que un force-push habría
 borrado esos 4 commits remotos. De los 57 ficheros que tocan, 49 ya son idénticos en el
-árbol local, 8 difieren y ninguno falta; la divergencia total son 161 ficheros, 10.411
-inserciones y 1.445 borrados. Los 8 que hay que mirar al fusionar:
+árbol local, 8 difieren y ninguno falta.
+
+**Cifra corregida.** La divergencia se anotó primero como «161 ficheros, 10.411
+inserciones, 1.445 borrados», que sale de `git diff origin/main HEAD`: dos puntos, o sea
+que **mezcla lo que hizo la rama con lo que avanzó `main`** y subestima el trabajo de la
+rama. Lo que ve un PR es la comparación desde la base común, tres puntos:
+
+```text
+git diff --stat origin/main...HEAD
+  210 files changed, 12886 insertions(+), 1853 deletions(-)
+```
+
+**Y la rama no es fusionable tal cual.** Quedó como [PR #7](https://github.com/Alex17273747576777/cero-X-app/pull/7),
+abierto y sin fusionar. La API responde `mergeable=false`, `mergeable_state=dirty`,
+`rebaseable=false`, y `git merge-tree --write-tree origin/main HEAD` sale 1 con **cinco
+conflictos**, medidos sin tocar el árbol. Dos son `add/add`: `main` y la rama crearon
+esos ficheros **por separado**, cada una con su versión, o sea que no es un conflicto de
+líneas sino dos implementaciones paralelas del mismo módulo. Los 8 ficheros que difieren:
 
 ```text
 android/app/build.gradle                                                  +31 -11
@@ -27,9 +43,33 @@ android/app/src/main/java/com/ceroX/app/ui/main/MainActivity.kt          +158 -1
 android/app/src/test/java/com/ceroX/app/ui/estado/NavegacionTest.kt        +7  -2
 ```
 
+De esos 8, **cinco son conflicto** y tres fusionan solos (`build.gradle`,
+`CeroXApplication.kt`, `PantallaIa.kt`):
+
+| fichero | tipo de conflicto | `main` desde la base | rama desde la base |
+|---|---|---|---|
+| `android/app/src/main/AndroidManifest.xml` | content | +15 −2 | +30 −2 |
+| `…/modules/extension_sandbox/InstaladorProjectNox.kt` | **add/add** | +65 −0 | +71 −0 |
+| `…/ui/extensiones/IntegracionesActivity.kt` | **add/add** | +270 −0 | +337 −0 |
+| `…/ui/main/MainActivity.kt` | content | +17 −0 | +163 −142 |
+| `…/src/test/java/com/ceroX/app/ui/estado/NavegacionTest.kt` | content | +25 −0 | +30 −0 |
+
 Fusionar no es un `merge` y ya: produce código nuevo que hay que volver a cerrar con
-suite completa y los dos APK, y tres de esos ficheros los tocó el proyecto entero
-(`MainActivity.kt` son 312 líneas de diferencia).
+suite completa y los dos APK.
+
+## El PR no disparó CI, y no sé por qué
+
+`pruebas.yml` declara `pull_request:` sin filtro en `main` y Actions está habilitado
+(`enabled=true`, `allowed_actions=all`). Aun así, el único check run sobre el HEAD del PR
+es `CodeRabbit` en `skipped`, y en todo el historial del repo hay **0 corridas con
+`event=pull_request`**; un push posterior a la rama tampoco disparó nada, porque el
+disparador de push está filtrado a `branches: [main]`. No encontré la causa con lo que
+medí, y no la invento.
+
+Consecuencia práctica: la verificación de la rama se lanza a mano con
+`workflow_dispatch`, y hay que hacerlo **sobre el HEAD del momento** — la primera corrida
+verde cubría `8bf0747` y no los commits de docs que vinieron después, así que se volvió a
+disparar sobre `57538ab`.
 
 GitHub reportó al empujar: **3 vulnerabilidades de Dependabot en la rama por defecto,
 1 alta, 1 moderada y 1 baja** → `/security/dependabot`.
