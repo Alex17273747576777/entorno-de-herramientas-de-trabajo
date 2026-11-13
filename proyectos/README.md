@@ -14,7 +14,7 @@ recicla.
 
 ```
 proyectos/
-  comprobar-copias.sh  contraparte general: recorre los manifiestos y sale 1 si algo derivó
+  comprobar-copias.sh  contraparte general: coherencia interna + comparación contra el repo de origen
   LICENCIAS.md         licencia medida de cada fuente y qué implica para las copias
   fallas-comunes/      las fallas del modo de trabajar, no de un proyecto
   <nombre>/
@@ -33,11 +33,15 @@ qué se midió y por qué no se copia nada.
 Dos reglas para lo que se copia aquí:
 
 1. **La copia canónica vive en el proyecto.** Esto es un espejo para reutilizar, no
-   la fuente. Por eso cada directorio `herramientas/` lleva su `MANIFIESTO.sha256` y
-   `proyectos/comprobar-copias.sh` los recorre todos: sale 1 si algo derivó y **2 si no
-   encontró ningún manifiesto**, porque un comprobador que pasa por no tener nada que
-   comprobar es el mismo cero silencioso que las fallas que registra. Un espejo que
-   deriva en silencio miente dos veces.
+   la fuente. Por eso cada directorio `herramientas/` lleva su `MANIFIESTO.sha256`, que
+   declara de dónde viene (`# origen-repo/rama/commit` y una `# origen-ruta` por fichero),
+   y `proyectos/comprobar-copias.sh` los recorre todos y contesta dos preguntas: si las
+   copias son **fieles** al commit registrado y si están **al día** con la punta de la rama.
+   Sale 1 si algo derivó o quedó atrás en modo estricto, **2 si no encontró ningún
+   manifiesto** y 3 si en modo estricto no pudo comparar contra el origen, porque un
+   comprobador que pasa por no tener nada que comprobar —o por no poder comprobarlo— es el
+   mismo cero silencioso que las fallas que registra. Un espejo que deriva en silencio
+   miente dos veces. Ver la falla C7: la versión anterior sólo contestaba la primera mitad.
 2. **Ningún secreto entra aquí.** Ni tokens, ni claves, ni `google-services.json`, ni
    hashes de firma privados. Ver `docs/POLITICA-DE-ALMACENAMIENTO.md`.
 
@@ -56,11 +60,12 @@ Además, dos ficheros que cruzan proyectos:
 
 | ruta | qué |
 |---|---|
-| `LICENCIAS.md` | la licencia medida de cada fuente y qué implica para las copias, incluido el hecho de que **este repo no declara licencia** |
-| `fallas-comunes/REGISTRO.md` | 6 fallas del modo de trabajar, no de un proyecto: el pipe que se come el código de salida, `pytest` recogiendo cero tests, un test copiado que ya no prueba nada |
+| `LICENCIAS.md` | la licencia medida de cada fuente y qué implica para las copias. Este repo **sí** declara licencia desde el 2026-11-13: GPL-3.0 en `LICENSE`, la única compatible con copiar a la vez GPL-3.0, Apache-2.0 y MIT |
+| `fallas-comunes/REGISTRO.md` | 7 fallas del modo de trabajar, no de un proyecto: el pipe que se come el código de salida, `pytest` recogiendo cero tests, un test copiado que ya no prueba nada |
 | `comprobar-copias.sh` | la contraparte de todas las copias, con manifiestos por proyecto |
 
 Los proyectos futuros entran con la misma forma: crear el directorio, copiar con
-`MANIFIESTO.sha256` generado por `sha256sum` (nunca hashes transcritos a mano) y
-rellenar los bloques. `comprobar-copias.sh` los recoge solo, sin que haya que
-registrarlos en ningún sitio.
+`MANIFIESTO.sha256` generado por `sha256sum` (nunca hashes transcritos a mano), declarar
+el origen en la cabecera de comentarios y rellenar los bloques. `comprobar-copias.sh` los
+recoge solo, sin que haya que registrarlos en ningún sitio; si un manifiesto no declara su
+origen, lo dice como `SIN-ORIGEN` en vez de darlo por bueno.

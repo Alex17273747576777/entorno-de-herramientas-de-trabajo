@@ -11,11 +11,16 @@ con cómo se detectaron y qué las caza ahora. Éstas salieron al montar esta ca
 | C4 | Copiar herramientas GPL-3.0 y Apache-2.0 a un repo sin `LICENSE` | `license.spdx_id` por API: cero-X-app GPL-3.0, gltools-reborn Apache-2.0, este repo None | `proyectos/LICENCIAS.md` con la licencia medida de cada fuente y cada copia acompañada de su `LICENSE-de-origen.txt`. Decidir la licencia del repo queda anotado como decisión del dueño, no se inventa |
 | C5 | Un comprobador que pasa porque no encontró nada que comprobar | camino 4 de la prueba: sin manifiestos, la versión obvia del script imprimiría éxito | `comprobar-copias.sh` sale con **2** y escribe `COPIAS_SIN_MANIFIESTO`. Es el cero silencioso aplicado al propio verificador: 0 coincidencias puede significar «limpio» o «no miré» |
 | C6 | `make copias` apuntando al script que se acababa de sustituir | `make: …/comprobar-copias.sh: No such file or directory`, Error 127 | al reemplazar una herramienta, grep del repo buscando quién la invoca. La llamada rota apareció en el mismo turno porque se ejecutó `make` después del cambio, no antes |
+| C7 | Comprobador auto-referencial: `comprobar-copias.sh` comparaba las copias contra un manifiesto generado de esas mismas copias, así que sólo podía cazar a quien editaba la copia sin tocar el manifiesto | al republicar cuatro herramientas de cero-X el 2026-11-13: el espejo estaba cuatro ficheros atrás de su repo de origen y el script imprimía `ok cero-X (6 ficheros sin derivar)` con EXIT=0. Decía la verdad sobre la pregunta que contestaba y mentía sobre la única que importaba | cada `MANIFIESTO.sha256` declara `# origen-repo/rama/commit` y una `# origen-ruta` por fichero; el script los descarga por URL cruda de GitHub y contesta **dos** preguntas: FIEL al commit registrado (`INFIEL`, sale 1) y AL DÍA con la punta de la rama (`ANTIGUA`, sale 1 con `--estricto-origen`, que es lo que usa CI). Cinco caminos medidos con ruptura deliberada y el código sin pipe: 0, 1, 1, 1 y 3 |
 
 ## Lo que tienen en común
 
-C1, C2, C3 y C5 son la misma familia que domina el registro de cero-X: **una
-comprobación que devuelve algo que se parece a un éxito y no lo es.** Un pipe que se
+C1, C2, C3, C5 y C7 son la misma familia que domina el registro de cero-X: **una
+comprobación que devuelve algo que se parece a un éxito y no lo es.** C7 es la variante más
+incómoda, porque el comprobador funcionaba perfectamente: medía la cosa equivocada y lo
+decía con palabras de éxito. La pregunta que hay que hacerle a toda contraparte no es
+«¿pasa?» sino **«¿qué afirmación se volvería falsa si esto fallara?»**. Si la respuesta es
+«nada que me importe», la comprobación es decoración. Un pipe que se
 come el código de salida, un runner que recoge cero tests, un test copiado que ya no
 prueba nada, un verificador que no tenía nada que verificar. Ninguno falla de forma
 ruidosa. La defensa no es mirar más, es **ejecutar el camino roto a propósito** y

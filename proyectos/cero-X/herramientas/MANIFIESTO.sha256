@@ -1,6 +1,20 @@
+# Copias de herramientas de cero-X.
+# La canónica vive en el repo de origen; esto es un espejo para reutilizar.
+# Las líneas "# origen-..." las lee proyectos/comprobar-copias.sh para comparar
+# cada copia contra el repo de origen en el commit registrado, por URL cruda.
+# sha256sum -c --strict ignora los comentarios: el manifiesto sigue siendo válido.
+# origen-repo: Alex17273747576777/cero-X-app
+# origen-rama: fases-verificadas-2026-11-13
+# origen-commit: 8d531c225e2bb5c89b6b8aaff9bad257774c0ed6
+# origen-ruta LICENSE-de-origen.txt: LICENSE
+# origen-ruta NOTICE-de-origen.txt: NOTICE
+# origen-ruta comprobar_entorno.py: tools/comprobar_entorno.py
+# origen-ruta latido.py: tools/latido.py
+# origen-ruta low-memory.gradle: tools/low-memory.gradle
+# origen-ruta preparar-entorno-android.sh: scripts/preparar-entorno-android.sh
 3972dc9744f6499f0f9b2dbf76696f2ae7ad8af9b23dde66d6af86c9dfb36986  LICENSE-de-origen.txt
 c17bb886fd34f7068efe7971acf46b5b08f321371fa55618e852eb43cc86c4de  NOTICE-de-origen.txt
-32cfd3daa7c607af6b1764af3d90873ca4f1584745d3eab954ef2e26b8a8b468  comprobar_entorno.py
-c01767ea002f3cbc493c5d6692fb9044d294e820b6a23d873b3c5a7419ea26c2  latido.py
-a91d91bcce703473d9789378d0b20a37a9334534281d89f65a914dab73d112c3  low-memory.gradle
-38f86650d83c607432848c739c817cf2e2b2f056e285b14dae2e5b99667cb5a1  preparar-entorno-android.sh
+72a98183ac99ee6f3adf4df54ebfd071b671867719278b56ed907be100204e71  comprobar_entorno.py
+10443327b60c30f9e1348e277ec6ff517c0309504bb6e1aef992ef68e1f2d0aa  latido.py
+8ee1d1754e429c8c516671302bccd4432349665ff089cbde04df0ca23a6ee8ef  low-memory.gradle
+b32de7f5ffa535004d666d0bf83b731f9ffe4afe427c937dde5a427afc7af815  preparar-entorno-android.sh

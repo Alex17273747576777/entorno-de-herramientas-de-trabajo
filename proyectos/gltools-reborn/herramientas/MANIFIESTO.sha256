@@ -1,3 +1,18 @@
+# Copias de herramientas de gltools-reborn.
+# La canónica vive en el repo de origen; esto es un espejo para reutilizar.
+# Las líneas "# origen-..." las lee proyectos/comprobar-copias.sh para comparar
+# cada copia contra el repo de origen en el commit registrado, por URL cruda.
+# sha256sum -c --strict ignora los comentarios: el manifiesto sigue siendo válido.
+# origen-repo: Alex17273747576777/gltools-reborn
+# origen-rama: main
+# origen-commit: 4389482dd4e739e248657f924f2506b4ca754b59
+# origen-ruta LICENSE-de-origen.txt: LICENSE
+# origen-ruta auditar_releases.py: .github/scripts/auditar_releases.py
+# origen-ruta censo_apk.py: .github/scripts/censo_apk.py
+# origen-ruta preparar_firma.py: .github/scripts/preparar_firma.py
+# origen-ruta test_censo_apk.py: .github/scripts/test_censo_apk.py
+# origen-ruta test_preparar_firma.py: .github/scripts/test_preparar_firma.py
+# origen-ruta verificar_version.py: .github/scripts/verificar_version.py
 cfc7749b96f63bd31c3c42b5c471bf756814053e847c10f3eb003417bc523d30  LICENSE-de-origen.txt
 ac78f15cefcfb3a3274c2744bb1484b3175ab96356d925d17c6c00286c16788a  auditar_releases.py
 1495dad819d07db7025e6cdb42bfeb786a7aeee48caa7ce3b458865a056cf3b1  censo_apk.py

@@ -1,7 +1,11 @@
 # cero-X · respaldos externos
 
-El repo remoto es `github.com/Alex17273747576777/cero-X-app` (**público**). El
-historial local del sandbox **diverge** del remoto y no se ha fusionado:
+El repo remoto es `github.com/Alex17273747576777/cero-X-app` (**público**). La
+divergencia **se fusionó el 2026-11-13** en `7bbc2ae` (dos padres: `57538ab` de la rama y
+`1fdad35` de `main`), con los cinco conflictos resueltos leyendo las dos versiones y un
+cierre completo de 88 suites, 614 pruebas, 0 fallos y 14 omitidas más los dos APK. El PR #7
+pasó de `mergeable=false`/`dirty` a `mergeable=true`/`clean`. **`main` sigue sin tocarse:
+fusionarlo es decisión del dueño.** Así estaba antes de eso:
 
 | | commit | qué es |
 |---|---|---|
@@ -57,22 +61,38 @@ De esos 8, **cinco son conflicto** y tres fusionan solos (`build.gradle`,
 Fusionar no es un `merge` y ya: produce código nuevo que hay que volver a cerrar con
 suite completa y los dos APK.
 
-## El PR no disparó CI, y no sé por qué
+## El PR sí dispara CI: la nota anterior era una medición prematura
 
-`pruebas.yml` declara `pull_request:` sin filtro en `main` y Actions está habilitado
-(`enabled=true`, `allowed_actions=all`). Aun así, el único check run sobre el HEAD del PR
-es `CodeRabbit` en `skipped`, y en todo el historial del repo hay **0 corridas con
-`event=pull_request`**; un push posterior a la rama tampoco disparó nada, porque el
-disparador de push está filtrado a `branches: [main]`. No encontré la causa con lo que
-medí, y no la invento.
+Esta sección decía que en todo el historial del repo había **0 corridas con
+`event=pull_request`** y que la causa no se encontraba. Medido de nuevo con
+`/actions/runs?event=pull_request`, hay dos, y las dos son posteriores a esa nota:
 
-Consecuencia práctica: la verificación de la rama se lanza a mano con
-`workflow_dispatch`, y hay que hacerlo **sobre el HEAD del momento** — la primera corrida
-verde cubría `8bf0747` y no los commits de docs que vinieron después, así que se volvió a
-disparar sobre `57538ab`.
+| corrida | commit | creada | resultado |
+|---|---|---|---|
+| `43415076063` | `7bbc2ae` | 11:11:39Z, unos 84 s después del push | success |
+| `43418068714` | `e960c81` | 11:33:52Z, unos 19 s después del push | success |
 
-GitHub reportó al empujar: **3 vulnerabilidades de Dependabot en la rama por defecto,
-1 alta, 1 moderada y 1 baja** → `/security/dependabot`.
+El error fue medir un sistema asíncrono una sola vez, segundos después de provocar el
+evento, y escribir la ausencia observada como propiedad permanente del repositorio: quien
+leyera el doc no comprobaba el disparador por PR y se quedaba sin esa verificación. Lo que
+sigue sin explicarse, y se deja dicho en vez de taparlo: el push de `57538ab` a las 10:45Z
+**no** produjo corrida `pull_request` y los dos siguientes sí.
+
+Consecuencia práctica, que no cambia: la verificación se mira explícitamente con
+`/actions/runs?head_sha=<sha>` y se lanza también con `workflow_dispatch` **sobre el HEAD
+del momento** — la primera corrida verde cubría `8bf0747` y no los commits de docs que
+vinieron después, así que se volvió a disparar sobre `57538ab`.
+
+**Dependabot, diagnosticado el 2026-11-13.** Las 3 alertas (alta `GHSA-5c6j-r48x-rmvq`
+por RCE, moderada `GHSA-qj8w-gfj5-8c6v` por DoS, baja `GHSA-m5mm-p8h7-m29v` por XSS) son
+todas de `serialize-javascript` 6.0.2 en `comun/kotlin-js-store/yarn.lock`, arrastrado por
+`mocha@10.7.0` del target `js(IR) { nodejs() }`. Los tres parches exigen `>= 7.1.3`, un
+salto mayor que el `^6.0.2` de mocha no permite, y forzarlo rompería el target JS sin poder
+verificarlo en el sandbox (`comun/build` no existe, `yarn` no está instalado). Se midió que
+no alcanza al producto: la app consume `comun/` por fuentes, el APK lleva **0 ficheros
+`.js`** y ningún workflow compila el target. Sigue abierto en GitHub, con criterio de salida
+en `docs/PENDIENTES-EXTERNOS.md` del repo y una guarda (`CadenaDeSuministroJsTest`) para que
+la conclusión no caduque en silencio.
 
 ## Copias en Google Drive
 

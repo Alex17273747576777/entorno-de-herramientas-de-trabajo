@@ -1,3 +1,16 @@
+# Copias de herramientas de normas-de-diseno.
+# La canónica vive en el repo de origen; esto es un espejo para reutilizar.
+# Las líneas "# origen-..." las lee proyectos/comprobar-copias.sh para comparar
+# cada copia contra el repo de origen en el commit registrado, por URL cruda.
+# sha256sum -c --strict ignora los comentarios: el manifiesto sigue siendo válido.
+# origen-repo: Alex17273747576777/normas-de-diseno
+# origen-rama: main
+# origen-commit: b3e224218f34ac97619aa6830d5f91307701e17d
+# origen-ruta 01-censar-catalogo-appteka.py: procedimientos/01-censar-catalogo-appteka.py
+# origen-ruta 02-elegir-y-desmontar.sh: procedimientos/02-elegir-y-desmontar.sh
+# origen-ruta 03-cerrar-tramo.sh: procedimientos/03-cerrar-tramo.sh
+# origen-ruta 04-incidencias.sh: procedimientos/04-incidencias.sh
+# origen-ruta 06-auditar-reglas.sh: procedimientos/06-auditar-reglas.sh
 50568d575c9e3cc0045d2375680d2ed0b58b1acb8adfd876b8e5ac95ced3bba9  01-censar-catalogo-appteka.py
 e071f24b3a73fb789cbaff03990cff93de84141fb823c8f6fdfc255b9b795ec7  02-elegir-y-desmontar.sh
 51d13ea22f5f2327a2e8f6d376e06ba849ca06805a1d1662d674ce73576e5d84  03-cerrar-tramo.sh

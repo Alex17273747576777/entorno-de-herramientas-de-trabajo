@@ -14,6 +14,9 @@ jobs:
       # La capa de proyectos: que ninguna copia de herramienta haya derivado de su
       # canónica y que los tests que sí son autocontenidos corran aquí también.
       # Sale 1 si algo derivó y 2 si no encontró ningún manifiesto que comprobar.
-      - run: ./proyectos/comprobar-copias.sh
+      # --estricto-origen: en CI, un espejo que quedó atrás de su repo de origen es rojo,
+      # y una comparación que no se pudo hacer (sin red, sin curl) sale 3 en vez de pasar.
+      # Sin la bandera el script avisa y sale 0, que es lo útil en local. Falla C7.
+      - run: ./proyectos/comprobar-copias.sh --estricto-origen
       - run: python3 -B proyectos/gltools-reborn/herramientas/test_censo_apk.py
       - run: python3 -B proyectos/gltools-reborn/herramientas/test_preparar_firma.py
