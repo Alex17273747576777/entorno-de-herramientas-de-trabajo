@@ -13,29 +13,54 @@ recicla.
 ## Convención
 
 ```
-proyectos/<nombre>/
-  HERRAMIENTAS.md      qué aporta el proyecto, con sha256 y commit de origen
-  herramientas/        copias de las herramientas reutilizables + su contraparte
-  entorno/             qué se pierde al reiniciar, cómo se rearma, qué NO se puede hacer aquí
-  fallas/              cada falla real, cómo se detectó y qué la caza ahora
-  RESPALDOS.md         copias externas con hashes e identificadores
+proyectos/
+  comprobar-copias.sh  contraparte general: recorre los manifiestos y sale 1 si algo derivó
+  LICENCIAS.md         licencia medida de cada fuente y qué implica para las copias
+  fallas-comunes/      las fallas del modo de trabajar, no de un proyecto
+  <nombre>/
+    HERRAMIENTAS.md      qué aporta el proyecto, con sha256 y commit de origen
+    herramientas/        copias + MANIFIESTO.sha256 + licencia de origen
+    entorno/             qué se pierde al reiniciar, cómo se rearma, qué NO se puede hacer aquí
+    fallas/              cada falla real, cómo se detectó y qué la caza ahora
+    RESPALDOS.md         copias externas con hashes e identificadores
 ```
+
+Un proyecto entra con lo que aplique. Si un bloque no aplica, **se escribe por qué en vez
+de dejarlo vacío**: un hueco sin explicar no se distingue de un hueco sin hacer. Los dos
+registros sin copias (`bandwidth-hero-proxy2`, `la-bandita-archivo`) son el ejemplo: dicen
+qué se midió y por qué no se copia nada.
 
 Dos reglas para lo que se copia aquí:
 
 1. **La copia canónica vive en el proyecto.** Esto es un espejo para reutilizar, no
-   la fuente. Por eso cada directorio `herramientas/` lleva su contraparte: un script
-   que compara el sha256 de la copia contra el fijado en el manifiesto y sale con 1 si
-   derivó. Un espejo que deriva en silencio miente dos veces.
+   la fuente. Por eso cada directorio `herramientas/` lleva su `MANIFIESTO.sha256` y
+   `proyectos/comprobar-copias.sh` los recorre todos: sale 1 si algo derivó y **2 si no
+   encontró ningún manifiesto**, porque un comprobador que pasa por no tener nada que
+   comprobar es el mismo cero silencioso que las fallas que registra. Un espejo que
+   deriva en silencio miente dos veces.
 2. **Ningún secreto entra aquí.** Ni tokens, ni claves, ni `google-services.json`, ni
    hashes de firma privados. Ver `docs/POLITICA-DE-ALMACENAMIENTO.md`.
 
 ## Proyectos actuales
 
-| proyecto | repo | qué hay aquí |
-|---|---|---|
-| cero-X | [`cero-X-app`](https://github.com/Alex17273747576777/cero-X-app) | herramientas de verificación, límites medidos del sandbox, 16 fallas con contraparte, 3 respaldos |
+|
+| proyecto | repo | licencia medida | qué hay aquí |
+|---|---|---|---|
+| cero-X | [`cero-X-app`](https://github.com/Alex17273747576777/cero-X-app) | GPL-3.0 | 4 herramientas + licencia y aviso de origen, límites medidos del sandbox, receta de rearme, 16 fallas con contraparte, divergencia del remoto y 3 respaldos |
+| gltools-reborn | [`gltools-reborn`](https://github.com/Alex17273747576777/gltools-reborn) | Apache-2.0 | 6 ficheros: censo del APK, auditoría de releases, preparación de firma, verificación de versión y sus dos tests (7 + 15 comprobaciones) |
+| normas-de-diseno | [`normas-de-diseno`](https://github.com/Alex17273747576777/normas-de-diseno) | sin declarar | 5 procedimientos: censar catálogo, elegir y desmontar, cerrar tramo, incidencias, auditar reglas. Sus 3 tests no se copian y el motivo está medido |
+| bandwidth-hero-proxy2 | [`bandwidth-hero-proxy2`](https://github.com/Alex17273747576777/bandwidth-hero-proxy2) | MIT | registro sin copias: sus 4 utilidades sólo tienen sentido dentro del proxy |
+| la-bandita-archivo | [`la-bandita-archivo`](https://github.com/Alex17273747576777/la-bandita-archivo) | MIT | registro sin copias: 182 herramientas archivadas por etapas; se copiarán bajo demanda |
 
-Los proyectos futuros entran con la misma forma. Añadir uno es crear el directorio y
-rellenar los cuatro bloques; si un bloque no aplica, se escribe por qué en vez de
-dejarlo vacío: un hueco sin explicar no se distingue de un hueco sin hacer.
+Además, dos ficheros que cruzan proyectos:
+
+| ruta | qué |
+|---|---|
+| `LICENCIAS.md` | la licencia medida de cada fuente y qué implica para las copias, incluido el hecho de que **este repo no declara licencia** |
+| `fallas-comunes/REGISTRO.md` | 6 fallas del modo de trabajar, no de un proyecto: el pipe que se come el código de salida, `pytest` recogiendo cero tests, un test copiado que ya no prueba nada |
+| `comprobar-copias.sh` | la contraparte de todas las copias, con manifiestos por proyecto |
+
+Los proyectos futuros entran con la misma forma: crear el directorio, copiar con
+`MANIFIESTO.sha256` generado por `sha256sum` (nunca hashes transcritos a mano) y
+rellenar los bloques. `comprobar-copias.sh` los recoge solo, sin que haya que
+registrarlos en ningún sitio.

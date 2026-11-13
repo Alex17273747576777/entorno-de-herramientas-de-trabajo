@@ -148,7 +148,14 @@ TODO BIEN
 | ruta | qué |
 |---|---|
 | `proyectos/README.md` | la convención: qué entra aquí y qué no, y por qué ninguna copia de herramienta entra sin su contraparte |
-| `proyectos/cero-X/herramientas/` | `latido.py`, `comprobar_entorno.py`, `preparar-entorno-android.sh`, `low-memory.gradle` + `comprobar-copias.sh` |
+| `proyectos/comprobar-copias.sh` | la contraparte de **todas** las copias: recorre los `MANIFIESTO.sha256` y sale 1 si algo derivó, 2 si no había nada que comprobar |
+| `proyectos/LICENCIAS.md` | la licencia medida de cada fuente (GPL-3.0, Apache-2.0, MIT, sin declarar) y qué implica para las copias |
+| `proyectos/fallas-comunes/` | 6 fallas del modo de trabajar, no de un proyecto |
+| `proyectos/cero-X/herramientas/` | `latido.py`, `comprobar_entorno.py`, `preparar-entorno-android.sh`, `low-memory.gradle` |
+| `proyectos/gltools-reborn/herramientas/` | censo del APK, auditoría de releases, preparación de firma, verificación de versión + 7 y 15 comprobaciones |
+| `proyectos/normas-de-diseno/herramientas/` | 5 procedimientos: censar catálogo, elegir y desmontar, cerrar tramo, incidencias, auditar reglas |
+| `proyectos/bandwidth-hero-proxy2/` | registro sin copias, con el motivo medido |
+| `proyectos/la-bandita-archivo/` | registro sin copias: 182 herramientas archivadas por etapas |
 | `proyectos/cero-X/entorno/` | límites medidos del sandbox (sin KVM, 2 CPU, 1,9 GiB de RAM, techo de Robolectric en API 36) y receta de rearme |
 | `proyectos/cero-X/fallas/` | 16 fallas reales con la comprobación que las caza ahora; cinco son la misma clase: el cero silencioso |
 | `proyectos/cero-X/RESPALDOS.md` | divergencia con el remoto Git, los 8 ficheros a mirar al fusionar, y las tres copias en Drive con sus hashes |

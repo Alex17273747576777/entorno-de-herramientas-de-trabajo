@@ -11,3 +11,9 @@ jobs:
         with:
           python-version: "3.12"
       - run: python tests/pruebas.py
+      # La capa de proyectos: que ninguna copia de herramienta haya derivado de su
+      # canónica y que los tests que sí son autocontenidos corran aquí también.
+      # Sale 1 si algo derivó y 2 si no encontró ningún manifiesto que comprobar.
+      - run: ./proyectos/comprobar-copias.sh
+      - run: python3 -B proyectos/gltools-reborn/herramientas/test_censo_apk.py
+      - run: python3 -B proyectos/gltools-reborn/herramientas/test_preparar_firma.py
