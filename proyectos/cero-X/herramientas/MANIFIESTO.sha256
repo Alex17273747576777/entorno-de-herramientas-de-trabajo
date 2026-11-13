@@ -10,22 +10,33 @@
 # dice verdad hoy y se queda atrás sin avisar el día que main cambie un fichero espejado
 # (familia C7 del REGISTRO). Los 6 sha256 de abajo son idénticos en 8d531c2 y en main,
 # medidos con git rev-parse <sha>:<ruta>, así que el repunte no cambia ninguna copia.
-# origen-commit: 4ff793a4389cc6571557b9a5e3cf443177cb9b5a
+# origen-commit: 6f4a848df344cdd53207d065cfcfb84f8e25caa3
 # Republicado el 2026-11-13 a 4ff793a: tools/comprobar_entorno.py cambió en el origen para
 # arreglar una carrera TOCTOU (recorría .git haciendo stat() mientras otro hilo ejecutaba git
 # y reventaba con FileNotFoundError sobre .git/index.lock; ahora tamano() devuelve 0 si el
 # fichero desapareció). Los otros cinco ficheros son byte a byte idénticos en 2dc023e y en
 # 4ff793a, medidos con git rev-parse <sha>:<ruta>, así que este repunte sólo mueve una copia.
 # Falla 19 del registro de cero-X y C10 del registro común.
+# Republicado el 2026-11-13 a 6f4a848 (cabo ② de PENDIENTES-EXTERNOS.md): se añaden al espejo
+# las dos herramientas que faltaban, scripts/bajar-referencias.sh y tools/auditar-referencias.py,
+# copiadas del blob 6f4a848 y verificadas con git hash-object (idénticas). Los 6 ficheros ya
+# espejados son byte a byte idénticos en 4ff793a y en 6f4a848, medidos con git rev-parse
+# <sha>:<ruta>, así que subir el origen-commit no vuelve infiel a ninguno: sólo incorpora dos
+# copias nuevas. auditar-referencias.py es la versión corregida que cierra la fase F2 (4 ejes,
+# tras cazar 4 falsos positivos de subcadena; ver el commit 6f4a848 de cero-X-app).
 # origen-ruta LICENSE-de-origen.txt: LICENSE
 # origen-ruta NOTICE-de-origen.txt: NOTICE
 # origen-ruta comprobar_entorno.py: tools/comprobar_entorno.py
 # origen-ruta latido.py: tools/latido.py
 # origen-ruta low-memory.gradle: tools/low-memory.gradle
 # origen-ruta preparar-entorno-android.sh: scripts/preparar-entorno-android.sh
+# origen-ruta bajar-referencias.sh: scripts/bajar-referencias.sh
+# origen-ruta auditar-referencias.py: tools/auditar-referencias.py
 3972dc9744f6499f0f9b2dbf76696f2ae7ad8af9b23dde66d6af86c9dfb36986  LICENSE-de-origen.txt
 c17bb886fd34f7068efe7971acf46b5b08f321371fa55618e852eb43cc86c4de  NOTICE-de-origen.txt
 9a9c23559ebb8f031f19c068adff70f050fdd559431098588ff38ab56985df53  comprobar_entorno.py
 10443327b60c30f9e1348e277ec6ff517c0309504bb6e1aef992ef68e1f2d0aa  latido.py
 8ee1d1754e429c8c516671302bccd4432349665ff089cbde04df0ca23a6ee8ef  low-memory.gradle
 b32de7f5ffa535004d666d0bf83b731f9ffe4afe427c937dde5a427afc7af815  preparar-entorno-android.sh
+dbd5210aaac304b0c24ce20e49e3005dc5acdc39d5ede25c7af260b2ebc41126  bajar-referencias.sh
+ebaa0d0ca04661a31f1a8e4fb414cc5d51203a1f8e3a1f293568ec0d7c6ca1b4  auditar-referencias.py
