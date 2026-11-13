@@ -159,3 +159,18 @@ TODO BIEN
 | `proyectos/cero-X/entorno/` | límites medidos del sandbox (sin KVM, 2 CPU, 1,9 GiB de RAM, techo de Robolectric en API 36) y receta de rearme |
 | `proyectos/cero-X/fallas/` | 16 fallas reales con la comprobación que las caza ahora; cinco son la misma clase: el cero silencioso |
 | `proyectos/cero-X/RESPALDOS.md` | divergencia con el remoto Git, los 8 ficheros a mirar al fusionar, y las tres copias en Drive con sus hashes |
+
+---
+
+## Licencia de este repositorio
+
+**GPL-3.0** (ver [`LICENSE`](LICENSE)), decidida el 2026-11-13 por compatibilidad: el
+repo ya contiene copias de herramientas GPL-3.0 de `cero-X-app`, y las fuentes
+Apache-2.0 y MIT de las que también se copia son compatibles en esa dirección. Una
+licencia permisiva no habría sido válida: no se puede relicenciar como permisivo el
+código GPL-3.0 que ya está dentro. Procedencia de cada copia y razonamiento completo en
+[`proyectos/LICENCIAS.md`](proyectos/LICENCIAS.md).
+
+Los seis repos de la cuenta son **públicos por decisión del dueño**, lo que obliga a
+que ninguno contenga jamás un secreto:
+[`docs/POLITICA-DE-ALMACENAMIENTO.md`](docs/POLITICA-DE-ALMACENAMIENTO.md).

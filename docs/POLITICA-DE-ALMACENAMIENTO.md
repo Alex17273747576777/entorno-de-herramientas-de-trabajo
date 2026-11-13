@@ -85,3 +85,28 @@ Un workspace local tiene tres problemas que GitHub no tiene:
 - **No se puede revisar.** Lo que está en GitHub se lee, se comenta y se corrige por otra persona.
 
 Y tiene uno que GitHub sí tiene y es peor: **el workspace es donde se acumulan los archivos que nadie usa**. El `INFORME-31-40.md` sirve aunque nadie lo abra; el `.txt` con una medición intermedia que ya se transcribió a un commit, no. La regla de subir todo es también la regla de no acumular basura: lo que no merece un commit, no merece guardarse.
+
+## Decisión del 2026-11-13: los repos se quedan **públicos**
+
+Preguntado el dueño, que había pedido «un remoto Git privado», la respuesta fue
+dejarlos públicos con conocimiento de causa. Los seis repos de la cuenta son públicos
+y siguen siéndolo. Eso no es un descuido sino una decisión, y tiene una consecuencia
+que obliga: **si nada es privado, nada puede contener un secreto.** Nunca.
+
+Lo que ya sostiene esa decisión, medido el 2026-11-10 sobre 19.528 ficheros y
+236.902.990 bytes de los seis repos: 0 coincidencias de token de GitHub, clave privada
+PEM y credencial de AWS; secret-scanning, push protection, alertas y Dependabot
+activos en los seis. Ver `docs/AUDITORIA-REMOTA-2026-11-10.md`.
+
+Lo que se añadió el 2026-11-13 al copiar herramientas de otros repos a `proyectos/`:
+barrido de `github_pat_`, `ghp_`, `gho_`, `AKIA`, PEM, `AIza` y `x-access-token` con
+valor sobre todo lo añadido, **0 coincidencias**. Las dos apariciones de esos patrones
+en el árbol son texto sobre los patrones —este doc y `06-auditar-reglas.sh`, cuyo
+oficio es justamente cazar un token dentro de la URL de un remoto— y una lectura de
+`os.environ["GITHUB_TOKEN"]`, que no contiene ningún valor.
+
+Y la autenticación sigue sin escribir el secreto en ningún sitio: helper
+`/home/user/.gh-credential` leyendo del único archivo que tiene el token, y remotos con
+URL limpia. En la auditoría del 2026-11-08 hubo que limpiar 3 de 3 URLs con
+`git remote set-url`; hoy `git remote get-url origin` sale sin token en los dos repos
+trabajados.
