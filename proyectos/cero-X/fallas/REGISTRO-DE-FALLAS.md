@@ -7,7 +7,7 @@ comprobación.*
 
 ## La familia más repetida: el cero silencioso
 
-Cinco de las dieciocho fallas son la misma: **una medición devuelve 0 o vacío y se lee
+Cinco de las veinte fallas son la misma: **una medición devuelve 0 o vacío y se lee
 como «no hay nada» en vez de «lo leí mal»**. Es la clase más cara porque no falla:
 produce un resultado plausible y falso.
 
@@ -51,7 +51,18 @@ cero-X); la segunda es el verificador que se añadió para cazarla y que nació 
 | 17 | con `org.gradle.caching=true`, un `clean` + suite dio `> Task :app:testDebugUnitTest FROM-CACHE` y terminó en 9,6 s imprimiendo «614 pruebas, 0 fallos» sin ejecutar **una sola** prueba: la caché restauró los XML de resultados | `MemAvailable` quedó en 548 MB cuando un cierre real la baja a 29-58 MB (el fork de pruebas nunca arrancó), y `tools/medir-build.py` añadió la edad de los XML: en el cierre honesto eran de 7-14 s, en el hueco no había XML nuevos | `outputs.cacheIf { false }` en `tasks.withType(Test)` de `android/app/build.gradle`, y `medir-build.py` lee el registro de Gradle e informa `pruebas_ejecutadas` buscando `FROM-CACHE`/`UP-TO-DATE`/`SKIPPED` en las tareas de tipo `Test`. **La edad de los XML no basta**: la caché los restaura con `mtime` nuevo, así que una corrida que no ejecutó nada parece recién hecha; lo que no miente es la línea de Gradle. Validado contra 11 corridas de veredicto conocido: 11/11 |
 | 18 | la primera versión de ese detector usaba `\S*[Tt]est\S*` y marcaba «no se ejecutaron» en **todas** las corridas, incluidas las verdes | al validarlo contra las 11 corridas: fallaba 8 de 11 porque el regex casaba con `kspDebugUnitTestKotlin`, `compileDebugUnitTestKotlin` y `generateDebugAndroidTestAssets`, que compilan o preparan pero nunca ejecutan una prueba | estrechar el regex a `\S*:(?:test|test\w*UnitTest)` (sólo tareas de tipo `Test`) y admitir `FAILED` como ejecutada —corrió y falló, que es lo contrario de servida de caché. Un detector que siempre grita no se lee: se valida contra casos de veredicto conocido antes de fiarse de él |
 
-## Regla que se saca de las dieciocho
+## El rojo que no significaba nada
+
+La familia inversa de las diecisiete anteriores: no una comprobación que celebra un trabajo que
+no se hizo, sino una que **falla cuando todo está bien**. Se anota aparte porque el remedio es
+distinto: aquí no hay que desconfiar del verde, hay que desconfiar del rojo.
+
+| # | falla | cómo se detectó | contraparte |
+|---|---|---|---|
+| 19 | `comprobar_entorno.py` reventó con `FileNotFoundError` sobre `.git/index.lock` al correr las 9 comprobaciones en 2 hilos: recorría `.git` haciendo `stat()` mientras otro hilo ejecutaba git, y `path.exists()` protegía la suma pero no el `sorted(key=item.stat().st_size)` ni el `print` | `--solo entorno` daba verde, así que el rojo sólo existía en paralelo: era una carrera TOCTOU, no un problema del entorno | función `tamano()` que devuelve 0 si el fichero desapareció entre el recorrido y el `stat`, en los tres sitios. Probada con un generador de carrera que crea y borra `index.lock` durante la medición: anterior 2/3 con `Traceback`, nueva 0/3, ambas `ENTORNO_OK` sin carrera |
+| 20 | Al probar la falla 19, el primer intento **no probaba nada**: se comparó el código de salida de la herramienta y dio «3/3 fallos reproducidos», pero la copia de control fallaba también sin carrera | el control —ejecutar la versión anterior *sin* generador de carrera— dio EXIT=1 igual, así que los 3/3 no distinguían nada. La causa era que `ROOT = Path(__file__).resolve().parents[1]` resolvía a `/` al ejecutar la copia desde `/tmp`, y producía «`android/gradlew` no es ejecutable» sobre un `gradlew` que sí lo es (100755 en HEAD y en el índice) | el criterio de una prueba de carrera es **el síntoma en la salida** (`Traceback`, `FileNotFoundError`), no el código de salida; y siempre con control negativo —la misma medición sin la condición que se quiere provocar. Y una herramienta de auditoría se ejecuta desde donde vive: calcular la raíz subiendo niveles la rompe al moverla de sitio, con un rojo que parece del entorno |
+
+## Regla que se saca de las veinte
 
 Ninguna de estas fallas la habría cazado una prueba de la aplicación. Todas son del
 **proceso de medir**, y por eso las contrapartes viven en `tools/latido.py`, en

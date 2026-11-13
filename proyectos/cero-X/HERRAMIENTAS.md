@@ -67,5 +67,5 @@ diciendo qué no se comprobó. Tras el repunte a `main` el estado es el sano (0)
 
 - [`entorno/LIMITES-MEDIDOS.md`](entorno/LIMITES-MEDIDOS.md): qué no se puede hacer en el sandbox, con la medida de cada límite.
 - [`entorno/RECETA-DE-REARME.md`](entorno/RECETA-DE-REARME.md): qué rearmar y en qué orden tras un reinicio.
-- [`fallas/REGISTRO-DE-FALLAS.md`](fallas/REGISTRO-DE-FALLAS.md): 18 fallas reales y la comprobación que caza cada una.
+- [`fallas/REGISTRO-DE-FALLAS.md`](fallas/REGISTRO-DE-FALLAS.md): 20 fallas reales y la comprobación que caza cada una.
 - [`RESPALDOS.md`](RESPALDOS.md): divergencia con el remoto, copias en Drive con sus md5, y autenticación sin escribir el token en ningún sitio.
