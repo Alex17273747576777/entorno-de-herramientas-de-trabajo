@@ -1,4 +1,4 @@
-.PHONY: prueba medir limpiar
+.PHONY: prueba medir limpiar copias latido todo
 
 prueba:
 	python3 tests/pruebas.py
@@ -8,3 +8,12 @@ medir:
 
 limpiar:
 	find . -name __pycache__ -type d -exec rm -rf {} + 2>/dev/null; rm -f .tmp-prueba.md; true
+
+copias:
+	./proyectos/cero-X/herramientas/comprobar-copias.sh
+
+latido:
+	cd /home/user/work/cero-X-app && python3 tools/latido.py --entorno || \
+		echo "latido: el proyecto no está en este equipo; la copia de herramientas/ se verifica con 'make copias'"
+
+todo: prueba copias

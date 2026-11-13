@@ -4,6 +4,13 @@
 
 Esto no es un esqueleto. Son las herramientas que ya se usaron para medir, y que cualquiera puede repetir en su máquina sin instalar un solo paquete.
 
+**Desde el 2026-11-13 esto ya no es sólo la caja de medición ni sólo un sitio de
+publicación.** En [`proyectos/`](proyectos/) cada proyecto vivo tiene su directorio con
+lo que no tiene casa en ningún otro repo: recetas de entorno, límites medidos de la
+máquina, registro de fallas con su contraparte y registro de respaldos. El código de
+cada proyecto sigue en su propio repo; aquí vive lo que se pierde cuando un contenedor
+se recicla. Empieza por [`proyectos/README.md`](proyectos/README.md).
+
 ---
 
 ## 🧰 Qué hay aquí
@@ -133,3 +140,15 @@ TODO BIEN
 ---
 
 *Cero paquetes alojados aquí. Cero cuentas. Cero telemetría. Todo lo que hace, se lo hace a un archivo que ya está en tu disco.*
+
+---
+
+## 📁 Capa de proyectos (2026-11-13)
+
+| ruta | qué |
+|---|---|
+| `proyectos/README.md` | la convención: qué entra aquí y qué no, y por qué ninguna copia de herramienta entra sin su contraparte |
+| `proyectos/cero-X/herramientas/` | `latido.py`, `comprobar_entorno.py`, `preparar-entorno-android.sh`, `low-memory.gradle` + `comprobar-copias.sh` |
+| `proyectos/cero-X/entorno/` | límites medidos del sandbox (sin KVM, 2 CPU, 1,9 GiB de RAM, techo de Robolectric en API 36) y receta de rearme |
+| `proyectos/cero-X/fallas/` | 16 fallas reales con la comprobación que las caza ahora; cinco son la misma clase: el cero silencioso |
+| `proyectos/cero-X/RESPALDOS.md` | divergencia con el remoto Git, los 8 ficheros a mirar al fusionar, y las tres copias en Drive con sus hashes |
