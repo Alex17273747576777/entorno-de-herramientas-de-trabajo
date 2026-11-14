@@ -10,7 +10,7 @@
 # dice verdad hoy y se queda atrás sin avisar el día que main cambie un fichero espejado
 # (familia C7 del REGISTRO). Los 6 sha256 de abajo son idénticos en 8d531c2 y en main,
 # medidos con git rev-parse <sha>:<ruta>, así que el repunte no cambia ninguna copia.
-# origen-commit: 9f01e72e02710b29d9928f9f29fd8ebfc1d55f23
+# origen-commit: 1dde9d5c50f51a709fefc3a79565c5aa4bf37237
 # Republicado el 2026-11-13 a 4ff793a: tools/comprobar_entorno.py cambió en el origen para
 # arreglar una carrera TOCTOU (recorría .git haciendo stat() mientras otro hilo ejecutaba git
 # y reventaba con FileNotFoundError sobre .git/index.lock; ahora tamano() devuelve 0 si el
@@ -31,6 +31,15 @@
 # confirmado por comprobar-copias.sh, que sólo delató bajar-referencias.sh como ANTIGUA; subir
 # el origen-commit no vuelve infiel a ninguna. Es la familia C7/C12: al tocar una herramienta
 # del origen hay que republicar su copia espejada en el mismo turno, no dejarla atrás.
+# Republicado el 2026-11-14 a 1dde9d5 (cabo ④ de PENDIENTES-EXTERNOS.md): el dueño autorizó
+# sustituir PlayTorrio —que no tiene fuente pública— por otra referencia de código, y se censó
+# cada candidata por la API antes de afirmar nada. La elegida fue komi-store/komi-store (Apache-2.0,
+# Kotlin Multiplatform, app-store de releases de GitHub/Codeberg/Forgejo), añadida a la lista KOTLIN
+# de scripts/bajar-referencias.sh. Ese fichero cambió en el origen (blob f03cda9 → 049c61b), así que
+# se republica su copia desde 1dde9d5 y se verifica con git hash-object (idéntica). Las otras siete
+# son byte a byte idénticas en 9f01e72 y en 1dde9d5, medidas con git rev-parse <sha>:<ruta> y
+# confirmado por comprobar-copias.sh, que sólo delató bajar-referencias.sh como ANTIGUA; subir el
+# origen-commit no vuelve infiel a ninguna. Misma familia C7/C12.
 # origen-ruta LICENSE-de-origen.txt: LICENSE
 # origen-ruta NOTICE-de-origen.txt: NOTICE
 # origen-ruta comprobar_entorno.py: tools/comprobar_entorno.py
@@ -45,5 +54,5 @@ c17bb886fd34f7068efe7971acf46b5b08f321371fa55618e852eb43cc86c4de  NOTICE-de-orig
 10443327b60c30f9e1348e277ec6ff517c0309504bb6e1aef992ef68e1f2d0aa  latido.py
 8ee1d1754e429c8c516671302bccd4432349665ff089cbde04df0ca23a6ee8ef  low-memory.gradle
 b32de7f5ffa535004d666d0bf83b731f9ffe4afe427c937dde5a427afc7af815  preparar-entorno-android.sh
-698c5502ffac17bc14a4829597f2cd763b054640dcea1b0c1a58ee52e5b12773  bajar-referencias.sh
+b08c0edfee3ae7821a9d0f18638064af5e2eb0d3c57c9c159a4c3148318b5738  bajar-referencias.sh
 ebaa0d0ca04661a31f1a8e4fb414cc5d51203a1f8e3a1f293568ec0d7c6ca1b4  auditar-referencias.py
