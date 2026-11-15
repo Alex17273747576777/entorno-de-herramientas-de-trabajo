@@ -458,7 +458,43 @@ signature and nothing else has to be touched.
 
 ### Not verified
 
-- **Nothing was compiled**: no Android SDK, Gradle or `kotlinc` where this was written, so `detekt`, `spotlessCheck` and `assemblePreview` have not run.
+- **`FeedLimits.kt` now compiles and its neighbour's test passes**: built with `kotlinc-jvm 2.3.10` against `kotest-assertions-core 5.9.1` and `junit-jupiter 6.1.3` from your catalog, on JDK 17 — the same run that executed the merge-group tests on the other branch (`7 tests successful, 0 failed`). **Update — the cap itself is now compiled and executed.** `InsertFeedSavedSearch.kt` was built with
+`kotlinc-jvm 2.3.10` against your real sources (`FeedSavedSearch.kt`, `SavedSearch.kt`,
+`FeedSavedSearchUpdate.kt`, `FeedSavedSearchRepository.kt`, `FeedLimits.kt`,
+`LogcatExtensions.kt`), the `com.squareup.logcat` classes and `kotlinx-coroutines-core`, then run on
+JDK 17 against a hand-rolled in-memory `FeedSavedSearchRepository`. Result: **9 assertions, no failures**.
+
+```text
+FeedLimits.MAX_SOURCES_PER_TAB = 25
+caso 1: pestaña con 24 entradas -> acepta la siguiente
+  ✓ devuelve id (1024) e inserta de verdad (inserciones=1)
+  ✓ una sola inserción en el repositorio
+caso 2: pestaña llena (25) -> rechaza
+  ✓ devuelve null (la señal de fallo que ya existía)
+  ✓ NO llega a tocar el repositorio (inserciones=0)
+  · log capturado por el doble de android.util.Log: 0 línea(s) (la librería logcat no escribe fuera de un dispositivo; efecto de log NO verificado)
+caso 3: el tope es por pestaña, no global
+  ✓ la pestaña 2 acepta aunque la 1 esté llena
+caso 4: las entradas de fuente (global=false) no se topán
+  ✓ un feed específico de fuente se inserta aunque la pestaña 1 esté llena
+caso 5: awaitAll (restauración) NO se topa
+  ✓ las 50 entradas del lote pasan (restaurar un backup no pierde nada)
+caso 6: frontera exacta
+    con 24 entradas en la pestaña -> acepta
+    con 25 entradas en la pestaña -> rechaza
+    con 26 entradas en la pestaña -> rechaza
+  ✓ en 24 acepta
+  ✓ en 25 rechaza
+RESULTADO: SIN FALLOS
+```
+
+So the cap is verified to: accept at 24 and refuse at 25 (exact boundary), refuse **per category**
+(a full tab 1 does not block tab 2), leave `global = false` source feeds uncapped, and let `awaitAll`
+pass a 50-entry batch untouched. What is *not* verified: the `logcat` side effect (the real library does
+not write outside an Android runtime — 0 lines reached a local `android.util.Log` double), and anything
+that needs Gradle (`detekt`, `spotlessCheck`, `assemblePreview`). The logcat artifact used was 0.1, not
+your 0.4: Maven Central serves no `0.4` aar/jar to this machine (both return a 554-byte 404), and the
+`LogPriority`/`asLog`/`logcat` surface used here is the same in both. So `detekt`, `spotlessCheck` and `assemblePreview` have not run on it, and its behaviour is argued from reading your code, not from a test.
 - **The refusal is logged, not surfaced.** `FeedManageScreenModel.State` (`:215`) carries only `items` and `categories` — no event channel — so a user who hits the cap sees nothing happen. Surfacing it needs an event flow in that screen; `FeedScreenModel` already has one that could be mirrored. That is a design decision, so it is named here rather than taken.
 - No unit test in this phase (`InsertFeedSavedSearch` refusing at 25 and accepting at 24, and `updateFeedCategory` leaving the entry in place when the destination is full, are the two cases worth writing).
 

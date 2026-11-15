@@ -1,0 +1,21 @@
+FeedLimits.MAX_SOURCES_PER_TAB = 25
+caso 1: pestaña con 24 entradas -> acepta la siguiente
+  ✓ devuelve id (1024) e inserta de verdad (inserciones=1)
+  ✓ una sola inserción en el repositorio
+caso 2: pestaña llena (25) -> rechaza
+  ✓ devuelve null (la señal de fallo que ya existía)
+  ✓ NO llega a tocar el repositorio (inserciones=0)
+  · log capturado por el doble de android.util.Log: 0 línea(s) (la librería logcat no escribe fuera de un dispositivo; efecto de log NO verificado)
+caso 3: el tope es por pestaña, no global
+  ✓ la pestaña 2 acepta aunque la 1 esté llena
+caso 4: las entradas de fuente (global=false) no se topán
+  ✓ un feed específico de fuente se inserta aunque la pestaña 1 esté llena
+caso 5: awaitAll (restauración) NO se topa
+  ✓ las 50 entradas del lote pasan (restaurar un backup no pierde nada)
+caso 6: frontera exacta
+    con 24 entradas en la pestaña -> acepta
+    con 25 entradas en la pestaña -> rechaza
+    con 26 entradas en la pestaña -> rechaza
+  ✓ en 24 acepta
+  ✓ en 25 rechaza
+RESULTADO: SIN FALLOS

@@ -411,3 +411,41 @@ sólo las horas. Contraparche registrado como FALLA-009.
   por `GET` con sus marcas. Un ancla falló al primer intento por los saltos de línea duros del body:
   sustituida por párrafo completo con localización tolerante.
 - **21:33:23Z** · Checkpoint intermedio de la ronda (protección contra apagones) antes de seguir.
+
+- **21:33:23Z** · Checkpoint intermedio (`CHECKPOINT_OK 21:33Z`, commit edt `b7ffb42`) por riesgo de
+  apagón, antes de seguir.
+- **21:34-21:36Z** · **El interactor real de AniZen, compilado y ejecutado**: `InsertFeedSavedSearch.kt`
+  con sus fuentes verdaderas (`FeedSavedSearch`, `SavedSearch`, `FeedSavedSearchUpdate`,
+  `FeedSavedSearchRepository`, `FeedLimits`, `LogcatExtensions`) + `com.squareup.logcat` +
+  coroutines, bajo **kotlinc 2.3.10** y JDK 17, contra un repositorio falso en memoria:
+  **RESULTADO: SIN FALLOS, 9 ✓**. Acepta en 24 y rechaza en 25 (frontera exacta), el tope es **por
+  pestaña** (la 1 llena no bloquea la 2), `global=false` no se topa, y `awaitAll` deja pasar un lote de
+  50 (restaurar un backup no pierde nada). Tres tropiezos propios por el camino: `logcat` se publica como
+  **AAR** (su `0.4` no está servido aquí: 404 de 554 bytes, usé el 0.1 y lo declaré), mi doble llamaba una
+  `suspend` desde contexto no-`suspend`, y compilé ficheros que estaban en **otra rama** (dos veces).
+  El efecto de log NO es verificable fuera de un dispositivo (0 líneas en el doble de `android.util.Log`).
+- **21:36:23Z** · `PATCH` 200 del **#94** → 29.906 chars con esa evidencia.
+- **21:38-21:39Z** · **Mediciones reales** del argumento central de los issues: `dedupeByMergeGroup`
+  (el código publicado) 5k→5,67 ms, 20k→12,61, 50k→25,00, 200k→50,78 = **lineal**; réplica del escaneo
+  por título 4k→75 ms, 8k→300, 16k→1.509 = **cuadrático** (cada duplicación ×4-5); SQLite con 50.000
+  entradas y 5.000 grupos: cargar toda la pertenencia 22,38 ms + colapsar 5,12 ms = **27,50 ms**, frente a
+  **14,30 ms POR entrada** del patrón real de `animes.sq:128` (extrapolado, ~11,9 min para toda la
+  biblioteca; **330×** más) y `getGroupId` indexado en **0,1184 ms**. Primera tanda inválida y rehecha:
+  con títulos que se contenían entre sí el escaneo terminaba antes de tiempo y fingía ser rápido.
+  Publicadas en **#95** (35.057) y **#33** (26.474) con sus límites explícitos (máquina x86, no
+  dispositivo; una pasada por tamaño; títulos sintéticos).
+- **21:39:12Z** · Vigilante relanzado (estaba muerto desde el saneamiento de las 21:23Z):
+  `vigilante-de-8-frentes-5278d0cf`, pid 9582.
+- **21:40-21:42Z** · **Fase 1 del feed de ShinKu construida y validada**: `feed_categories.sq`
+  (`lang`/`explore`, fila de sistema `_id=1 'Global'`), tres columnas en `feed_saved_search`
+  (`category`/`feed_order`/`search_type`) + índice + 2 consultas por pestaña, y `43.sqm`.
+  **SQLite cazó un bug real de mi migración**: `Cannot add a REFERENCES column with non-NULL default
+  value`. Matiz verificado en vez de supuesto: ambas apps activan `foreign_keys = ON` en **`onOpen`**
+  (`AppModule.kt:100` ShinKu, `:77` AniZen), que corre **después** de las migraciones, así que el
+  `133.sqm` de AniZen **no** es un fallo en producción y no lo reporté. Mi `43.sqm` añade la columna sin
+  `REFERENCES` (funciona en ambos estados del pragma y deja los dos esquemas idénticos).
+  Validación: ruta limpia vs ruta de actualización desde el esquema pre-43 → `PRAGMA table_info`
+  idéntico en las dos tablas, mismos índices, filas antiguas con defaults correctos, 11 consultas
+  ejecutadas = **RESULTADO: SIN FALLOS** (13 ✓). Rama `feed-tabs-phase1` empujada (`0b157a0669a4`,
+  push verificado) y publicada en **#32** con `PATCH` 200 — sin segundo PR porque se apila sobre #34.
+- **21:43:03Z** · Cierre: espejos en edt, bitácora al día, checkpoint y commit.

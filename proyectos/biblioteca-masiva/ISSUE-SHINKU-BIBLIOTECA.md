@@ -402,6 +402,61 @@ LazyVerticalGrid(state = gridState) {
 - [ ] `baseline-profile` module exists and produces a profile covering cold start + library scroll.
 - [ ] Tests pin: reconstruction from prefs, restore, stitched render order, carry-over, and count agreement.
 
+## Measurements (added later — these are real numbers, with their limits)
+
+This issue originally said the performance argument was structural and carried no numbers. It now does.
+Everything below was **executed**, on a desktop JVM and desktop SQLite — **not on an Android device** —
+so read the ratios, not the absolute milliseconds.
+
+The two paths being compared, on a simulated library of **50,000 favourite entries in 5,000 groups**:
+
+```text
+SQLite 3.46.1 · biblioteca simulada: 50000 entradas favoritas, 5000 grupos, 50000 pertenencias
+  A) cargar TODA la pertenencia (getMemberships, 1 pasada): 22.38 ms  -> 50000 filas
+  B) colapsar a uno por grupo en memoria (dedupeByMergeGroup): 5.12 ms -> 5000 supervivientes
+  TOTAL ruta con pertenencia guardada (A+B): 27.50 ms para 50000 entradas
+  C) detección por escaneo de título (el patrón real de animes.sq:128): 14.30 ms POR entrada (150 muestras)
+     extrapolado a las 50000 entradas de la biblioteca: 714.8 s  (11.9 min)
+  D) cociente: el escaneo por título cuesta 330× más que la pertenencia guardada en esta máquina
+  E) una consulta getGroupId con el índice: 0.1184 ms
+```
+
+And the same comparison inside the JVM, using the `dedupeByMergeGroup` that this proposal ships versus a
+faithful in-memory replica of the title-scan predicate (`lower(title) LIKE '%'||lower(:title)||'%'`):
+
+```text
+dedupeByMergeGroup (pertenencia guardada, el código del parche):
+  n=5000    dedupeByMergeGroup                 ->    500 supervivientes en      5.67 ms
+  n=20000   dedupeByMergeGroup                 ->   2000 supervivientes en     12.61 ms
+  n=50000   dedupeByMergeGroup                 ->   5000 supervivientes en     25.00 ms
+  n=200000  dedupeByMergeGroup                 ->  20000 supervivientes en     50.78 ms
+escaneo por título (lo que hace hoy la detección de duplicados):
+  n=1000    escaneoPorTitulo                   ->   1000 supervivientes en     42.91 ms
+  n=2000    escaneoPorTitulo                   ->   2000 supervivientes en     37.45 ms
+  n=4000    escaneoPorTitulo                   ->   4000 supervivientes en     75.29 ms
+  n=8000    escaneoPorTitulo                   ->   8000 supervivientes en    300.62 ms
+  n=16000   escaneoPorTitulo                   ->  16000 supervivientes en   1509.45 ms
+```
+
+What the two blocks say together:
+
+- **Stored membership is linear.** Loading all 50,000 memberships plus collapsing to one item per group
+  costs 27.5 ms; at 200,000 items the in-memory dedupe still costs 50.8 ms. Double the data, roughly
+  double the time.
+- **Title scanning is quadratic where it matters.** The in-memory replica goes 75 ms → 300 ms → 1,509 ms
+  for 4k → 8k → 16k items: each doubling costs about 4-5×.
+- **The per-add cost is the one users actually feel.** One duplicate check against a 50,000-entry library
+  costs 14.3 ms of title scanning today, and that number grows with library size; a single indexed
+  `getGroupId` lookup costs 0.12 ms and does not grow at all. Scanning every entry of that library the
+  same way extrapolates to ~12 minutes, which is why a "find my duplicates" tool cannot be built on the
+  scan.
+
+Limits, stated plainly: x86 desktop JVM (Temurin 17.0.13) and SQLite 3.46.1, single run per size, no
+device, no cold-start, no Compose, no real user data distribution; the extrapolation multiplies a
+per-entry measurement, and the in-memory replica is my re-implementation of the SQL predicate, not your
+code. The `animes`/`mangas` rows are synthetic titles with no substring overlap — with overlapping titles
+the scan short-circuits earlier and looks faster than it is (that artefact fooled the first run of this
+measurement).
 ## What we did NOT verify
 
 - Sample code is **not compiled** and not run: no Android SDK/Gradle/`kotlinc` in our environment. Signatures were matched by reading your sources (`GetLibraryManga`, `MigrationContext.get<T>()`, `preferenceStore`, the `merged`/`mangas` schema) and Reikai's.

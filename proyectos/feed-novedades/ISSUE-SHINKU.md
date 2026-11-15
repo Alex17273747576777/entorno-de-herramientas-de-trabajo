@@ -540,6 +540,65 @@ For reference, the cross-repo work that *is* published: AniZen has real tabs (`f
 `category` column), so its 25-per-tab cap is coherent today and is up as a branch on #94. ShinKu's
 library work is separate and is up as #34.
 
+### Phase 1 is now built and validated — on a branch, not a second pull request
+
+```bash
+git fetch https://github.com/Alex17273747576777/ShinKu feed-tabs-phase1
+git cherry-pick FETCH_HEAD          # commit 0b157a0, 3 files, +68
+```
+
+`feed_categories.sq` (`_id, name, sort, lang DEFAULT 'all', explore DEFAULT 0`, system row `_id = 1`
+named `Global`, never deleted), three columns on `feed_saved_search` (`category`, `feed_order`,
+`search_type`), a category index, two per-tab queries (`selectAllGlobalByCategory`,
+`countGlobalByCategory`) and `migrations/43.sqm`. Table and column names match AniZen's on purpose, so
+the two apps describe tabs the same way. Nothing reads or writes the new columns yet: no behaviour change.
+
+**Why a branch and not a PR:** it stacks on #34, because 43 follows the 42 that #34 introduces. A pull
+request against `main` would drag #34's commit along and duplicate it in the review. If #34 is not merged
+first, renumber `43.sqm` to `42.sqm`.
+
+One migration detail worth having in writing: `category` is added **without** a `REFERENCES` clause.
+SQLite rejects `ALTER TABLE … ADD COLUMN … REFERENCES …` with a non-NULL default when foreign keys are
+enforced (*"Cannot add a REFERENCES column with non-NULL default value"*), and `AppModule.kt:100` does
+turn them on — but in `onOpen`, which runs **after** migrations, so the referenced form would work today
+(AniZen's `133.sqm` uses it and is fine for exactly that reason). The form used here works in both pragma
+states and keeps the fresh-install schema identical to the upgraded one, which is what SQLDelight checks.
+
+Verified by executing, with SQLite 3.46.1 — the fresh-install DDL from the `.sq` files and the upgrade
+path from the pre-43 schema were built side by side and compared:
+
+```text
+=== ruta A: instalación limpia (DDL de los .sq nuevos) ===
+    tablas: ['feed_categories', 'feed_saved_search', 'saved_search', 'sqlite_sequence']
+=== ruta B: actualización desde 41 (DDL viejo + 43.sqm) ===
+=== comparación de esquemas (lo que verifica SQLDelight) ===
+    ✓ PRAGMA table_info(feed_saved_search) idéntico en ambas rutas
+    ✓ PRAGMA table_info(feed_categories) idéntico en ambas rutas
+    ✓ índices idénticos: ['feed_saved_search_category_index', 'feed_saved_search_saved_search_index']
+=== los datos anteriores a la migración sobreviven ===
+    ✓ la fila antigua queda con los valores por defecto correctos: (1, 7, 1, 1, 0, 1)
+    ✓ la pestaña de sistema existe tras migrar
+=== las consultas nuevas funcionan ===
+    ✓ fss_selectAllGlobalByCategory
+    ✓ fss_countGlobalByCategory
+    ✓ fss_insert
+    ✓ cat_selectAll
+    ✓ cat_selectById
+    ✓ cat_insert
+    ✓ cat_delete
+    ✓ cat_update
+    ✓ cat_updateLang
+    ✓ cat_updateExplore
+    ✓ cat_selectLastInsertedRowId
+
+RESULTADO: SIN FALLOS
+```
+
+Still not verified: no Gradle, so SQLDelight codegen, `spotlessCheck` and `assembleDevDebug` have not run;
+the new queries have no callers yet (no DI, no UI); and no backup change is needed at this phase because no
+backup model references `FeedSavedSearch` (checked under `data/…/backup/`) — worth re-checking when tabs
+become user-visible, since a backup taken on a tabbed build and restored on an older one would lose them.
+
 <details>
 <summary><b>Withdrawn diff — do not apply (kept only so the three points above are checkable)</b></summary>
 
