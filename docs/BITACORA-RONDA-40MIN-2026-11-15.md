@@ -210,3 +210,58 @@ sólo las horas. Contraparche registrado como FALLA-009.
   `NodeStatus`) → resultado en el chat. Un chequeo mío anterior daba `nota_lint=False` para #32
   porque probaba una marca exclusiva de AniZen (`logcat.LogPriority`): error del chequeo, no del
   issue; rehecho con las marcas correctas.
+
+# RONDA NUEVA (T0 = 1794758872 = 16:07:52Z, fin 16:47:52Z) — biblioteca masiva + fusión (Reikai) y issues en inglés
+
+- **16:07:52Z** · T0 fijado con `date -u +%s`. Estado de variables verificado y escrito en
+  `work/edt/docs/ESTADO-VARIABLES-2026-11-15.md` (tokens vivos como `Alex17273747576777` por
+  `GET /user`; cero-X HEAD `7d108e17`; edt `16c351d`; clones feed prístinos; clon Reikai nuevo
+  `00206fe6`; y **detectado que el vigilante anterior murió**: última línea 15:30:16Z, sin sondeos
+  a las 15:40/15:50/16:00 ⇒ los procesos de fondo no sobreviven al cambio de turno).
+- **16:08Z** · Clon de Reikai (`--depth 1`, 3,8 s, 100 MB, HEAD `00206fe6ae0c6cf87e2f6114b59164ea295a6fd1`,
+  Apache-2.0, ★48, «multi-source grouping and merge»).
+- **16:09-16:15Z** · Investigación **en paralelo** (Reikai por un lado, ShinKu+AniZen por otro):
+  grupos persistidos `merge_group.sq` con `UNIQUE(manga_id)` y FK en cascada; `auto_merge_same_title`
+  por defecto **true** pero «offers to group» (nunca silencioso) vía `DuplicatePrompt.kt:32`;
+  memoria de parejas rechazadas; `MergeGroupDedup.kt` como única definición de «contar una serie
+  fusionada una vez»; costura de capítulos con fuente troncal (`preferredMangaSources`,
+  `MergedGroupStitcher`, `ChapterGap`, `StoredStitch`); arrastre de estado fuera de la BD
+  (`dedupe_merged_ids.sq` + `MergedDuplicateCarryMigration`); paquete de rendimiento
+  (`baseline-profile/`, `LibraryAssembly.kt:100` memoizado, `ReikaiLibraryContent.kt:238` claves
+  estables, 10 vistas, índices parciales, `libraryView.sq` con `CASE WHEN EXISTS`); 7 tests del merge.
+- **16:15Z** · `write_file` ×3: `ESTADO-VARIABLES-2026-11-15.md`, `ISSUE-SHINKU-BIBLIOTECA.md`
+  (7 bloques de código: `merge_group.sq` para `mangas`, `SuggestDuplicateGroup`, `MergeGroupDedup`,
+  preferencias, migración 77f, módulo `baseline-profile` con perfil de scroll de biblioteca,
+  memoización+claves) y `ISSUE-ANIZEN-BIBLIOTECA.md` (7 bloques: `merge_group.sq` para `animes`,
+  `SuggestDuplicateGroup` rankeado con `activity_log`+`SourceHealthCache`, `MergeGroupDedup`,
+  preferencias, índices parciales, `baseline-profile`, memoización+claves).
+- **16:13:30Z / 16:13:31Z** · **Issues de feed traducidos a inglés puro**: fuera el TL;DR en español
+  de #32 (31.291 → 30.582 chars) y #94 (29.954 → 29.149 chars); `PATCH` **200** en ambos y
+  verificado por `GET` que `**ES:**` ya no aparece.
+- **16:13:33Z / 16:13:32Z** · **Issues nuevos abiertos**: ShinKu **#33**
+  https://github.com/Harrys-HQ/ShinKu/issues/33 y AniZen **#95**
+  https://github.com/salmanbappi/AniZen/issues/95 (`POST` **201**, enlace cruzado `PATCH` **200**).
+  Etiquetas: `enhancement` **sí** en AniZen, **descartada en silencio** en ShinKu (no la tiene
+  definida) — registrado, no maquillado.
+- **16:14-16:16Z** · **Re-verificación de mis propias afirmaciones → dos errores míos graves cazados**:
+  ShinKu **sí** detecta duplicados (`mangas.sq:122-149` con CTE que excluye scanlators,
+  `GetDuplicateLibraryManga`, diálogo en `BrowseSourceScreen.kt:269-278` con añadir igualmente /
+  abrir / migrar) y su tabla `merged` es más rica de lo que escribí (`chapter_priority`,
+  `chapter_sort_mode`, editor `EditMergedManga*`, backup); AniZen **también** tiene la tabla
+  `merged` del linaje SY (`episode_priority` «the deduplication uses», `MergedAnimeReference` con
+  `EPISODE_SORT_NONE/NO_DEDUPE/PRIORITY`) **y** `GetDuplicateLibraryAnime` + `DuplicateAnimeDialog`
+  en `BrowseSourceScreen.kt:585` (`parent_id` es el eje de temporadas, no el de fusión).
+- **16:16:03Z / 16:16:04Z** · **Corrección publicada, no silenciosa**: sección «Correction (verified
+  after posting — read this first)» al principio de #33 y #95, filas de la tabla reescritas con la
+  evidencia real, y propuesta **re-alcanceada** a lo que de verdad falta (agrupar en un toque desde el
+  diálogo que ya existe, grupos persistidos con `UNIQUE`, memoria de parejas rechazadas, un único
+  helper de recuento, arrastre de estado, paquete de rendimiento). `PATCH` **200**: #33 → 22.464
+  chars, #95 → 22.559 chars; comprobado por `GET` que la sección está publicada (posición 1260 y 1431
+  del body).
+- **16:18Z** · **Error de mi propio chequeo, cazado**: la verificación dio `Correction…=False` porque
+  la cadena de prueba llevaba un paréntesis de cierre que el texto real no tiene (`… posting — read
+  this first)`). Re-comprobado con `find("Correction")` + contexto: publicado correctamente en los
+  dos. El fallo era del chequeo, no de la publicación.
+- **16:17:19Z** · Vigilante re-arrancado cubriendo **los cinco frentes** (PR #3 + #32 + #33 + #94 + #95) cada
+  10 min → `work/feed-novedades/vigilancia.log`; `LEEME.md` nuevo en `work/biblioteca-masiva/` con
+  procedencia, reaplicación de clones y el índice de todas las citas verificadas.
