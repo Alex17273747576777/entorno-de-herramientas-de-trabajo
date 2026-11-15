@@ -463,3 +463,20 @@ sólo las horas. Contraparche registrado como FALLA-009.
 - **21:44:58Z** · Cierre de la ronda de 40 minutos: vigilante ampliado a **nueve frentes** (nueva rama de
   ShinKu), `ESTADO-VARIABLES-2026-11-15.md` actualizado con el utillaje, los frentes y la tabla de
   evidencia ejecutada, `LEEME.md` ampliado con `mediciones/` y los dos hallazgos verificados.
+
+- **21:46:48Z** · **Test publicable en el estilo de AniZen** para el tope del feed
+  (`InsertFeedSavedSearchTest.kt`, 139 líneas, 6 casos, doble de repositorio en memoria en vez de mock
+  porque el tope depende del estado que el repositorio ya tiene por pestaña). Compilado con kotlinc 2.3.10
+  y **ejecutado** con kotest 5.9.1 + JUnit 6.1.3 + kotlinx-coroutines-test: **6 tests successful, 0 failed**,
+  incluida la ruta del rechazo.
+- **21:47:22Z** · **Riesgo de CI detectado ANTES de publicar, y declarado en vez de escondido**: ni AniZen
+  ni ShinKu configuran `testOptions.unitTests.isReturnDefaultValues` ni Robolectric, así que si el Gradle
+  de ellos llega a `android.util.Log.println` en la ruta del rechazo, el test fallaría con «not mocked».
+  Mi ejecución local no tenía `android.jar` en el classpath y la llamada a `logcat` **no** lanzó nada, así
+  que puede no ocurrir nunca; no puedo ejecutar su Gradle para saberlo. Remedio indicado en el issue: una
+  línea en `domain/build.gradle.kts`. Guard de procedencia re-ejecutado sobre los tres commits:
+  `0 violation(s), 0 warning(s)` → `✓ ok`. Commit `8c7f0f33d506` empujado (push verificado
+  `ls-remote == rev-parse`) y `PATCH` 200 del **#94** → **31.286** chars, re-leído por `GET`.
+- **21:47:49Z** · Espejo persistente de lo nuevo (tests, ficheros de pestañas de ShinKu, restaurador de
+  utillaje) en `work/feed-novedades/` y `work/edt/proyectos/feed-novedades/`: los clones de `/var/tmp`
+  se barren en un reinicio y esto no puede depender de ellos. Cierre definitivo de la ronda.
