@@ -1,0 +1,83 @@
+diff --git a/app/src/main/java/com/shinku/reader/ui/browse/feed/FeedScreenModel.kt b/app/src/main/java/com/shinku/reader/ui/browse/feed/FeedScreenModel.kt
+index f42bb71..d94b2e5 100644
+--- a/app/src/main/java/com/shinku/reader/ui/browse/feed/FeedScreenModel.kt
++++ b/app/src/main/java/com/shinku/reader/ui/browse/feed/FeedScreenModel.kt
+@@ -25,6 +25,7 @@ import com.shinku.reader.domain.source.interactor.InsertFeedSavedSearch
+ import com.shinku.reader.domain.source.model.FeedSavedSearch
+ import com.shinku.reader.domain.source.model.SavedSearch
+ import com.shinku.reader.domain.source.repository.SourceHealthRepository
++import com.shinku.reader.domain.source.service.FeedLimits
+ import com.shinku.reader.domain.source.service.SourceManager
+ import com.shinku.reader.domain.source.service.SourcePreferences
+ import com.shinku.reader.presentation.browse.FeedItemUI
+@@ -648,7 +649,7 @@ open class FeedScreenModel(
+     }
+ 
+     private suspend fun hasTooManyFeeds(): Boolean {
+-        return countFeedSavedSearchGlobal.await() > 10
++        return countFeedSavedSearchGlobal.await() >= FeedLimits.MAX_SOURCES_PER_TAB
+     }
+ 
+     fun getEnabledSources(): ImmutableList<CatalogueSource> {
+diff --git a/app/src/main/java/com/shinku/reader/ui/browse/source/feed/SourceFeedScreenModel.kt b/app/src/main/java/com/shinku/reader/ui/browse/source/feed/SourceFeedScreenModel.kt
+index b934338..fde8161 100644
+--- a/app/src/main/java/com/shinku/reader/ui/browse/source/feed/SourceFeedScreenModel.kt
++++ b/app/src/main/java/com/shinku/reader/ui/browse/source/feed/SourceFeedScreenModel.kt
+@@ -11,6 +11,7 @@ import dev.icerock.moko.resources.StringResource
+ import com.shinku.reader.core.preference.asState
+ import com.shinku.reader.domain.manga.interactor.UpdateManga
+ import com.shinku.reader.domain.source.interactor.GetExhSavedSearch
++import com.shinku.reader.domain.source.service.FeedLimits
+ import com.shinku.reader.domain.ui.UiPreferences
+ import com.shinku.reader.presentation.browse.SourceFeedUI
+ import eu.kanade.tachiyomi.source.CatalogueSource
+@@ -105,7 +106,7 @@ open class SourceFeedScreenModel(
+     }
+ 
+     private suspend fun hasTooManyFeeds(): Boolean {
+-        return countFeedSavedSearchBySourceId.await(source.id) > 10
++        return countFeedSavedSearchBySourceId.await(source.id) >= FeedLimits.MAX_SOURCES_PER_TAB
+     }
+ 
+     fun createFeed(savedSearchId: Long) {
+diff --git a/domain/src/main/java/com/shinku/reader/domain/source/service/FeedLimits.kt b/domain/src/main/java/com/shinku/reader/domain/source/service/FeedLimits.kt
+new file mode 100644
+index 0000000..a1779a2
+--- /dev/null
++++ b/domain/src/main/java/com/shinku/reader/domain/source/service/FeedLimits.kt
+@@ -0,0 +1,16 @@
++package com.shinku.reader.domain.source.service
++
++/**
++ * Feed composition limits.
++ *
++ * The old rule was a flat 10 sources for the whole feed (FeedScreenModel.hasTooManyFeeds and
++ * SourceFeedScreenModel.hasTooManyFeeds). The limit now lives in one place and is expressed as
++ * "sources per tab", which is the unit a reader actually experiences: someone following four
++ * languages wants four tabs of 25 sources, not one tab of 10.
++ *
++ * MAX_CONCURRENT_FETCHES_PER_TAB keeps a tab refresh bounded no matter how full the tab is.
++ */
++object FeedLimits {
++    const val MAX_SOURCES_PER_TAB: Int = 25
++    const val MAX_CONCURRENT_FETCHES_PER_TAB: Int = 6
++}
+diff --git a/domain/src/main/java/com/shinku/reader/exh/source/ShinKuPreferences.kt b/domain/src/main/java/com/shinku/reader/exh/source/ShinKuPreferences.kt
+index f09216e..3fa5f5f 100644
+--- a/domain/src/main/java/com/shinku/reader/exh/source/ShinKuPreferences.kt
++++ b/domain/src/main/java/com/shinku/reader/exh/source/ShinKuPreferences.kt
+@@ -62,7 +62,13 @@ class ShinKuPreferences(
+ 
+     fun feedSourceFilter() = preferenceStore.getString("pref_feed_source_filter", "all")
+ 
+-    fun feedLanguageFilter() = preferenceStore.getString("pref_feed_language_filter", "en")
++    // The feed used to default to English while the rest of the app already enables the device
++    // language (LocaleHelper.getDefaultEnabledLanguages). Default to the device language so a
++    // non-English install does not start with an English-only feed; "all" stays available.
++    fun feedLanguageFilter() = preferenceStore.getString(
++        "pref_feed_language_filter",
++        java.util.Locale.getDefault().language.ifBlank { "all" },
++    )
+ 
+     fun feedShowSourceFeeds() = preferenceStore.getBoolean("pref_feed_show_source_feeds", true)
+ 

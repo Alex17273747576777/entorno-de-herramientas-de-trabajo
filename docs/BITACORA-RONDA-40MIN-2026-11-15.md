@@ -339,3 +339,40 @@ sólo las horas. Contraparche registrado como FALLA-009.
   `vigilante-de-7-frentes-f86a0213`, pid 5777, running.
 - **17:12:01Z** · Espejo persistente en `work/edt/proyectos/biblioteca-masiva/` (LEEME, los dos cuerpos de
   issue, los dos parches, `validar_sql.py`, el vigilante) y LEEME ampliado con la tabla de publicación.
+
+- **17:14Z** · Dueño: «Elige la mejor ruta». Decisión tomada con el código delante, no de memoria:
+  publicar sólo lo que sea aditivo y autoconsistente, y retirar lo que no.
+- **17:16-17:24Z** · **Tres defectos reales cazados en los parches de feed YA publicados dentro de los
+  issues** (cuarta ronda de autofalsación). ShinKu: (a) no existe `feed_categories.sq` ni columna
+  `category` — `feed_saved_search.sq` tiene 4 columnas —, así que `MAX_SOURCES_PER_TAB` aplicado a
+  `countFeedSavedSearchGlobal` es un tope **global** con nombre falso; (b) `too_many_in_feed` lleva el
+  10 literal en la base (`i18n-sy/…/base/strings.xml:469`) y en 15 locales más ⇒ el snackbar
+  (`FeedTab.kt:174`) y el toast (`SourceFeedScreenModel.kt:270`) mentirían; (c) arreglarlo exige
+  cambiar la firma de `onToast` y 16 locales de Weblate. AniZen: (d) hay **tres** vías de inserción
+  (`SourcesScreenModel.addToFeed:206` + las dos de `FeedManageScreenModel`) y mi guarda sólo cubría
+  dos; (e) `updateFeedCategory` mueve **borrando y reinsertando**, así que un tope sólo en el interactor
+  habría borrado la entrada y rechazado reinsertarla = pérdida de datos; (f) `awaitAll` es la vía de
+  restauración y no debe topped.
+- **17:25:51Z** · Parche de AniZen reescrito y commiteado en rama nueva desde `origin/master` prístino:
+  `FeedLimits.kt` + tope dentro de `InsertFeedSavedSearch.await` (devuelve `null`, que ya era su
+  señal de fallo, así ninguna llamada cambia de firma) + guarda previa al delete en
+  `updateFeedCategory`; `awaitAll` sin tope y con el motivo en un comentario. 3 ficheros, +55.
+- **17:26:10Z** · Verificación ejecutada: **su propio `scripts/check-provenance.sh` corrido de verdad**
+  contra `origin/master` → `0 violation(s), 0 warning(s)` `✓ ok`; `git apply --check` limpio sobre
+  `95160a72`; ninguna línea >120; marcadores `// ANZ -->`/`<--` **y** un `// ANZ` al final de una
+  línea de código en los tres ficheros (R3 descarta las líneas de sólo comentario antes de buscarlo).
+  Push al fork verificado `ls-remote` == `rev-parse HEAD` = `f5f1bdd824a4`. Ramas del fork:
+  `feed-cap-per-tab`, `master`, `merge-groups-phase1` — ninguna dispara sus workflows (no son
+  `master` ni `preview`).
+- **17:27:21Z** · `PATCH` **200** en los dos issues de feed: **#94** → **27.413** chars (sección nueva
+  con la rama, `git fetch`+`cherry-pick`, tabla de los tres defectos corregidos, verificado/no
+  verificado —incluido que el rechazo sólo se registra en logcat porque `State` no tiene canal de
+  eventos—); **#32** → **32.192** chars («Phase 2 patch withdrawn — please do not apply», los tres
+  motivos con fichero:línea, la retirada del cambio de `feedLanguageFilter()`, secuencia corregida en
+  tres fases, y el diff viejo plegado y marcado). Re-leídos por `GET`: state=open y las cinco marcas de
+  cada uno presentes. **Chequeo propio falso cazado en el mismo turno**: lancé las comprobaciones de
+  longitud de línea y de marcadores con `git diff --cached` DESPUÉS del commit, cuando ya no había nada
+  staged, y salieron vacías = verde engañoso; repetidas con `git show --name-only HEAD`.
+- **17:28:17Z** · Parche de ShinKu movido a `work/feed-novedades/parches/retirados/` con `MOTIVO.md` (por qué
+  se retira, qué habría roto, secuencia corregida y el contraste con AniZen). Espejo en
+  `work/edt/proyectos/feed-novedades/`.
