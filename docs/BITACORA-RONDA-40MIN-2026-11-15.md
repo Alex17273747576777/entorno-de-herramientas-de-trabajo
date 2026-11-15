@@ -265,3 +265,33 @@ sólo las horas. Contraparche registrado como FALLA-009.
 - **16:17:19Z** · Vigilante re-arrancado cubriendo **los cinco frentes** (PR #3 + #32 + #33 + #94 + #95) cada
   10 min → `work/feed-novedades/vigilancia.log`; `LEEME.md` nuevo en `work/biblioteca-masiva/` con
   procedencia, reaplicación de clones y el índice de todas las citas verificadas.
+
+- **16:18:54Z** · Parches de Fase 1 construidos **localmente y no publicados** (para no añadir ruido a
+  los issues, que es lo que pidió el dueño): `shinku-fase1-grupos-y-dedupe.patch` (`42.sqm` con
+  `merge_group`+`merge_group_manga` y sus 2 índices, `merge_group.sq` con 8 consultas,
+  `MergeGroupDedup.kt`) y el de AniZen (`147.sqm`, `merge_group.sq`, `MergeGroupDedup.kt`).
+  Numeración de migraciones tomada de la real: ShinKu tiene hasta `41.sqm` ⇒ 42; AniZen hasta
+  `146.sqm` ⇒ 147. Ambos `git apply --check` **OK**, árboles devueltos a prístino (0 cambios).
+- **16:19:20Z / 16:19:21Z** · **Segundo error mío cazado al verificar columnas reales**: AniZen **ya
+  tiene** `library_favorite_index ON animes(favorite) WHERE favorite = 1` (`animes.sq:43`) **y**
+  `episodes_unseen_by_anime_index ON episodes(anime_id, seen) WHERE seen = 0` (`episodes.sq:31`),
+  además de `episodes_anime_id_index` (`:29`). Mi issue afirmaba que faltaba el lado de episodios no
+  vistos y mi parche añadía un índice **redundante**. ShinKu igual: `migrations/13.sqm:226,228` ya
+  cubren no-leídos y favoritos, así que la frase «no aplicado a todo el camino caliente» también era
+  falsa.
+- **16:20:19Z / 16:20:20Z** · **Corrección publicada en los dos issues** (`PATCH` **200**): #95 →
+  23.433 chars (fila de índices reescrita con las tres citas reales, propuesta 5 sin índices, bloque de
+  código 5 sustituido por «nothing to add (verified)», criterio de aceptación corregido, y segunda
+  corrección añadida a la sección «Correction» explicando que se retira el índice redundante); #33 →
+  22.582 chars (fila de índices corregida, propuesta 5 sin índices, resumen sin «partial indexes»).
+  Verificado por `GET` que las afirmaciones falsas **ya no están** en ninguno de los dos bodies.
+- **16:20:21Z** · **Tercer error mío, cazado**: editar a mano el cuerpo de un `git diff` para quitar el
+  índice **corrompió el parche** (`error: corrupt patch at line 64`, `git apply --check` → NO) porque
+  los contadores de líneas del hunk dejaron de cuadrar. Regenerado desde el clon (ficheros + `git diff
+  --cached`) en vez de parchear el parche.
+- **16:20:45Z** · Re-verificación: **ANIZEN APLICA_LIMPIO: sí · SHINKU APLICA_LIMPIO: sí**, árboles
+  prístinos (0/0), y `grep -c '^+CREATE INDEX'` en el parche de AniZen = **2** (sólo los de
+  `merge_group_anime`; el redundante fuera). 88 y 84 líneas.
+- **16:21:14Z** · Cierre de la ronda: los cuatro issues publicados, en inglés, corregidos en público y
+  verificados por lectura; dos parches locales verificados y **sin publicar** a propósito; vigilante de
+  los cinco frentes vivo (sondeo 16:17:30Z).
