@@ -498,5 +498,14 @@ sólo las horas. Contraparche registrado como FALLA-009.
   `lang`/`explore` sólo en ShinKu (el trabajo de idiomas de este issue) y `last_top_url` sólo en
   AniZen (su cursor de paginación). Numeración confirmada: `main` llega a `41.sqm`, #34 añade `42.sqm`,
   esta rama `43.sqm` ⇒ renumerar a 42 si #34 no se fusiona antes. Publicado en **#32** (`PATCH` 200 →
-  **36.987** chars, re-leído por `GET`).
+  **36.318** chars, re-leído por `GET`).
 - **21:49:36Z** · **Cierre definitivo**: checkpoint y commit de edt, espejo completo en la casa persistente.
+- **21:50:05Z** · **Segunda validación, más fiel que la primera**: en vez de partir del DDL del `.sq`
+  antiguo, monté la ruta que recorre de verdad un usuario que actualiza — `12.sqm` crea
+  `feed_saved_search`, `13.sqm` la **reconstruye** (rename a `_temp`, create, copy, drop; localicé 6
+  sentencias suyas sobre esa tabla) y `43.sqm` añade las pestañas. Resultado: `PRAGMA table_info`
+  idéntico al de una instalación limpia en las dos tablas, mismos dos índices de feed y pestaña de sistema
+  presente ⇒ **RESULTADO: SIN FALLOS** (13 aserciones). También corregido en la bitácora un tamaño que
+  anoté mal (36.318, no 36.987): los números se verifican, no se estiman. Publicado en **#32**
+  (`PATCH` 200 → re-leído por `GET`).
+- **21:50:29Z** · Cierre de la ronda de 40 minutos (T0 21:22:02Z, fin previsto 22:02:02Z).

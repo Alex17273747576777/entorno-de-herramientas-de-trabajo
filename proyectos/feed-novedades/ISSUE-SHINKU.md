@@ -602,6 +602,12 @@ feed_order, search_type`) with identical types, and `feed_categories` shares `_i
 divergences are additive and deliberate: `lang` and `explore` exist only here (the per-tab language work
 from this issue), `last_top_url` exists only in AniZen (its pagination cursor). Nothing collides.
 
+Both routes were built twice, and the second time is the faithful one: not from the old `.sq` DDL but from
+the migrations an upgrading user actually runs — `12.sqm` creates `feed_saved_search`, `13.sqm` rebuilds it
+(rename to `_temp`, create, copy, drop), and then `43.sqm` adds the tabs. That chain ends with `PRAGMA
+table_info` identical to a fresh install for both tables, the same two feed indexes, and the system tab
+present. 13 assertions, no failures.
+
 Migration numbering follows from the branch it stacks on: `main` has up to `41.sqm`, #34 adds `42.sqm`,
 this branch adds `43.sqm`. Renumber to `42.sqm` if #34 is not merged first.
 
