@@ -258,7 +258,7 @@ sólo las horas. Contraparche registrado como FALLA-009.
   helper de recuento, arrastre de estado, paquete de rendimiento). `PATCH` **200**: #33 → 22.464
   chars, #95 → 22.559 chars; comprobado por `GET` que la sección está publicada (posición 1260 y 1431
   del body).
-- **16:18Z** · **Error de mi propio chequeo, cazado**: la verificación dio `Correction…=False` porque
+- **16:17Z** (acotado entre 16:16:05Z y 16:17:30Z, ambos verificados) · **Error de mi propio chequeo, cazado**: la verificación dio `Correction…=False` porque
   la cadena de prueba llevaba un paréntesis de cierre que el texto real no tiene (`… posting — read
   this first)`). Re-comprobado con `find("Correction")` + contexto: publicado correctamente en los
   dos. El fallo era del chequeo, no de la publicación.
