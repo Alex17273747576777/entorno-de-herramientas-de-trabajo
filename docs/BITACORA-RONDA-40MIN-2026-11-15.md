@@ -376,3 +376,38 @@ sólo las horas. Contraparche registrado como FALLA-009.
 - **17:28:17Z** · Parche de ShinKu movido a `work/feed-novedades/parches/retirados/` con `MOTIVO.md` (por qué
   se retira, qué habría roto, secuencia corregida y el contraste con AniZen). Espejo en
   `work/edt/proyectos/feed-novedades/`.
+
+## Ronda de 40 min post-apagón (T0=1794777722 = 21:22:02Z, fin 22:02:02Z)
+
+- **21:22:04Z** · Inventario tras el apagón: llavero vivo, clones vivos (shinku en
+  `merge-groups-phase1`@`8e035e14`, anizen en `feed-cap-per-tab`@`f5f1bdd8`, reikai presente),
+  los cinco issues/PR sin respuesta de mantenedores, CI del PR #34 sigue en `action_required`.
+  **El vigilante no sondeó durante el corte** (última línea 17:28:43Z): el sandbox quedó congelado,
+  y había **dos procesos duplicados** vivos; matados por PID.
+- **21:23:09Z** · **Salto de capacidad: hay `java` 11 y `unzip`, y descargué `kotlinc` real.** Humo:
+  `KOTLIN_OK [2, 3]`. Se acaba la excusa de «nada compilado» para el Kotlin puro.
+- **21:24-21:25Z** · Convenciones de test copiadas de ficheros vecinos reales (no inventadas):
+  `io.kotest.matchers.shouldBe`, `@Execution(ExecutionMode.CONCURRENT)`, nombres con backticks,
+  `class XTest`; versiones exactas de sus catálogos: ShinKu kotest **6.0.7** + JUnit **6.1.2**,
+  AniZen kotest **5.9.1** + JUnit **6.1.3**. Descargados esos jars exactos + consola JUnit 6 + JDK 17
+  (Temurin 17.0.13, porque JUnit 6 exige class file 61.0 y el java del sandbox es 11).
+- **21:25:56Z** · **Tres fallos propios cazados al primer intento**: (a) JUnit 6 no arranca con Java 11
+  (`UnsupportedClassVersionError`); (b) compilé `FeedLimits.kt` desde la rama equivocada (está en
+  `feed-cap-per-tab`, no en `merge-groups-phase1`); (c) kotest 6.0.7 no resolvía `shouldBe` con mi
+  kotlinc 2.0.21 — porque **ShinKu usa Kotlin 2.3.10** y los metadatos de kotest 6 son más nuevos.
+  Y un cuarto: el jar `kotest-assertions-api-jvm-6.0.7` era un **404 de nginx** de 554 bytes que
+  `curl -sSL` guardó como si nada.
+- **21:29:42Z** · Con kotlinc 2.1.20 + luego **2.3.10** (el de ShinKu) y el jar de coroutines en el
+  classpath de ejecución: **ShinKu 7 tests successful / 0 failed** y **AniZen 7 tests successful /
+  0 failed**, con las versiones exactas de kotest y JUnit de cada catálogo y JDK 17. Fallo intermedio
+ diagnosticado: `ClassNotFoundException: kotlin.collections.CollectionsKt` = faltaba `kotlin-stdlib.jar` al
+  ejecutar (compilar sí pasaba).
+- **21:30:19Z** · Tests commiteados y empujados a las ramas ya publicadas: AniZen `b435e3fa3b5c`
+  (guard de procedencia re-ejecutado: `0 violation(s), 0 warning(s)` ✓ ok) y ShinKu `306cfeecce3e`
+  → **el PR #34 pasa a 2 commits, 4 ficheros, +147**. Push verificado `ls-remote == rev-parse HEAD`.
+- **21:32:36Z** · Evidencia publicada con `PATCH` 200: PR **#34** (sección «the test was written *and
+  executed*» con tabla de los 7 casos y el bloque de versiones; y el «Not verified» corregido: ya no dice
+  que falte el test, dice que falta Gradle), **#95** → 31.466 chars, **#94** → 27.858 chars. Re-leídos
+  por `GET` con sus marcas. Un ancla falló al primer intento por los saltos de línea duros del body:
+  sustituida por párrafo completo con localización tolerante.
+- **21:33:23Z** · Checkpoint intermedio de la ronda (protección contra apagones) antes de seguir.
