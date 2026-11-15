@@ -509,3 +509,23 @@ sólo las horas. Contraparche registrado como FALLA-009.
   anoté mal (36.318, no 36.987): los números se verifican, no se estiman. Publicado en **#32**
   (`PATCH` 200 → re-leído por `GET`).
 - **21:50:29Z** · Cierre de la ronda de 40 minutos (T0 21:22:02Z, fin previsto 22:02:02Z).
+- **21:51:14Z** · **Dos falsas alarmas mías, diagnosticadas y no dejadas pasar**: (1) anoté
+  «ruta_real=False» al verificar el #32 porque busqué la marca «13.sqm rebuilds it» **sin** los backticks
+  que el markdown pone alrededor; re-verificado con las cadenas literales correctas: **6/6 marcas
+  presentes**, `open`, 36.778 chars. (2) di por desaparecido el log del vigilante porque en la llamada
+  anterior un `cd work/edt` dejó la ruta relativa `work/feed-novedades/vigilancia.log` apuntando a
+  `work/edt/work/…`; el fichero existe (5.320 B) y el vigilante vive (**pid 10305**, `pgrep -af`).
+  Regla reafirmada: tras un `cd`, las rutas relativas del informe hay que escribirlas absolutas.
+- **21:51:50Z** · Espera del sondeo de los nueve frentes (cada 10 min) para cerrar la ronda con evidencia fresca
+  del estado posterior a los últimos commits.
+
+- **21:55:02Z** · **Sondeo fresco del vigilante (nueve frentes, todos vivos)**: PR #3 de Awerkori
+  `open` head `6711284aa4`; ShinKu #32 `open` actualizado 21:50:28Z; #33 `open` 21:39:11Z; AniZen #94
+  `open` 21:47:22Z; #95 `open` 21:39:10Z; PR #34 `open`, `mergeable_state=unstable`, head
+  `306cfeecce`, sus tres checks en `completed/action_required` (esperan aprobación de mantenedor por ser
+  fork; no insistir); ramas del fork vivas: AniZen `merge-groups-phase1=b435e3fa3b`,
+  **AniZen `feed-cap-per-tab=8c7f0f33d5`** (el vigilante ya ve el commit del test publicado a las
+  21:47Z), ShinKu `feed-tabs-phase1=0b157a0669`. `comentarios=0` en los cuatro issues y en los dos PR ⇒
+  ningún mantenedor ha respondido todavía. Vigilante vivo: **pid 10305**.
+- **21:56:20Z** · **CIERRE DE LA RONDA DE 40 MINUTOS** (T0 21:22:02Z → fin previsto 22:02:02Z): checkpoint,
+  commit de edt y árbol limpio. Objetivo del encargo cumplido: se dejó de decir «nada compilado».
