@@ -1,5 +1,5 @@
 #!/usr/bin/env bash
-# Vigilante de los frentes externos. Ocho frentes:
+# Vigilante de los frentes externos. Nueve frentes:
 #   1. PR #3   Awerkori/anime-extensoes (índice anime en protobuf)
 #   2. Issue #32 Harrys-HQ/ShinKu    (feed/novedades)
 #   3. Issue #33 Harrys-HQ/ShinKu    (biblioteca masiva + fusión)
@@ -10,6 +10,8 @@
 #   7. Rama merge-groups-phase1 del fork Alex17273747576777/AniZen (Fase 1 de #95)
 #   8. Rama feed-cap-per-tab del mismo fork (Fase 2 de #94)
 #      Las dos publicadas como ramas porque su AGENTS.md prohíbe abrir pull requests
+#   9. Rama feed-tabs-phase1 del fork Alex17273747576777/ShinKu (Fase 1 del feed, apilada
+#      sobre el PR #34: su 43.sqm sigue al 42.sqm de ese PR, así que no lleva PR propio)
 # Vive lo que viva la sesión. Sondea cada 10 minutos y escribe una línea por frente.
 set -u
 TOKEN=$(grep -o 'GHP_A=[A-Za-z0-9_]*' /home/user/.cerox-keys/tokens.txt | cut -d= -f2)
@@ -53,5 +55,11 @@ try:
     d=json.load(sys.stdin); print(f\"{os.environ['H']} FORK-AniZen rama={os.environ['R']} viva={d['commit']['sha'][:10]}\")
 except Exception as e: print(os.environ['H'],'FORK-AniZen',os.environ['R'],'error',e)" >> "$LOG"
   done
+  # Frente 9: rama feed-tabs-phase1 del fork de ShinKu (Fase 1 del feed, sin PR propio)
+  g "repos/Alex17273747576777/ShinKu/branches/feed-tabs-phase1" | H="$H" python3 -c "
+import json,sys,os
+try:
+    d=json.load(sys.stdin); print(f\"{os.environ['H']} FORK-ShinKu rama=feed-tabs-phase1 viva={d['commit']['sha'][:10]}\")
+except Exception as e: print(os.environ['H'],'FORK-ShinKu error',e)" >> "$LOG"
   sleep 600
 done

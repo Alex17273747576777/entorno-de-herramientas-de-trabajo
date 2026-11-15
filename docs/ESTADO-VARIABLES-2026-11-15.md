@@ -24,3 +24,51 @@ registrada y verificada; cero push directo en repos ajenos (sólo issue/PR); tok
 impresos ni citados; cero `present_file` (las rutas van en el chat); espejar ficheros y
 ediciones el mismo turno; horas de bitácora tomadas del reloj/mtime/API, nunca de memoria
 (FALLA-009).
+
+---
+
+## Actualización de las 21:44Z (ronda post-apagón, T0=1794777722)
+
+### Utillaje NUEVO que existe ahora (y cómo recuperarlo tras un reinicio)
+
+Todo vive en `/var/tmp`, o sea **se barre en cada reinicio**. El restaurador está en la casa:
+
+```bash
+bash /home/user/work/edt/entorno/restaurar-toolchain-kotlin.sh            # descarga lo que falte (~2-3 min)
+bash /home/user/work/edt/entorno/restaurar-toolchain-kotlin.sh --comprobar  # sólo verifica rutas
+```
+
+| Herramienta | Ruta | Por qué esa versión |
+|---|---|---|
+| kotlinc 2.3.10 | `/var/tmp/kc-2.3.10/kotlinc/bin/kotlinc` | es el `kotlin_version` de ShinKu (`gradle/libs.versions.toml:7`) |
+| kotlinc 2.0.21 | `/var/tmp/kc/kotlinc/bin/kotlinc` | respaldo; **no** lee los metadatos de kotest 6 |
+| JDK 17 Temurin | `/var/tmp/jdk/jdk-17.0.13+11/bin/java` | JUnit 6 exige class file 61.0 y el sandbox trae Java 11 |
+| jars | `/var/tmp/jars/` | kotest 6.0.7 (ShinKu) y 5.9.1 (AniZen), consolas JUnit 6.1.2/6.1.3, coroutines 1.10.2, `logcat-real-classes.jar` |
+
+Trampas registradas: Maven devuelve **554-730 bytes de HTML** en un 404 y `curl -sSL` lo guarda como si
+nada (el restaurador lleva guarda `<5000`); `com.squareup.logcat` se publica como **AAR**, hay que
+extraerle `classes.jar`; y su versión `0.4` no está servida a esta máquina (se usó la 0.1, declarándolo).
+
+### Frentes externos a las 21:44Z
+
+| Frente | Estado | Commit / tamaño |
+|---|---|---|
+| ShinKu PR **#34** (Fase 1 biblioteca) | open, CI en `action_required` (espera aprobación de mantenedor por ser fork) | 2 commits, 4 ficheros, +147 · head `306cfeecce3e` |
+| ShinKu rama `feed-tabs-phase1` (Fase 1 feed) | pública en el fork, **sin PR** porque se apila sobre #34 (43 sigue a 42) | `0b157a0669a4`, 3 ficheros, +68 |
+| AniZen rama `merge-groups-phase1` (Fase 1 biblioteca) | pública en el fork + diff dentro de #95 (su `AGENTS.md` prohíbe PR) | `b435e3fa3b5c` |
+| AniZen rama `feed-cap-per-tab` (Fase 2 feed) | pública en el fork + diff dentro de #94 | `f5f1bdd824a4` |
+| Issues | #32 (35.408) · #33 (26.474) · #94 (29.906) · #95 (35.057) · todos `open`, 0 comentarios | — |
+| Awerkori PR #3 (índice pb) | open, 0 comentarios | head `6711284aa4` |
+
+Vigilante: **nueve frentes**, guion en `work/nox-index-pb/vigilar-frentes.sh`, log en
+`work/feed-novedades/vigilancia.log`.
+
+### Evidencia ejecutada (reproducible desde la casa)
+
+| Qué | Dónde | Resultado |
+|---|---|---|
+| Tests de `dedupeByMergeGroup` (7 casos, estilo de cada repo) | ramas publicadas | `7 tests successful / 0 failed` en ambos |
+| Interactor real `InsertFeedSavedSearch.await` + doble de repositorio | `work/biblioteca-masiva/mediciones/Arnes.kt` | `SIN FALLOS`, 9 ✓ (frontera 24/25, por pestaña, `awaitAll` sin tope) |
+| Mediciones lineal vs cuadrático | `mediciones/medida-kotlin.txt`, `medida-sql.txt` | 27,50 ms (50k entradas) frente a 14,30 ms **por entrada** del escaneo; 330× |
+| Migración `43.sqm`: limpia vs actualización | `mediciones/validar_migracion.py` | `SIN FALLOS`, 13 ✓ (`PRAGMA table_info` idéntico, 11 consultas) |
+| Guard de procedencia de AniZen | `scripts/check-provenance.sh` del propio repo | `0 violation(s), 0 warning(s)` → `✓ ok` |

@@ -449,3 +449,17 @@ sólo las horas. Contraparche registrado como FALLA-009.
   ejecutadas = **RESULTADO: SIN FALLOS** (13 ✓). Rama `feed-tabs-phase1` empujada (`0b157a0669a4`,
   push verificado) y publicada en **#32** con `PATCH` 200 — sin segundo PR porque se apila sobre #34.
 - **21:43:03Z** · Cierre: espejos en edt, bitácora al día, checkpoint y commit.
+
+- **21:43:03Z** · `PATCH` 200 del **#32** → **35.408** chars con la Fase 1 construida y validada:
+  rama `feed-tabs-phase1` (`0b157a0669a4`, 3 ficheros, +68), por qué **no** lleva segundo PR (se apila
+  sobre #34: su `43.sqm` sigue al `42.sqm`), el detalle del `REFERENCES` con el pragma verificado, y el
+  bloque de validación. Re-leído por `GET`. Checkpoint `CHECKPOINT_OK 21:43Z` y commit edt `3201deb`.
+- **21:43:38Z** · **Restaurador de utillaje** escrito y probado en sus dos modos:
+  `work/edt/entorno/restaurar-toolchain-kotlin.sh` (`--comprobar` → `RESULTADO: COMPLETO`, EXIT=0).
+- **21:43:54Z** · Prueba **real** de la ruta de descarga: retiré dos artefactos a propósito y el guion los
+  repuso (jar byte a byte idéntico al original, `logcat` extraído de su AAR), la guarda anti-404
+  `<5000 bytes` verificada contra un 404 verdadero (730 bytes), y `git apply --check` del parche de
+  pestañas sobre su base real = **APLICA_LIMPIO**.
+- **21:44:58Z** · Cierre de la ronda de 40 minutos: vigilante ampliado a **nueve frentes** (nueva rama de
+  ShinKu), `ESTADO-VARIABLES-2026-11-15.md` actualizado con el utillaje, los frentes y la tabla de
+  evidencia ejecutada, `LEEME.md` ampliado con `mediciones/` y los dos hallazgos verificados.
