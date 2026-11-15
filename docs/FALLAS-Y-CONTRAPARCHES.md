@@ -132,3 +132,23 @@ Formato de entrada: síntoma → causa → contraparche/habilidad → estado.
 - **Contraparche / habilidad solucionadora:** …
 - **Estado:** ACTIVA | CONTRAPARCHADA
 ```
+
+## FALLA-009 — Horas de bitácora escritas de memoria (2026-11-15, ronda feed ShinKu⇄AniZen)
+
+**Síntoma.** Siete entradas de la bitácora de la ronda llevaban horas estimadas («15:28Z»,
+«15:31Z», «15:36Z»…) cuando el reloj real iba por 15:14-15:19Z: desvío de hasta 17 minutos.
+Ningún hecho era falso, pero la bitácora —que es la prueba de la ronda— dejaba de serlo: un
+registro con horas inventadas no permite reconstruir nada y es un positivo falso por omisión.
+
+**Causa.** Escribir la marca de tiempo al narrar la acción, en vez de leerla cuando la acción
+ocurre. Ya había pasado en la ronda anterior (dos entradas corregidas contra `git log`).
+
+**Contraparche (obligatorio desde aquí).**
+1. La hora de una entrada se toma con `date -u +%H:%M:%SZ` **dentro de la misma llamada** que
+   ejecuta la acción, o se deriva después de evidencia: `mtime` del fichero (`date -u -r`),
+   `created_at`/`updated_at` de la API, `git log --date=format-local`, timestamp del log de CI.
+2. Si la hora no se puede verificar, la entrada se escribe **sin hora** y con el orden relativo;
+   nunca con una hora supuesta.
+3. Al cerrar cada ronda, comparar la última hora escrita contra `date -u` antes del checkpoint.
+4. Corrección de una hora ya escrita: sustituirla y dejar constancia de la sustitución y de su
+   fuente (como en esta ronda), no reescribir en silencio.

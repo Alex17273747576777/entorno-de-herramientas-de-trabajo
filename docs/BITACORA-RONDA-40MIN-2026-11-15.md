@@ -90,3 +90,84 @@ Formato: [minuto] acción → resultado verificado (fuente de la verificación).
   vigilante vivo. Pendientes (a)-(d) cerrados; el único cabo abierto es la ejecución de la
   corrección de `serialize-javascript`, que necesita un entorno con Gradle/Kotlin-JS y orden
   del dueño, y queda diagnosticada por escrito en el repo.
+
+# RONDA NUEVA (T0 = 1794755262 = 15:07:42Z, fin 15:47:42Z) — encargo feed ShinKu ⇄ AniZen
+
+- **15:07:42Z** · T0 fijado. Metadata por API de los dos repos: ShinKu `main`, Kotlin, 153.837 KB,
+  Apache-2.0, ★49, 1 issue abierto, permisos míos `push:false`; AniZen `master`, Kotlin+GLSL,
+  308.066 KB, Apache-2.0, ★202, 19 issues, `push:true` (**no se usó: cero push en repos ajenos**).
+- **15:07:45-47Z** (mtime de `.git/HEAD` de cada clon) · Clon **en paralelo** de los dos (`git clone --depth 1`): `shinku` 110 MB
+  @ `043ab7d8e68e8a77752805c34969a2477195826a`, `anizen` 33 MB
+  @ `95160a724d1147777dd1f7997fff4885a4cd9deb`, en `/var/tmp/feed/`.
+- **15:09-15:14Z** · Lectura del subsistema de novedades de los dos **en paralelo** (dos llamadas
+  simultáneas): 1.450 .kt en ShinKu, 1.298 en AniZen; localizados `FeedTab/FeedScreen/
+  FeedScreenModel` en cada uno, los `.sq` de persistencia y las migraciones.
+- **15:10-15:13Z** · **Evidencia clave verificada con fichero y línea**: tope de 10 en
+  `shinku/.../FeedScreenModel.kt:650-652` (`countFeedSavedSearchGlobal.await() > 10`) y
+  `SourceFeedScreenModel.kt:108`; «10» escrito dentro de ~30 traducciones de
+  `too_many_in_feed`; `ShinKuPreferences.kt:65` `feedLanguageFilter()` por defecto **`"en"`**
+  mientras `LocaleHelper.kt:89-91` sí habilita el idioma del dispositivo para el resto de la app;
+  `feed_saved_search.sq` de ShinKu sin `category`/`feed_order`/`search_type`.
+- **15:10-15:13Z** · AniZen: `feed_categories.sq` (categoría de sistema `_id=1 'Global'`),
+  `feed_saved_search.sq` con `feed_order`/`search_type`/`category`/`last_top_url` y
+  `countGlobalByCategory`; `activity_log.sq` + `ActivityLog` (TYPE_FETCH/OPEN/PLAY/COMPLETE/
+  FEED_UPDATE) **ya conectado al feed** en `FeedScreenModel.kt:97` y `:203`; `SourceHealthCache`;
+  `FeedScreen.kt:69-115` con `ScrollableTabRow`+`HorizontalPager`. Huecos: **sin tope por
+  pestaña** (`InsertFeedSavedSearch.await` inserta sin contar) y **sin dimensión de idioma**
+  (grep de `lang` en `ui/home/*` sólo da imports de `launchIO`).
+- **15:14Z** · Migraciones: ShinKu usa `Migration{version:Float}` con máximo **75f**; AniZen las
+  tiene todas en `Migration.ALWAYS` (el esquema va por SQLDelight). `which kotlinc` → **ausente**:
+  nada de lo propuesto puede compilarse aquí, y así se declara en los issues.
+- **15:14:24Z y 15:15:32Z** (mtime real) · `write_file` ×2: `ISSUE-SHINKU.md` (9 bloques de código de ejemplo: `feed_categories.sq`,
+  ALTERs, `FeedLimits`, cadenas con `%1$d`, política de idioma, `feed_activity.sq`, `SuggestFeedTabs`,
+  UI con pager, migración 76f) y `ISSUE-ANIZEN.md` (8 bloques: `FeedLimits`, guarda con
+  `countGlobalByCategory`, cadenas, `FeedGenreHelper` de anime, `SourcePageCursor`, `buildRows`,
+  `SuggestFeedTabs` sobre `activity_log`, columnas aditivas `lang`/`explore`).
+- **15:16:38Z** (created_at real de la API) · **Issues abiertos y verificados por lectura real**: ShinKu
+  **201 → https://github.com/Harrys-HQ/ShinKu/issues/32** y AniZen
+  **201 → https://github.com/salmanbappi/AniZen/issues/94**; enlace cruzado **PATCH 200** sobre #32.
+  GET de comprobación: #32 `state=open` 23.214 chars `labels=[]` (ShinKu no tiene `enhancement`
+  definida y la API la descartó en silencio — registrado, no maquillado); #94 `state=open`
+  22.048 chars `labels=['enhancement']`.
+- **15:17:37Z** (mtime real) · Código real de los dos subsistemas **plasmado en el workspace** (los clones viven en
+  `/var/tmp`, volátil): `work/feed-novedades/codigo/shinku/` 24 ficheros + `codigo/anizen/` 29
+  ficheros + los dos LICENSE = 448 KB.
+- **15:18:40Z** (mtime real) · `work/feed-novedades/PLAN-FEED-SHINKU-ANIZEN.md`: investigación con evidencia
+  fichero:línea, matriz de trasvase, plan en 8 fases (acuerdo → esquema/migración → tope/cadenas →
+  idioma → estadísticas/sugerencias → filas ShinKu en AniZen → pruebas → traducciones), bloque
+  «Lo NO verificado» y cabos abiertos.
+
+### Corrección de horas de esta ronda (FALLA-009)
+
+Las siete horas de las entradas anteriores se habían escrito **de memoria**, estimadas, y estaban
+desviadas hasta 17 minutos (la ronda iba por 15:19Z cuando la bitácora decía 15:36Z). Se
+sustituyeron por horas **leídas de evidencia real**: `mtime` de cada fichero escrito en el
+workspace (`date -u -r`) y `created_at` de la API para los dos issues. Los hechos no cambian;
+sólo las horas. Contraparche registrado como FALLA-009.
+
+- **15:20:15Z** · Arrancado el vigilante de los tres frentes externos
+  (`vigilar-frentes.sh` → `work/feed-novedades/vigilancia.log`, sondeo cada 10 min: PR #3 de
+  anime-extensoes + issue #32 de ShinKu + issue #94 de AniZen). `process_id`
+  `vigilante-pr-3-issues-32-94-08e70660`, `status=running`. Vive lo que viva la sesión.
+- **15:21-15:22Z** · **Verificación de símbolos** de todo el código de ejemplo contra las fuentes
+  clonadas (tabla en `work/feed-novedades/VERIFICACION-SIMBOLOS.md`). Cazados **dos errores míos
+  reales**: en AniZen `SourceHealthCache` es un `object` con `getStatus(Long): NodeStatus`
+  (`OPERATIONAL|DEGRADED|CRITICAL|OFFLINE`, `SourceHealthCache.kt:12-28` +
+  `InfrastructureModels.kt:19-24`), no un `isHealthy()` inyectable; y `GetLibraryAnime.await()`
+  devuelve `List<LibraryAnime>` cuyo `source` está en `.anime.source`. En ShinKu:
+  `LibraryManga.manga.source` (no `.source`), `MigrationContext` es clase con
+  `inline fun <reified T> get()` (`MigrationContext.kt:5-9`), y `SourceHealth.isFailingNow` /
+  `getBySourceId()` existen (`SourceHealth.kt:5-15`, `SourceHealthRepository.kt:6-11`).
+  Confirmados tal cual: `CountFeedSavedSearchGlobal`, `InsertFeedSavedSearch.await/awaitAll`,
+  `ReorderFeed`, campos exactos de `FeedSavedSearch`/`FeedSavedSearchCategory`,
+  `ActivityLogRepository.getCountsByPeriod(Date): Map<Pair<Long,Int>,Long>`, numeración
+  `ActivityLog.TYPE_*`, `withIOContext` (`CoroutinesExtensions.kt:60`), forma de `Migration`
+  (máxima 75f ⇒ 76f para la nueva).
+- **15:23:01Z / 15:23:02Z** · **Corrección publicada en los dos issues** (no en silencio):
+  snippets arreglados + sección «Symbol check (added after posting)» con lo corregido, lo
+  confirmado y lo que sigue sin compilar. `PATCH` **200** en ambos; verificado por `GET`:
+  #32 body 25.484 chars `updated_at=15:23:01Z`, #94 body 24.299 chars `updated_at=15:23:02Z`,
+  los dos `state=open`.
+- **15:24:14Z** · Cierre: ronda de 40 min (15:07:42Z → 15:47:42Z) con el encargo del feed completo y el
+  frente Nox intacto (PR #3 `open`, 0 comentarios, head `6711284aa4`; cero-X HEAD `7d108e17`
+  == remoto). FALLA-009 registrada por las horas estimadas de la bitácora.
