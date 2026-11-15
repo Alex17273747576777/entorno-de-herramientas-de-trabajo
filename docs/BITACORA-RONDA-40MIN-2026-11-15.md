@@ -488,3 +488,15 @@ sólo las horas. Contraparche registrado como FALLA-009.
   da **10305** para el guion (10303 era el proceso envolvente de `start_process`). El primer sondeo de los
   **nueve** frentes a 21:44:59Z los encuentra todos vivos, incluida la rama nueva de ShinKu
   (`FORK-ShinKu rama=feed-tabs-phase1 viva=0b157a0669`).
+
+- **21:48:51Z** · **Compatibilidad cruzada de esquema verificada, no supuesta**: la premisa central del
+  plan (mismos nombres para que los backups se describan igual en las dos apps) nunca se había comprobado
+  mecánicamente. Nuevo arnés `mediciones/compatibilidad_esquema_tabs.py` que monta ambos esquemas desde
+  sus `.sq` reales en SQLite y los compara columna a columna: `feed_categories` y `feed_saved_search`
+  existen en las dos, **7 columnas compartidas** en `feed_saved_search` con tipos idénticos,
+  `_id/name/sort` compartidas en `feed_categories`. Dos divergencias, **aditivas y deliberadas**:
+  `lang`/`explore` sólo en ShinKu (el trabajo de idiomas de este issue) y `last_top_url` sólo en
+  AniZen (su cursor de paginación). Numeración confirmada: `main` llega a `41.sqm`, #34 añade `42.sqm`,
+  esta rama `43.sqm` ⇒ renumerar a 42 si #34 no se fusiona antes. Publicado en **#32** (`PATCH` 200 →
+  **36.987** chars, re-leído por `GET`).
+- **21:49:36Z** · **Cierre definitivo**: checkpoint y commit de edt, espejo completo en la casa persistente.

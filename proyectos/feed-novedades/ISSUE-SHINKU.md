@@ -594,6 +594,17 @@ path from the pre-43 schema were built side by side and compared:
 RESULTADO: SIN FALLOS
 ```
 
+**Cross-app shape checked, not assumed.** The whole point of matching AniZen's names is that a backup from
+one app could describe tabs the same way in the other, so I compared the two schemas column by column by
+building both from their real `.sq` files in SQLite: `feed_categories` and `feed_saved_search` exist in
+both, the seven columns of `feed_saved_search` are shared (`_id, source, saved_search, global, category,
+feed_order, search_type`) with identical types, and `feed_categories` shares `_id, name, sort`. The two
+divergences are additive and deliberate: `lang` and `explore` exist only here (the per-tab language work
+from this issue), `last_top_url` exists only in AniZen (its pagination cursor). Nothing collides.
+
+Migration numbering follows from the branch it stacks on: `main` has up to `41.sqm`, #34 adds `42.sqm`,
+this branch adds `43.sqm`. Renumber to `42.sqm` if #34 is not merged first.
+
 Still not verified: no Gradle, so SQLDelight codegen, `spotlessCheck` and `assembleDevDebug` have not run;
 the new queries have no callers yet (no DI, no UI); and no backup change is needed at this phase because no
 backup model references `FeedSavedSearch` (checked under `data/…/backup/`) — worth re-checking when tabs
