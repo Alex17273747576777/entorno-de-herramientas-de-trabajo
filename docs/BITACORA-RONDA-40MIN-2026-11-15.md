@@ -480,3 +480,11 @@ sólo las horas. Contraparche registrado como FALLA-009.
 - **21:47:49Z** · Espejo persistente de lo nuevo (tests, ficheros de pestañas de ShinKu, restaurador de
   utillaje) en `work/feed-novedades/` y `work/edt/proyectos/feed-novedades/`: los clones de `/var/tmp`
   se barren en un reinicio y esto no puede depender de ellos. Cierre definitivo de la ronda.
+- **21:48:08Z** · **Dos errores míos del espejo, cazados al releer y corregidos**: copié el
+  `MergeGroupDedupTest.kt` de AniZen desde el árbol de trabajo estando el clon en `feed-cap-per-tab`
+  (ese test vive en `merge-groups-phase1`) → resuelto con `git show rama:ruta`, 57 líneas espejadas; y
+  busqué el log del vigilante en una ruta que no declaré al principio (es
+  `work/feed-novedades/vigilancia.log`, línea 18 del guion). También corrigo el pid que anuncié: `pgrep -af`
+  da **10305** para el guion (10303 era el proceso envolvente de `start_process`). El primer sondeo de los
+  **nueve** frentes a 21:44:59Z los encuentra todos vivos, incluida la rama nueva de ShinKu
+  (`FORK-ShinKu rama=feed-tabs-phase1 viva=0b157a0669`).
