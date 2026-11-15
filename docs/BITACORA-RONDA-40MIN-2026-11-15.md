@@ -193,3 +193,20 @@ sólo las horas. Contraparche registrado como FALLA-009.
   esquema de categorías = Fase 1, cadenas con `%1$d`, snackbar en AniZen; y que no están
   compilados) + addendum §7 al plan. Divergencia declarada: con el parche de ShinKu el límite real
   es 25 mientras `too_many_in_feed` sigue diciendo «10» hasta la Fase 2 completa.
+
+- **15:29-15:30Z** · **Subida de vara: lint**. Comprobado que los dos repos pasan **spotless +
+  ktlint** en CI (`shinku.code.lint.gradle.kts` + `build_check.yml`; `mihon.code.lint.gradle.kts`
+  + `spotless.yml` + `config/detekt`) con imports en orden alfabético estricto. Mi primera
+  versión de los parches insertaba los imports fuera de orden ⇒ **habrían reventado el lint de los
+  dos proyectos**. Regenerados colocando cada import en su posición ordenada (bisect sobre el
+  bloque real: ShinKu posiciones 25/61 y 11/53; AniZen 13/30, 15/31 y 29/32), y re-verificados:
+  `git apply --check` **OK** en los dos, árboles prístinos (0 cambios). Idiom `logcat(LogPriority.WARN) { }`
+  cotejado contra usos reales (`PlayerActivity.kt:659`). Issues re-publicados (`PATCH` **200**:
+  #32 → 31.291 chars `updated_at=15:30:11Z`; #94 → 29.954 chars `updated_at=15:30:12Z`) con la
+  nota de lint explícita.
+- **15:31:16Z** · Verificación final por `GET` de las marcas de cada issue (#32: `spotless + ktlint`,
+  `git apply --check`, `MAX_SOURCES_PER_TAB`, `Symbol check`, `feedLanguageFilter`; #94:
+  `spotless + ktlint`, `git apply --check`, `Correction #2`, `logcat(LogPriority.WARN)`,
+  `NodeStatus`) → resultado en el chat. Un chequeo mío anterior daba `nota_lint=False` para #32
+  porque probaba una marca exclusiva de AniZen (`logcat.LogPriority`): error del chequeo, no del
+  issue; rehecho con las marcas correctas.
