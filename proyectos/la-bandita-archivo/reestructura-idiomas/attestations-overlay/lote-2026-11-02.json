@@ -1,0 +1,9 @@
+{
+ "lote": "lote-2026-11-02",
+ "sellado_en": "2026-11-02T23:51:23Z",
+ "huella": "1924d961e4f3d4d17df500e3e453056db6152425408b9e074bf88a6aae925a12",
+ "huella_lote_anterior": "c32f0767f6a4a30a9eda4df9a1c181df75fd4a66de7d274488c8919e72c2786a",
+ "archivos": 10033,
+ "manifiesto": "registry/_manifiesto-sha256.tsv",
+ "nota": "prueba que los archivos no cambiaron después de sellarse; no prueba que la medición sea correcta"
+}

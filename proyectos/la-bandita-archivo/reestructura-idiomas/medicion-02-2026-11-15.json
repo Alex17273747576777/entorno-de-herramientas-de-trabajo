@@ -1,0 +1,282 @@
+{
+ "corte": "2026-11-15",
+ "repos": [
+  {
+   "slug": "AudileTeam/Audile",
+   "stars": 1409,
+   "lic": "GPL-3.0",
+   "created": "2023-02-01",
+   "pushed": "2026-11-10",
+   "rel_tag": "v1.20.0",
+   "rel_date": "2026-11-11",
+   "assets": 1,
+   "huella": []
+  },
+  {
+   "slug": "Audio4Linux/JDSP4Linux",
+   "stars": 1559,
+   "lic": "GPL-3.0",
+   "created": "2019-08-28",
+   "pushed": "2026-11-11",
+   "rel_tag": "2.7.0",
+   "rel_date": "2023-12-09",
+   "assets": 2,
+   "huella": []
+  },
+  {
+   "slug": "CharlesPikachu/musicdl",
+   "stars": 6988,
+   "lic": "NOASSERTION",
+   "created": "2018-06-26",
+   "pushed": "2026-10-16",
+   "rel_tag": "clitools",
+   "rel_date": "2025-12-17",
+   "assets": 5,
+   "huella": []
+  },
+  {
+   "slug": "ExistentialAudio/BlackHole",
+   "stars": 20059,
+   "lic": "NOASSERTION",
+   "created": "2019-09-27",
+   "pushed": "2026-11-07",
+   "rel_tag": "v0.7.1",
+   "rel_date": "2026-07-03",
+   "assets": 0,
+   "huella": []
+  },
+  {
+   "slug": "JMPerez/spotify-dedup",
+   "stars": 1171,
+   "lic": "MIT",
+   "created": "2014-08-14",
+   "pushed": "2026-06-12",
+   "rel_tag": null,
+   "rel_date": "None",
+   "assets": 0,
+   "huella": []
+  },
+  {
+   "slug": "Music-and-Culture-Technology-Lab/omnizart",
+   "stars": 2002,
+   "lic": "MIT",
+   "created": "2020-08-26",
+   "pushed": "2026-05-31",
+   "rel_tag": "v0.6.3",
+   "rel_date": "2026-05-31",
+   "assets": 0,
+   "huella": []
+  },
+  {
+   "slug": "SideloadLabs/EeveeSpotifyReincarnated",
+   "stars": 1648,
+   "lic": "GPL-3.0",
+   "created": "2026-05-11",
+   "pushed": "2026-11-14",
+   "rel_tag": "v7.0.1",
+   "rel_date": "2026-11-13",
+   "assets": 3,
+   "huella": []
+  },
+  {
+   "slug": "SimoHypers/limusic",
+   "stars": 2058,
+   "lic": "GPL-3.0",
+   "created": "2026-07-03",
+   "pushed": "2026-11-15",
+   "rel_tag": "v1.3.0",
+   "rel_date": "2026-10-19",
+   "assets": 11,
+   "huella": [
+    "limusic_1.3.0_aarch64.app.tar.gz.sig",
+    "limusic_1.3.0_amd64.AppImage.sig",
+    "limusic_1.3.0_x64-setup.exe.sig"
+   ]
+  },
+  {
+   "slug": "abba23/spotify-adblock",
+   "stars": 2258,
+   "lic": null,
+   "created": "2021-04-29",
+   "pushed": "2026-08-14",
+   "rel_tag": "v1.1.1",
+   "rel_date": "2026-08-12",
+   "assets": 1,
+   "huella": []
+  },
+  {
+   "slug": "ad-si/awesome-music-production",
+   "stars": 1560,
+   "lic": "ISC",
+   "created": "2016-03-14",
+   "pushed": "2026-11-08",
+   "rel_tag": null,
+   "rel_date": "None",
+   "assets": 0,
+   "huella": []
+  },
+  {
+   "slug": "audiamus/AaxAudioConverter",
+   "stars": 1870,
+   "lic": "GPL-3.0",
+   "created": "2019-03-09",
+   "pushed": "2024-06-03",
+   "rel_tag": "v1.18.2",
+   "rel_date": "2023-09-29",
+   "assets": 3,
+   "huella": []
+  },
+  {
+   "slug": "claudiodangelis/qrcp",
+   "stars": 10526,
+   "lic": "MIT",
+   "created": "2018-01-14",
+   "pushed": "2026-10-01",
+   "rel_tag": "v0.11.7",
+   "rel_date": "2026-09-30",
+   "assets": 21,
+   "huella": [
+    "checksums.txt"
+   ]
+  },
+  {
+   "slug": "klaudiosinani/taskbook",
+   "stars": 9349,
+   "lic": "MIT",
+   "created": "2018-02-12",
+   "pushed": "2025-11-03",
+   "rel_tag": "v0.3.0",
+   "rel_date": "2019-02-13",
+   "assets": 0,
+   "huella": []
+  },
+  {
+   "slug": "kyleneideck/BackgroundMusic",
+   "stars": 19394,
+   "lic": "GPL-2.0",
+   "created": "2016-02-24",
+   "pushed": "2026-06-10",
+   "rel_tag": "v0.5.0",
+   "rel_date": "2026-06-10",
+   "assets": 3,
+   "huella": [
+    "BackgroundMusic-0.5.0.pkg.asc"
+   ]
+  },
+  {
+   "slug": "leinelissen/fintunes",
+   "stars": 1425,
+   "lic": "MIT",
+   "created": "2020-06-23",
+   "pushed": "2026-07-17",
+   "rel_tag": "v2.4.6",
+   "rel_date": "2025-08-04",
+   "assets": 2,
+   "huella": []
+  },
+  {
+   "slug": "linsomniac/spotify_to_ytmusic",
+   "stars": 4586,
+   "lic": "NOASSERTION",
+   "created": "2023-12-22",
+   "pushed": "2026-04-13",
+   "rel_tag": "0.9.32",
+   "rel_date": "2025-02-01",
+   "assets": 5,
+   "huella": []
+  },
+  {
+   "slug": "mkckr0/audio-share",
+   "stars": 2201,
+   "lic": "Apache-2.0",
+   "created": "2022-10-24",
+   "pushed": "2025-05-29",
+   "rel_tag": "v0.3.4",
+   "rel_date": "2025-03-06",
+   "assets": 8,
+   "huella": [
+    "audio-share-app-0.3.4-release.apk.sha256",
+    "audio-share-server-cmd-linux.tar.gz.sha256",
+    "audio-share-server-cmd-windows.zip.sha256",
+    "AudioShareServer.exe.sha256"
+   ]
+  },
+  {
+   "slug": "monochrome-music/monochrome",
+   "stars": 6965,
+   "lic": "Apache-2.0",
+   "created": "2025-12-14",
+   "pushed": "2026-11-07",
+   "rel_tag": null,
+   "rel_date": "None",
+   "assets": 0,
+   "huella": []
+  },
+  {
+   "slug": "noteflakes/awesome-music",
+   "stars": 2545,
+   "lic": null,
+   "created": "2015-11-29",
+   "pushed": "2026-05-27",
+   "rel_tag": null,
+   "rel_date": "None",
+   "assets": 0,
+   "huella": []
+  },
+  {
+   "slug": "pkalogiros/audiomass",
+   "stars": 3056,
+   "lic": "NOASSERTION",
+   "created": "2018-07-22",
+   "pushed": "2026-08-20",
+   "rel_tag": null,
+   "rel_date": "None",
+   "assets": 0,
+   "huella": []
+  },
+  {
+   "slug": "sigma67/spotify_to_ytmusic",
+   "stars": 1537,
+   "lic": "MIT",
+   "created": "2018-03-09",
+   "pushed": "2026-10-16",
+   "rel_tag": "0.8.0",
+   "rel_date": "2025-04-27",
+   "assets": 0,
+   "huella": []
+  },
+  {
+   "slug": "strawberrymusicplayer/strawberry",
+   "stars": 4082,
+   "lic": "GPL-3.0",
+   "created": "2014-12-29",
+   "pushed": "2026-11-15",
+   "rel_tag": "1.2.31",
+   "rel_date": "2026-10-02",
+   "assets": 37,
+   "huella": []
+  },
+  {
+   "slug": "swingmx/swingmusic",
+   "stars": 2095,
+   "lic": "AGPL-3.0",
+   "created": "2021-11-14",
+   "pushed": "2026-11-14",
+   "rel_tag": "v3.0.0",
+   "rel_date": "2026-06-12",
+   "assets": 19,
+   "huella": []
+  },
+  {
+   "slug": "yermak/AudioBookConverter",
+   "stars": 1125,
+   "lic": "GPL-2.0",
+   "created": "2017-12-27",
+   "pushed": "2026-11-02",
+   "rel_tag": "version_6.6.8",
+   "rel_date": "2025-12-15",
+   "assets": 4,
+   "huella": []
+  }
+ ]
+}

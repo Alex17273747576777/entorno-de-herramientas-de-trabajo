@@ -1,0 +1,283 @@
+{
+ "corte": "2026-11-14",
+ "repos": [
+  {
+   "slug": "xevrion/hatchzip",
+   "stars": 2905,
+   "lic": "Apache-2.0",
+   "created": "2026-10-21",
+   "pushed": "2026-11-13",
+   "size_kb": 6742,
+   "rel_tag": "v0.1.10",
+   "rel_date": "2026-11-10",
+   "assets": 27,
+   "huella": [
+    "hatchzip-aarch64-linux.tar.gz.sha256",
+    "hatchzip-aarch64-macos.tar.gz.sha256",
+    "HatchZip-aarch64.dmg.sha256",
+    "HatchZip-x64-portable.zip.sha256",
+    "HatchZip-x64-setup.exe.sha256",
+    "HatchZip-x64.msi.sha256",
+    "hatchzip-x86_64-linux.tar.gz.sha256",
+    "hatchzip-x86_64-macos.tar.gz.sha256",
+    "hatchzip-x86_64-windows.zip.sha256",
+    "HatchZip-x86_64.AppImage.sha256",
+    "HatchZip-x86_64.dmg.sha256",
+    "hatchzip-x86_64.rpm.sha256",
+    "hatchzip_amd64.deb.sha256"
+   ]
+  },
+  {
+   "slug": "Droid-Deck/DroidDeck",
+   "stars": 20130,
+   "lic": "GPL-3.0",
+   "created": "2026-09-24",
+   "pushed": "2026-11-14",
+   "size_kb": 389603,
+   "rel_tag": "0.7.1",
+   "rel_date": "2026-11-10",
+   "assets": 5,
+   "huella": [
+    "SHA256SUMS.txt"
+   ]
+  },
+  {
+   "slug": "Fei2411/DS-Bot",
+   "stars": 7759,
+   "lic": "Apache-2.0",
+   "created": "2026-10-07",
+   "pushed": "2026-11-14",
+   "size_kb": 59319,
+   "rel_tag": "v0.3.6",
+   "rel_date": "2026-11-12",
+   "assets": 20,
+   "huella": [
+    "SHA256SUMS.txt"
+   ]
+  },
+  {
+   "slug": "KnifeLemon/Filee",
+   "stars": 27174,
+   "lic": "MIT",
+   "created": "2026-09-29",
+   "pushed": "2026-11-14",
+   "size_kb": 44871,
+   "rel_tag": "v2.4.1",
+   "rel_date": "2026-11-14",
+   "assets": 18,
+   "huella": [
+    "Filee-2.4.1-linux-arm64-SHA256SUMS.txt",
+    "Filee-2.4.1-linux-arm64-SHA256SUMS.txt.sig",
+    "Filee-2.4.1-linux-x64-SHA256SUMS.txt",
+    "Filee-2.4.1-linux-x64-SHA256SUMS.txt.sig",
+    "Filee-2.4.1-osx-arm64-SHA256SUMS.txt",
+    "Filee-2.4.1-osx-arm64-SHA256SUMS.txt.sig",
+    "Filee-2.4.1-osx-x64-SHA256SUMS.txt",
+    "Filee-2.4.1-osx-x64-SHA256SUMS.txt.sig",
+    "Filee-2.4.1-SHA256SUMS.txt",
+    "Filee-2.4.1-SHA256SUMS.txt.sig"
+   ]
+  },
+  {
+   "slug": "anmolkapil/plexo",
+   "stars": 5724,
+   "lic": "MIT",
+   "created": "2026-09-15",
+   "pushed": "2026-11-14",
+   "size_kb": 2954,
+   "rel_tag": "v1.0.0-rc.15",
+   "rel_date": "2026-10-11",
+   "assets": 20,
+   "huella": []
+  },
+  {
+   "slug": "deepseek-ai/deepseek-harness",
+   "stars": 281084,
+   "lic": "MIT",
+   "created": "2026-08-13",
+   "pushed": "2026-11-13",
+   "size_kb": 389740,
+   "rel_tag": null,
+   "rel_date": "None",
+   "assets": 0,
+   "huella": []
+  },
+  {
+   "slug": "firecrawl/anydoc",
+   "stars": 23544,
+   "lic": "MIT",
+   "created": "2026-08-03",
+   "pushed": "2026-11-13",
+   "size_kb": 788,
+   "rel_tag": "v0.2.4",
+   "rel_date": "2026-08-27",
+   "assets": 15,
+   "huella": []
+  },
+  {
+   "slug": "gauthierpiarrette/highball",
+   "stars": 2257,
+   "lic": "GPL-3.0",
+   "created": "2026-08-23",
+   "pushed": "2026-11-14",
+   "size_kb": 22363,
+   "rel_tag": "v0.10.26",
+   "rel_date": "2026-11-05",
+   "assets": 2,
+   "huella": []
+  },
+  {
+   "slug": "guillermolg00/morphicons",
+   "stars": 3185,
+   "lic": "MIT",
+   "created": "2026-08-01",
+   "pushed": "2026-11-14",
+   "size_kb": 1529,
+   "rel_tag": "v2.0.2",
+   "rel_date": "2026-10-24",
+   "assets": 0,
+   "huella": []
+  },
+  {
+   "slug": "kota-zo/myspoti",
+   "stars": 2121,
+   "lic": "GPL-3.0",
+   "created": "2026-10-14",
+   "pushed": "2026-11-12",
+   "size_kb": 37573,
+   "rel_tag": "v2.4.1",
+   "rel_date": "2026-11-12",
+   "assets": 4,
+   "huella": []
+  },
+  {
+   "slug": "ly05010419/MacNativeGames",
+   "stars": 7814,
+   "lic": "MIT",
+   "created": "2026-10-17",
+   "pushed": "2026-11-14",
+   "size_kb": 209663,
+   "rel_tag": "v2026.10.25",
+   "rel_date": "2026-10-25",
+   "assets": 0,
+   "huella": []
+  },
+  {
+   "slug": "miqdadbadjuber/anti-slop",
+   "stars": 9223,
+   "lic": "MIT",
+   "created": "2026-08-07",
+   "pushed": "2026-11-13",
+   "size_kb": 7539,
+   "rel_tag": "v3.2.30",
+   "rel_date": "2026-11-13",
+   "assets": 0,
+   "huella": []
+  },
+  {
+   "slug": "net-merge/net-merge",
+   "stars": 3123,
+   "lic": "MIT",
+   "created": "2026-10-12",
+   "pushed": "2026-11-09",
+   "size_kb": 1239,
+   "rel_tag": "v0.3.7",
+   "rel_date": "2026-11-09",
+   "assets": 59,
+   "huella": []
+  },
+  {
+   "slug": "omlahore/RemoveMacAI",
+   "stars": 6097,
+   "lic": "MIT",
+   "created": "2026-09-29",
+   "pushed": "2026-11-14",
+   "size_kb": 6741,
+   "rel_tag": "v1.2.0",
+   "rel_date": "2026-11-14",
+   "assets": 4,
+   "huella": [
+    "removemacai-darwin-arm64.tar.gz.sha256",
+    "RemoveMacAI.zip.sha256"
+   ]
+  },
+  {
+   "slug": "robbietilton/Compositor",
+   "stars": 18666,
+   "lic": "MIT",
+   "created": "2026-09-16",
+   "pushed": "2026-11-08",
+   "size_kb": 12785,
+   "rel_tag": "v1.6.6",
+   "rel_date": "2026-11-08",
+   "assets": 1,
+   "huella": []
+  },
+  {
+   "slug": "seedds/nxnative",
+   "stars": 15501,
+   "lic": "MIT",
+   "created": "2026-10-13",
+   "pushed": "2026-11-14",
+   "size_kb": 257968,
+   "rel_tag": null,
+   "rel_date": "None",
+   "assets": 0,
+   "huella": []
+  },
+  {
+   "slug": "shaongitbd/doory",
+   "stars": 2731,
+   "lic": "NOASSERTION",
+   "created": "2026-10-10",
+   "pushed": "2026-11-14",
+   "size_kb": 36026,
+   "rel_tag": "v0.3.1",
+   "rel_date": "2026-11-09",
+   "assets": 0,
+   "huella": []
+  },
+  {
+   "slug": "sonorahq/sonora",
+   "stars": 2817,
+   "lic": "GPL-3.0",
+   "created": "2026-08-03",
+   "pushed": "2026-11-14",
+   "size_kb": 84339,
+   "rel_tag": "v0.49.1",
+   "rel_date": "2026-11-13",
+   "assets": 15,
+   "huella": [
+    "SHA256SUMS"
+   ]
+  },
+  {
+   "slug": "tangency-labs/solidcraft",
+   "stars": 16315,
+   "lic": "Apache-2.0",
+   "created": "2026-10-07",
+   "pushed": "2026-11-14",
+   "size_kb": 561500,
+   "rel_tag": "v0.42.0",
+   "rel_date": "2026-11-14",
+   "assets": 49,
+   "huella": [
+    "SHA256SUMS.txt"
+   ]
+  },
+  {
+   "slug": "zai-org/ZCode",
+   "stars": 8689,
+   "lic": "Apache-2.0",
+   "created": "2026-09-20",
+   "pushed": "2026-11-13",
+   "size_kb": 138584,
+   "rel_tag": "v3.17.2",
+   "rel_date": "2026-11-04",
+   "assets": 7,
+   "huella": [
+    "SHA256SUMS"
+   ]
+  }
+ ]
+}
