@@ -1,5 +1,5 @@
 #!/usr/bin/env bash
-# Vigilante de los frentes externos. Siete frentes:
+# Vigilante de los frentes externos. Ocho frentes:
 #   1. PR #3   Awerkori/anime-extensoes (índice anime en protobuf)
 #   2. Issue #32 Harrys-HQ/ShinKu    (feed/novedades)
 #   3. Issue #33 Harrys-HQ/ShinKu    (biblioteca masiva + fusión)
@@ -7,8 +7,9 @@
 #   5. Issue #95 salmanbappi/AniZen  (biblioteca masiva + fusión)
 #   6. PR #34  Harrys-HQ/ShinKu      (Fase 1 de #33) + el estado de su CI, que quedó
 #      en action_required: sólo un mantenedor puede aprobar la ejecución desde un fork
-#   7. Rama merge-groups-phase1 del fork Alex17273747576777/AniZen (Fase 1 de #95,
-#      publicada como rama porque su AGENTS.md prohíbe abrir pull requests)
+#   7. Rama merge-groups-phase1 del fork Alex17273747576777/AniZen (Fase 1 de #95)
+#   8. Rama feed-cap-per-tab del mismo fork (Fase 2 de #94)
+#      Las dos publicadas como ramas porque su AGENTS.md prohíbe abrir pull requests
 # Vive lo que viva la sesión. Sondea cada 10 minutos y escribe una línea por frente.
 set -u
 TOKEN=$(grep -o 'GHP_A=[A-Za-z0-9_]*' /home/user/.cerox-keys/tokens.txt | cut -d= -f2)
@@ -42,11 +43,15 @@ try:
     for r in d.get('workflow_runs',[]):
         print(f\"{os.environ['H']} PR34-CI {r['name']} id={r['id']} {r['status']}/{r['conclusion']}\")
 except Exception as e: print(os.environ['H'],'PR34-CI error',e)" >> "$LOG"
-  # Frente 7: rama del fork de AniZen (sin abrir PR, por su AGENTS.md)
-  g "repos/Alex17273747576777/AniZen/branches/merge-groups-phase1" | H="$H" python3 -c "
+  # Frentes 7 y 8: ramas del fork de AniZen (sin abrir PR, porque su AGENTS.md lo prohíbe)
+  #   merge-groups-phase1 = Fase 1 de #95 (grupos de fusión)
+  #   feed-cap-per-tab    = Fase 2 de #94 (tope de 25 fuentes por pestaña)
+  for rama in merge-groups-phase1 feed-cap-per-tab; do
+    g "repos/Alex17273747576777/AniZen/branches/$rama" | R="$rama" H="$H" python3 -c "
 import json,sys,os
 try:
-    d=json.load(sys.stdin); print(f\"{os.environ['H']} FORK-AniZen rama=merge-groups-phase1 viva={d['commit']['sha'][:10]}\")
-except Exception as e: print(os.environ['H'],'FORK-AniZen error',e)" >> "$LOG"
+    d=json.load(sys.stdin); print(f\"{os.environ['H']} FORK-AniZen rama={os.environ['R']} viva={d['commit']['sha'][:10]}\")
+except Exception as e: print(os.environ['H'],'FORK-AniZen',os.environ['R'],'error',e)" >> "$LOG"
+  done
   sleep 600
 done
