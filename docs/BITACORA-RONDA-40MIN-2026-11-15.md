@@ -295,3 +295,47 @@ sólo las horas. Contraparche registrado como FALLA-009.
 - **16:21:14Z** · Cierre de la ronda: los cuatro issues publicados, en inglés, corregidos en público y
   verificados por lectura; dos parches locales verificados y **sin publicar** a propósito; vigilante de
   los cinco frentes vivo (sondeo 16:17:30Z).
+
+## Ronda de publicación (T0=, 17:12:01Z al escribir)
+
+- **17:00:14Z** · Dueño: «Procede a publicarlos». Se publica por **fork+rama**, nunca push directo.
+  Forks creados por API: `POST /repos/{o}/{r}/forks` → **202** `Alex17273747576777/ShinKu` y
+  `…/AniZen`, y confirmados listos por `GET` (rama `main`/`master`, padre correcto).
+- **17:00-17:02Z** · Investigación de las reglas del destino ANTES de publicar: ShinKu
+  `build_check.yml` corre `spotlessCheck assembleDevDebug` en todo PR y `CONTRIBUTING.md:10` los
+  acepta; AniZen `AGENTS.md` dice **«Never | Open a pull request»** (un run de PR publica release y
+  desincroniza `r<commitCount>`) y exige marcadores `// ANZ` (`scripts/check-provenance.sh` R1-R4);
+  `max_line_length = 120` en ambos `.editorconfig`; sin cabecera de licencia en dominio.
+- **17:03:28Z** · **Nuevo T0 de ronda** (`work/edt/docs/T0-RONDA-PUBLICAR-PARCHES.txt`). Clones
+  refrescados con `git fetch --depth 1` al HEAD real: ShinKu `043ab7d8` y AniZen `95160a72` **sin
+  mover**, máx .sqm sigue 41/146 ⇒ 42/147 correcto.
+- **17:04Z** · **Bug real cazado en mis propios parches antes de publicar**: declaraban la tabla sólo en
+  la migración `.sqm`. En SQLDelight la instalación limpia recibe el esquema del DDL de los `.sq`, así
+  que un usuario nuevo **no habría tenido `merge_group`**. Verificado que la convención de los dos repos
+  es declarar la tabla en ambos sitios (`feed_categories.sq`+`133.sqm`, `activity_log.sq`+`134.sqm`,
+  `excluded_scanlators.sq`+`29.sqm`, `manga_embeddings.sq`+`41.sqm`). Parches reescritos.
+- **17:05Z** · **Validación SQL real** (`work/biblioteca-masiva/validar_sql.py`, persistente): DDL de las
+  dos rutas ejecutado contra **SQLite 3.46.1** con `PRAGMA foreign_keys=ON` + consultas + restricciones =
+  **13 aserciones por repo, 0 fallos**. Dos intentos previos dieron ✗ falsos por mi propio arnés (pasaba
+  ids inexistentes y borraba filas antes de assertar); reescrito limpio.
+- **17:05:09Z** · Ramas `merge-groups-phase1` commiteadas y empujadas con `GIT_ASKPASS` (token por
+  variable de entorno, **nunca en la URL del remoto**): ShinKu `8e035e149a` (+92, 3 ficheros), AniZen
+  `e1c6b51c195b` (+93). Push verificado: `git ls-remote` == `git rev-parse HEAD` en los dos (**sí**).
+- **17:05:44Z** · **PR ShinKu #34 abierto** (`POST` **201**) y verificado por `GET`: state=open,
+  draft=False, head `Alex17273747576777:merge-groups-phase1`@`8e035e149a`, base `main`, 1 commit,
+  3 ficheros, +92. Cuerpo en inglés con lo verificado y lo NO verificado.
+- **17:06:16Z / 17:06:17Z** · AniZen: **sin PR** (su `AGENTS.md` lo prohíbe). En su lugar `PATCH` **200**
+  del issue **#95** → **30.734** chars con la sección «Phase 1 patch — published as a branch, not a pull
+  request»: cita textual de la regla, `git fetch`+`cherry-pick` de la rama pública, tabla de los tres
+  ficheros, el parche en bloque `diff` plegado, y verificado/no-verificado. Y `PATCH` **200** de **#33**
+  → **22.826** chars con un único renglón apuntando al PR #34 (edición de cuerpo, no comentario suelto).
+  Ambos re-leídos por `GET`: state=open y las marcas presentes.
+- **17:09:16Z** · CI de ShinKu sobre el PR: `run 43739153438` (CI) y `43739153440` (Label PRs) en
+  **`completed/action_required`** = GitHub espera la aprobación de un mantenedor porque el PR viene de un
+  fork de un contribuidor nuevo. `check-runs` total=0 y `mergeable_state=unstable` son consecuencia de
+  eso, no un fallo del código. Registrado como hecho; no se insiste ni se pide aprobación.
+- **17:09:33Z** · Vigilante anterior detenido y reescrito a **siete frentes** (PR #3, #32, #33, #94, #95,
+  **PR #34 + su CI**, **rama del fork de AniZen**); relanzado con `start_process` →
+  `vigilante-de-7-frentes-f86a0213`, pid 5777, running.
+- **17:12:01Z** · Espejo persistente en `work/edt/proyectos/biblioteca-masiva/` (LEEME, los dos cuerpos de
+  issue, los dos parches, `validar_sql.py`, el vigilante) y LEEME ampliado con la tabla de publicación.
