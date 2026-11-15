@@ -171,3 +171,25 @@ sólo las horas. Contraparche registrado como FALLA-009.
 - **15:24:14Z** · Cierre: ronda de 40 min (15:07:42Z → 15:47:42Z) con el encargo del feed completo y el
   frente Nox intacto (PR #3 `open`, 0 comentarios, head `6711284aa4`; cero-X HEAD `7d108e17`
   == remoto). FALLA-009 registrada por las horas estimadas de la bitácora.
+
+- **15:25:34Z** · Parche ShinKu de Fase 2 generado sobre el clon prístino y **verificado con
+  `git apply --check` → APLICA_LIMPIO** (83 líneas, 31 añadidas): `FeedLimits.kt` nuevo en
+  `domain`, los dos `> 10` (`FeedScreenModel.kt` y `SourceFeedScreenModel.kt`) sobre la
+  constante 25, y `feedLanguageFilter()` pasando de `"en"` al idioma del dispositivo. Árbol
+  devuelto a prístino tras generar el parche (`git status --porcelain` = 0).
+- **15:26:15Z** · Parche AniZen de Fase 2 generado y **verificado `git apply --check` →
+  APLICA_LIMPIO** (66 líneas): `FeedLimits.kt` nuevo + guarda en los **dos** sitios que insertan
+  en `FeedManageScreenModel` (`duplicate` y el movimiento entre categorías), con la guarda
+  **antes** del `deleteFeedSavedSearchById` para que un destino lleno no borre la entrada. Usa la
+  lista que esas funciones ya consultan ⇒ cero dependencias y cero consultas nuevas. Árbol a
+  prístino (0 cambios).
+- **15:26:53Z / 15:26:54Z** · **Parches publicados dentro de los issues** y corrección añadida:
+  `PATCH` **200** en #32 (body 31.013 chars) y #94 (body 29.187 chars); verificado por `GET`
+  (ambos `state=open`, contienen el `diff` y las marcas nuevas). En AniZen se publicó además
+  «Correction #2»: `CountFeedSavedSearchGlobal.await(categoryId = 1)` **ya** admite categoría
+  (`FeedSavedSearchRepository.countGlobal(categoryId)`), así que el interactor nuevo que proponía
+  el snippet 2 no hace falta.
+- **15:27:36Z** · `COMO-APLICAR.md` (cómo aplicar, qué toca cada parche, y lo que **no** hacen:
+  esquema de categorías = Fase 1, cadenas con `%1$d`, snackbar en AniZen; y que no están
+  compilados) + addendum §7 al plan. Divergencia declarada: con el parche de ShinKu el límite real
+  es 25 mientras `too_many_in_feed` sigue diciendo «10» hasta la Fase 2 completa.
