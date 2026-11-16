@@ -1,5 +1,5 @@
 #!/usr/bin/env bash
-# Vigilante de los frentes externos. Nueve frentes:
+# Vigilante de los frentes externos. Diez frentes:
 #   1. PR #3   Awerkori/anime-extensoes (índice anime en protobuf)
 #   2. Issue #32 Harrys-HQ/ShinKu    (feed/novedades)
 #   3. Issue #33 Harrys-HQ/ShinKu    (biblioteca masiva + fusión)
@@ -55,6 +55,12 @@ try:
     d=json.load(sys.stdin); print(f\"{os.environ['H']} FORK-AniZen rama={os.environ['R']} viva={d['commit']['sha'][:10]}\")
 except Exception as e: print(os.environ['H'],'FORK-AniZen',os.environ['R'],'error',e)" >> "$LOG"
   done
+  # Frente 10: PR #36 en Harrys-HQ/ShinKu (tope en el interactor) + estado del PR #34 ya fusionado
+  g "repos/Harrys-HQ/ShinKu/pulls/36" | H="$H" python3 -c "
+import json,sys,os
+try:
+    d=json.load(sys.stdin); print(f\"{os.environ['H']} PR36 state={d['state']} merged={d.get('merged')} comentarios={d.get('comments',0)}+{d.get('review_comments',0)} head={d['head']['sha'][:10]}\")
+except Exception as e: print(os.environ['H'],'PR36 error',e)" >> "$LOG"
   # Frente 9: rama feed-tabs-phase1 del fork de ShinKu (Fase 1 del feed, sin PR propio)
   g "repos/Alex17273747576777/ShinKu/branches/feed-tabs-phase1" | H="$H" python3 -c "
 import json,sys,os
