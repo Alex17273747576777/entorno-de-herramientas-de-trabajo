@@ -152,3 +152,48 @@ ocurre. Ya había pasado en la ronda anterior (dos entradas corregidas contra `g
 3. Al cerrar cada ronda, comparar la última hora escrita contra `date -u` antes del checkpoint.
 4. Corrección de una hora ya escrita: sustituirla y dejar constancia de la sustitución y de su
    fuente (como en esta ronda), no reescribir en silencio.
+
+## FALLA-010 · Publiqué el binario con el esquema del ecosistema equivocado, y documenté la regresión como una corrección
+
+**Cuándo:** detectada el 2026-11-17 a las 10:48Z al leer el cierre de `Awerkori/anime-extensoes#3`.
+El mantenedor cerró el PR **sin fusionar** (06:52Z) conservando el crédito: la implementación se
+aprovechó corregida en `Awerkori/anime-fonte-extensoes#9`.
+
+**Qué pasó, verificado por bytes y no de memoria:**
+
+| fichero | tamaño | campos de Extension | spec | destino correcto |
+|---|---:|---|---|---|
+| `anime-index.pb` | 17.663 B | `[1..8]`, 326 fuentes en el campo **8** | **nox** (org / Nox Mangá) | ✗ |
+| `anime-index-spec-aniyomi.pb` | 17.664 B | `[1..7,9]`, 326 fuentes en el campo **9** | **aniyomi** (oficial) | ✓ |
+| `index.pb` de la rama `index-pb` del PR | 17.663 B | **idéntico byte a byte** a `anime-index.pb` | nox | ✗ |
+
+Un cliente Aniyomi lee `sources=8` como `isTorrent` y no ve las 326 fuentes: exactamente lo que dijo la
+revisión. **Lo grave no es el despiste, es la secuencia:** la *primera* revisión del PR llevaba el spec
+correcto (`sources=9`) y mi **segundo commit** (`0ca7294` → `6711284`) lo «corrigió» al proto de la org.
+Mi propio `INFORME-CONVERSION.md` lo describía así: «`anime-index-spec-aniyomi.pb` — histórico: la
+primera revisión del PR usó el spec de Aniyomi; se conserva como evidencia de la **corrección**». O sea:
+documenté una regresión como un arreglo, y el documento citaba dos líneas más arriba la autoridad
+correcta («el spec de Aniyomi para anime/Yuzono»). Tenía la regla escrita, el fichero correcto en el
+mismo directorio, y publiqué el otro.
+
+**Regla que queda:** cuando existen dos variantes generadas de un mismo artefacto, **la elección se
+verifica sobre los bytes del fichero que se va a publicar**, no sobre el nombre ni sobre la intención; y
+ningún commit «corrector» se describe como corrección sin decir qué cambió y contra qué autoridad.
+
+**Contramedida ejecutada (no prometida):** compuerta en `json_a_index_pb.py` —
+1. modo nuevo `verificar-spec <fichero.pb> [nox|aniyomi]` que **lee los bytes escritos** y compara el
+   número de campo real de `Extension.sources` (8 = nox, 9 = aniyomi), salida 1 si no coincide;
+2. `generar` se **niega** a producir `spec=nox` cuando el repositorio destino lo consumen clientes
+   Aniyomi (`anime-extensoes`, `anime-fonte-extensoes`, `anime-extensions`), salvo `--forzar-nox`;
+3. `generar` se auto-comprueba tras escribir y **borra** el fichero si lo escrito no casa con el spec
+   pedido (FALLA-008: toda compuerta se prueba contra un caso que debe fallar).
+
+Pruebas ejecutadas el 17-11 a las 10:53Z, las cuatro con su resultado esperado:
+`verificar-spec anime-index.pb nox` → ✓ 0 · `… aniyomi` → ✗ **1** (el caso que debe fallar) ·
+`verificar-spec anime-index-spec-aniyomi.pb aniyomi` → ✓ 0 · `generar … anime-extensoes … nox` →
+**NEGADO, salida 1, ningún fichero escrito**.
+
+**Precisión honesta sobre el diagnóstico ajeno:** la revisión también mencionaba `Source.message=7`.
+En mi binario ningún `Source` lleva el campo 6 ni el 7 (proto3 omite cadenas vacías y todas iban
+vacías), así que ese detalle no aplica a este artefacto; el defecto decisivo y real es `sources=8`
+frente a `9`. Se lo dije en el PR en vez de callarlo o de fingir que todo su diagnóstico aplicaba.

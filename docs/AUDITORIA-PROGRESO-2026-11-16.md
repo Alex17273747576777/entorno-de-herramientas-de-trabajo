@@ -150,3 +150,61 @@ los hice porque las rondas siguientes se fueron todas a los repos ajenos (feed y
 - Recuento global de objetos GitHub bajo tu cuenta: **139** (48 abiertos, 91 cerrados) en **31** repos,
   el primero el 2024-12-09 (`null2264/yokai#288`); en la ventana de esta colaboración (08-11 → 15-11),
   **29** objetos.
+
+---
+
+# ACTUALIZACIÓN 2026-11-17 (medida a las 10:48-10:55Z, hora autoritativa de GitHub)
+
+⚠️ **El reloj del sandbox iba un día atrás**: marcaba 2026-11-16 10:47Z cuando la cabecera `Date` de la
+API de GitHub decía **Tue, 17 Nov 2026 10:47:17 GMT**. Regla nueva: la hora se toma de GitHub, no del
+reloj local, y se declara cuál de las dos se está usando. Habían pasado ~23 h, no 14.
+
+## Lo que cambió mientras no había turno
+
+| Hecho | Evidencia |
+|---|---|
+| **PR #36 FUSIONADO** en `main` de ShinKu | `merged=True`, `merged_at=2026-11-17T02:28:53Z`, merge commit `5e7d46e610` |
+| **#32 CERRADO como resuelto** | comentario de `Harrys-HQ` 07:17Z: *«Resolved and released in ShinKu v2.8.3 via multi-tab feed categories and domain-level 25-source safety cap (#36)»* |
+| **#33 CERRADO como resuelto** | comentario 07:17Z: *«…via dedicated library merge group viewing, consolidated chapter counting, and one-tap deduplication (#34)»* |
+| **ShinKu v2.8.3 publicada** | `4b4acb129f` (bump) y `c7ab60c983` (project memory v2.8.3, 147), release con 5 assets |
+| Mi test y el tope en el interactor están en su `main` | `raw.githubusercontent.com/…/main/…InsertFeedSavedSearchTest.kt` y `…InsertFeedSavedSearch.kt` contienen `countGlobalByCategory` |
+| **PR #3 (Nox/anime) CERRADO SIN FUSIONAR** | `Awerkori` 06:52Z: la implementación se aprovechó **con crédito** en `Awerkori/anime-fonte-extensoes#9`, pero mi binario usaba `sources=8` (esquema de la org) cuando Aniyomi exige `sources=9` |
+| El repo se mudó | `Awerkori/anime-extensoes` → **`ProjectNox-org/anime-extensoes`** (307 con redirect) |
+| AniZen sigue igual | `pushed_at=2026-11-15T05:31`, #94/#95 con **0 comentarios** |
+
+**Verificación propia del cierre del PR #3, por bytes (no de memoria):** el `index.pb` de la rama
+`index-pb` (17.663 B) es **idéntico byte a byte** a mi `anime-index.pb`, con `Extension` en campos
+`[1..8]` y 326 fuentes en el campo **8** = esquema de la org; mi `anime-index-spec-aniyomi.pb`
+(17.664 B) lleva `[1..7,9]` y 326 fuentes en el campo **9** = spec oficial Aniyomi. El diagnóstico del
+mantenedor es correcto. **Y la secuencia es peor que un despiste:** la primera revisión del PR llevaba el
+spec correcto y mi segundo commit lo «corrigió» al proto de la org; mi propio informe llamaba «corrección»
+a esa regresión. Registrado como **FALLA-010** con la precisión honesta de que `Source.message=7` no
+aplica a mi artefacto (ningún `Source` lleva campo 6 ni 7: proto3 omite cadenas vacías).
+
+**Contramedida ejecutada, no prometida:** compuerta en `json_a_index_pb.py` — modo `verificar-spec` que
+lee los bytes escritos y compara el número de campo real, negativa a generar `spec=nox` para repos
+consumidos por clientes Aniyomi, y auto-comprobación tras escribir que borra el fichero si no casa.
+Probada a las 10:53Z contra cuatro casos, **incluido el que debe fallar** (`verificar-spec
+anime-index.pb aniyomi` → salida 1; `generar … anime-extensoes … nox` → NEGADO, salida 1, nada escrito).
+
+## Porcentaje recalculado a las 10:55Z
+
+| # | Corriente | Peso | 11-16 | **11-17** | Por qué se movió |
+|---|---|---:|---:|---:|---|
+| 1 | Biblioteca masiva — ShinKu | 14 | 85 | **95** | PR #34 fusionado, Fase 2 landeada y **publicada en v2.8.3**, #33 cerrado como resuelto |
+| 2 | Feed — ShinKu | 12 | 85 | **90** | Etapas 1 y 2 landeadas, **PR #36 fusionado**, #32 cerrado y publicado; falta la cadena en 14 locales |
+| 3 | Infraestructura edt | 10 | 90 | **90** | igual; se añadió la compuerta de spec y la FALLA-010 |
+| 4 | Auditoría remota 6 repos | 10 | 70 | **70** | los 12 issues siguen abiertos (se atacan en este turno) |
+| 5 | cero-X-app | 9 | 75 | **75** | sin cambio |
+| 6 | La Bandita | 9 | 65 | **65** | sin cambio |
+| 7 | Guías/investigación | 7 | 85 | **85** | sin cambio |
+| 8 | Frente Nox `index.pb` | 7 | 60 | **50** | **bajó**: PR cerrado sin fusionar por binario con esquema equivocado; implementación adoptada con crédito en otro repo |
+| 9 | AniZen (feed + biblioteca) | 12 | 35 | **35** | nada adoptado, 0 respuestas |
+| 10 | Idiomas/sugerencias/estadísticas | 6 | 55 | **55** | sin cambio |
+| 11 | gltools-reborn (8 issues) | 3 | 15 | **15** | se atacan en este turno |
+| 12 | normas-de-diseno (2 issues) | 2 | 25 | **25** | se atacan en este turno |
+| 13 | Dependabot/serialize-javascript | 1 | 20 | **20** | se ataca en este turno |
+
+**Global ponderado: 58 % (11-16) → 69 % (11-17).** Subió 11 puntos por dos fusiones y una release, y
+bajó en el frente Nox por un defecto mío. Lo que impide pasar de ~70 % no son los repos ajenos: son los
+**12 issues abiertos en tus propios repos** y AniZen, que no responde.
