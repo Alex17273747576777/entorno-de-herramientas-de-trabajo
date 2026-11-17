@@ -273,3 +273,19 @@ están en `proyectos/feed-novedades/pr37/KTLINT-COMO-ORACULO.md`.
 el número no es lo que hago en los repos propios —ésos ya están casi todos cerrados— sino AniZen (peso
 12 al 35 %, sin una sola respuesta) y los 6 issues de gltools que necesitan un dispositivo que no
 existe en este contenedor.
+
+
+### Adenda a las 12:35Z · La Bandita
+
+`la-bandita-archivo#1` (duplicados, cachés y datos versionados) **cerrada** en `bfaa811b`, con las
+tres casillas medidas: 545 copias adicionales clasificadas y **0 candidatas a borrado**, las 100
+entradas de `docs/_medicion-cache` declaradas evidencia sellada (no regenerables sin re-sellar) y la
+política de `registro.db` / `.tmp` escrita. De ahí salieron dos incidencias nuevas (#2 el registro
+fuera del sello, #3 el sha256 prometido y no escrito) y la FALLA-014.
+
+El renglón 6 (La Bandita, peso 9) pasa de **65 a 70**: la auditoría de duplicados era lo que faltaba
+de esa corriente, pero las piezas 32-40 siguen sin reescribirse y el registro sigue sin huella de
+contenido.
+
+**Total ponderado con la adenda: 73,0 % → 73,4 %** (7.489 / 102 de peso, aritmética de Python sobre
+esta tabla, no de cabeza).

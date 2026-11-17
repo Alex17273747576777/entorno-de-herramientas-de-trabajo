@@ -262,3 +262,39 @@ después. Con esos tres, el número de 1.113 violaciones en 621 ficheros del rep
 **Contramedida ejecutada:** la tabla de falsación se publicó en `ShinKu#37`
 (`issuecomment-6947597445`) junto con el recuento por módulo, para que nadie tenga que fiarse de mi
 ktlint sin ver contra qué se comprobó.
+
+## FALLA-014 · Un generador que escribe antes de comprobar, y un ritual que sella después (2026-11-17, la-bandita-archivo)
+
+**Qué pasó:** `make ritual` (= verificar → sellar → verificar) llama a `make tareas`, y
+`tools/tareas.py` escribía `docs/TAREAS.md` **antes** de comprobar si había encontrado alguna pieza.
+El clon de trabajo no tiene `Arena-Reimagined/01-PUBLICACIONES` (es superficial y sólo trae el
+archivo), así que el generador escribió un tablero de **0 tareas, borrando las 90** que había, y
+*después* imprimió «✗ no hay ninguna tarea declarada en las piezas vivas» y salió con 1. El aviso
+llegó con el fichero ya destruido.
+
+**Lo que lo volvió grave:** el ritual siguió. `tools/atestar.py` selló el árbol **después**, así que
+el sello nuevo quedó calculado sobre el tablero vacío: la casa habría quedado con una attestación
+que certificaba la pérdida. Y el `EXIT=0` final del ritual tapaba todo: el fallo de `tareas` iba
+marcado `(ignored)` en el Makefile.
+
+**Cómo se cazó:** por el `git diff` del árbol después del ritual —115 líneas borradas en un fichero
+que nadie había decidido tocar—, no por la salida del comando. La salida decía «ritual completo».
+
+**Regla que queda, en tres partes:**
+1. **Un generador que no encuentra su materia prima no publica un resultado vacío: se niega.**
+   Cero entradas no es «el resultado de hoy», es «no he podido mirar». Es la misma regla que el
+   auditor de lockfiles que sale 2 cuando no pudo preguntar, aplicada a un escritor de documentos.
+2. **El orden escribir→comprobar está prohibido**; va comprobar→escribir. Y si el aviso es un
+   `exit 1`, que llegue **antes** de tocar el fichero.
+3. **Después de un ritual que sella, se mira `git status` y `git diff --stat` del árbol**, no sólo el
+   código de salida: un sello verde sobre un fichero vaciado es peor que ningún sello, porque parece
+   certificado.
+
+**Contramedida ejecutada (no prometida):** guarda en `tools/tareas.py::escribir()` — si no aparece
+ninguna tarea y el tablero publicado tiene alguna, `SystemExit` con el motivo y **sin tocar el
+fichero**. Probada en los dos sentidos: negativa (clon tal cual → `EXIT=1` y
+`git diff --exit-code docs/TAREAS.md` limpio, 90 tareas intactas) y positiva (pieza sintética con una
+`#task` → escribe el tablero con 1 tarea, o sea que la guarda no bloquea el camino bueno); la pieza
+sintética se borró y el tablero se restauró. Commit `bfaa811b`, re-sellado después
+(`lote-2026-11-17`, huella `1a50771abaea2f18…`) y `make verificar` en `EXIT=0` con 14.363 archivos,
+0 alterados y 0 sin sellar.
