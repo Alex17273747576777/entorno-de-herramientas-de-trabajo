@@ -144,3 +144,11 @@ revocarlos desde aquí.
   (ktlint 1.8.0) y `proyectos/cero-X/HERRAMIENTAS.md` (yarn 1.22.22 con `npm install yarn` en `/tmp/yi`,
   porque `corepack enable` da EACCES sin root).
 - **`/tmp/arena-workspace`**: es de la plataforma, no mío.
+
+## Añadido después del primer manifiesto
+
+`referencias-inventario.txt` vivía suelto en `work/`, no dentro de `work/referencias/`, y el primer
+barrido del respaldo sólo recorrió directorios: se habría borrado sin copia. Se detectó al listar lo
+que quedaba después de vaciar, se copió aquí y entonces se borró el original. Es el inventario de las
+fuentes de referencia (no confundir con `referencias/inventario.txt`, que es otro fichero y sí estaba
+respaldado).
