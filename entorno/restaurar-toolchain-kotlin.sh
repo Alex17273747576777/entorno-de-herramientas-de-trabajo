@@ -63,3 +63,20 @@ echo "== humo =="
 /var/tmp/kc-2.3.10/kotlinc/bin/kotlinc -version 2>&1 | head -1
 /var/tmp/jdk/jdk-17.0.13+11/bin/java -version 2>&1 | head -1
 echo "RESULTADO: $([ $fallos -eq 0 ] && echo HERRAMIENTAS_LISTAS || echo "FALTAN $fallos")"
+
+# --- GIT_ASKPASS -------------------------------------------------------------
+# El vaciado del espacio local se lleva /tmp/ap.sh, y sin él ningún empuje funciona
+# ("could not read Username"). Pasó de verdad el 2026-11-17: el commit quedó local sin
+# publicar hasta que se recreó el helper. Se rehace aquí para que restaurar el entorno
+# restaure también la capacidad de publicar. Nunca se escribe el token en la URL.
+if [ ! -x /tmp/ap.sh ]; then
+  cat > /tmp/ap.sh <<'APEOF'
+#!/bin/sh
+case "$1" in
+  *Username*) echo "Alex17273747576777" ;;
+  *)          echo "$GIT_TOKEN" ;;
+esac
+APEOF
+  chmod 700 /tmp/ap.sh
+  echo "  ✓ /tmp/ap.sh (GIT_ASKPASS) recreado"
+fi
