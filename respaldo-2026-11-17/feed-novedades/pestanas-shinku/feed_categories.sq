@@ -1,0 +1,38 @@
+import kotlin.Boolean;
+
+-- Feed tabs, mirroring the schema AniZen already ships (feed_categories.sq, 133.sqm) so the two apps
+-- describe the same concept with the same names. Row _id = 1 is the system tab and is never deleted.
+CREATE TABLE feed_categories(
+    _id INTEGER NOT NULL PRIMARY KEY AUTOINCREMENT,
+    name TEXT NOT NULL,
+    sort INTEGER NOT NULL,
+    lang TEXT NOT NULL DEFAULT 'all',
+    explore INTEGER AS Boolean NOT NULL DEFAULT 0
+);
+
+-- Insert system category
+INSERT OR IGNORE INTO feed_categories(_id, name, sort) VALUES (1, 'Global', 0);
+
+selectAll:
+SELECT * FROM feed_categories ORDER BY sort;
+
+selectById:
+SELECT * FROM feed_categories WHERE _id = :id;
+
+insert:
+INSERT INTO feed_categories(name, sort) VALUES (:name, (SELECT COALESCE(MAX(sort), 0) + 1 FROM feed_categories));
+
+delete:
+DELETE FROM feed_categories WHERE _id = :id AND _id != 1;
+
+update:
+UPDATE feed_categories SET name = :name WHERE _id = :id;
+
+updateLang:
+UPDATE feed_categories SET lang = :lang WHERE _id = :id;
+
+updateExplore:
+UPDATE feed_categories SET explore = :explore WHERE _id = :id;
+
+selectLastInsertedRowId:
+SELECT last_insert_rowid();

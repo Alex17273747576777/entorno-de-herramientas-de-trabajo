@@ -1,0 +1,483 @@
+diff --git a/android/app/build.gradle b/android/app/build.gradle
+index add878e..bca5667 100644
+--- a/android/app/build.gradle
++++ b/android/app/build.gradle
+@@ -16,8 +16,8 @@ android {
+         applicationId "com.ceroX.app"
+         minSdk 26
+         targetSdk 36
+-        versionCode 10
+-        versionName "1.0.5-beta-web-privado"
++        versionCode 12
++        versionName "1.0.7-beta-asistente-real"
+ 
+         testInstrumentationRunner "androidx.test.runner.AndroidJUnitRunner"
+ 
+diff --git a/android/app/src/main/AndroidManifest.xml b/android/app/src/main/AndroidManifest.xml
+index 564fd0c..857a4de 100644
+--- a/android/app/src/main/AndroidManifest.xml
++++ b/android/app/src/main/AndroidManifest.xml
+@@ -199,8 +199,8 @@
+         <activity
+             android:name=".ui.ia.PantallaIaActivity"
+             android:exported="false"
+-            android:label="Modelos de IA"
+-            android:parentActivityName=".ui.reader.ReaderActivity"
++            android:label="IA y asistente"
++            android:parentActivityName=".ui.main.MainActivity"
+             android:configChanges="orientation|keyboardHidden|screenSize|uiMode|density" />
+         <activity
+             android:name=".ui.StressTestActivity"
+diff --git a/android/app/src/main/java/com/ceroX/app/core/CeroXApplication.kt b/android/app/src/main/java/com/ceroX/app/core/CeroXApplication.kt
+index 612db10..0b071e6 100644
+--- a/android/app/src/main/java/com/ceroX/app/core/CeroXApplication.kt
++++ b/android/app/src/main/java/com/ceroX/app/core/CeroXApplication.kt
+@@ -166,8 +166,8 @@ class CeroXApplication : Application() {
+             ModuleMetadata("download-tools", "1.0.0-beta", emptyList()),
+             ModuleMetadata("booru-viewer", "1.0.0-beta", emptyList()),
+             ModuleMetadata("prisma-client", "4.2.1-fusion", emptyList()),
+-            ModuleMetadata("ai-hub", "3.0.1-fusion", emptyList()),
+-            ModuleMetadata("kai-assistant", "1.0.0-fusion", emptyList()),
++            ModuleMetadata("ai-hub", "4.0.0-cliente-real", emptyList()),
++            ModuleMetadata("kai-assistant", "2.0.0-inventario-honesto", emptyList()),
+             ModuleMetadata("kisara-reader", "2.3.9-kisara-stable", emptyList()),
+             ModuleMetadata("kisara-reader-engine", "2.3.9-kisara-stable", listOf("kisara-reader")),
+             ModuleMetadata("kisara-library", "2.3.9-kisara-stable", listOf("kisara-reader")),
+diff --git a/android/app/src/main/java/com/ceroX/app/modules/aihub/AIHubModule.kt b/android/app/src/main/java/com/ceroX/app/modules/aihub/AIHubModule.kt
+index 778b5f1..b54cb9f 100644
+--- a/android/app/src/main/java/com/ceroX/app/modules/aihub/AIHubModule.kt
++++ b/android/app/src/main/java/com/ceroX/app/modules/aihub/AIHubModule.kt
+@@ -4,37 +4,24 @@ import com.ceroX.app.core.engine.ModuleHealth
+ import com.ceroX.app.core.engine.ModuleInterface
+ 
+ /**
+- * AIHubModule — Integración de SilentCoderHere/aihub en cero-X.
++ * Asistente conversacional real mediante endpoints OpenAI-compatibles.
+  *
+- * AI Hub es una aplicación todo-en-uno que agrega múltiples asistentes de IA
+- * en una sola interfaz con pestañas.
+- *
+- * Características integradas:
+- * - Interfaz con pestañas para múltiples asistentes de IA
+- * - Sesiones persistentes con soporte en segundo plano
+- * - Diseño Material You (colores dinámicos, modo claro/oscuro automático)
+- * - Bloqueo de rastreadores y anuncios (lista StevenBlack hosts)
+- * - Conversaciones persistentes (sobreviven reinicios de la app)
+- * - Tamaño de fuente ajustable
+- * - Ligero y optimizado
+- * - Privacidad: cero recopilación de datos, cero telemetría, cero reportes de fallos
+- * - Código completamente abierto y verificable
++ * No incorpora las aplicaciones AI Hub o Kai ni afirma tener sus funciones. La
++ * conversación vive en memoria hasta cerrar el proceso; endpoint y modelo los
++ * configura el usuario y la clave se guarda cifrada desde la capa Android.
+  */
+-class AIHubModule : ModuleInterface() {
++class AIHubModule(
++    private val cliente: ClienteChat = ClienteChat(),
++) : ModuleInterface() {
+ 
+     override val name = "ai-hub"
+-    override val version = "3.0.1-fusion"
+-    override val dependencies: List<String> = emptyList()
++    override val version = "4.0.0-cliente-real"
+ 
+-    private val aiServices = mutableListOf<AIService>()
+-    private val activeSessions = mutableListOf<AISession>()
+-    private var trackerBlockingEnabled = true
+-    private var fontSizeScale = 1.0f
++    private val historial = mutableListOf<MensajeChat>()
++    private var solicitudes = 0
++    private var ultimoModelo = ""
+ 
+     override fun initialize(config: Map<String, Any>): Boolean {
+-        trackerBlockingEnabled = config["tracker_blocking"] as? Boolean ?: true
+-        fontSizeScale = config["font_size_scale"] as? Float ?: 1.0f
+-        registerDefaultServices()
+         _initialized = true
+         return true
+     }
+@@ -50,86 +37,38 @@ class AIHubModule : ModuleInterface() {
+         return true
+     }
+ 
+-    override fun healthCheck(): ModuleHealth {
+-        return ModuleHealth(
+-            name, version,
+-            if (_started) "healthy" else "stopped",
+-            mapOf(
+-                "ai_services" to aiServices.size,
+-                "active_sessions" to activeSessions.size,
+-                "tracker_blocking" to trackerBlockingEnabled,
+-                "font_size_scale" to fontSizeScale,
+-                "privacy_first" to true,
+-                "zero_data_collection" to true,
+-                "material_design_3" to true,
+-                "min_android" to "8.0 (API 26)"
+-            )
+-        )
+-    }
+-
+-    private fun registerDefaultServices() {
+-        aiServices.addAll(listOf(
+-            AIService("openai", "OpenAI", "chatbot", "freemium", true),
+-            AIService("anthropic", "Anthropic Claude", "chatbot", "freemium", true),
+-            AIService("google", "Google Gemini", "chatbot", "freemium", true),
+-            AIService("deepseek", "DeepSeek", "chatbot", "freemium", true),
+-            AIService("mistral", "Mistral AI", "chatbot", "freemium", true),
+-            AIService("xai", "xAI Grok", "chatbot", "freemium", true),
+-            AIService("openrouter", "OpenRouter", "chatbot", "freemium", true),
+-            AIService("groq", "Groq", "chatbot", "freemium", true)
+-        ))
+-    }
+-
+-    fun addService(service: AIService) {
+-        aiServices.add(service)
+-    }
+-
+-    fun listServices(): List<AIService> = aiServices.toList()
+-
+-    fun createSession(serviceId: String, prompt: String): AISession {
+-        val session = AISession(
+-            id = "session_${System.currentTimeMillis()}",
+-            serviceId = serviceId,
+-            prompt = prompt,
+-            messages = mutableListOf(),
+-            createdAt = System.currentTimeMillis(),
+-            lastActive = System.currentTimeMillis()
+-        )
+-        activeSessions.add(session)
+-        return session
++    /** Bloqueante por diseño; el llamador usa Dispatchers.IO. */
++    fun conversar(config: ConfiguracionChat, texto: String): ResultadoChat {
++        check(_started) { "El asistente no está iniciado" }
++        val limpio = texto.trim()
++        require(limpio.isNotEmpty()) { "Escribe un mensaje" }
++        require(limpio.length <= 12_000) { "El mensaje supera 12 000 caracteres" }
++        val nuevos = (historial + MensajeChat("user", limpio)).takeLast(20)
++        val respuesta = cliente.conversar(config, nuevos)
++        historial.clear()
++        historial.addAll(nuevos)
++        historial.add(MensajeChat("assistant", respuesta.texto))
++        solicitudes++
++        ultimoModelo = respuesta.modelo
++        return respuesta
+     }
+ 
+-    fun listSessions(): List<AISession> = activeSessions.toList()
+-
+-    fun toggleTrackerBlocking(enabled: Boolean) {
+-        trackerBlockingEnabled = enabled
+-    }
+-
+-    fun setFontSizeScale(scale: Float) {
+-        fontSizeScale = scale.coerceIn(0.5f, 2.0f)
+-    }
++    fun mensajes(): List<MensajeChat> = historial.toList()
++
++    fun borrarConversacion() = historial.clear()
++
++    override fun healthCheck() = ModuleHealth(
++        name, version,
++        if (_started) "cliente listo; proveedor no comprobado" else "stopped",
++        mapOf(
++            "transporte" to "POST /v1/chat/completions",
++            "conversacion" to "sólo memoria",
++            "mensajes_en_memoria" to historial.size,
++            "respuestas_recibidas" to solicitudes,
++            "ultimo_modelo" to ultimoModelo.ifBlank { "ninguno" },
++            "api_key_en_este_modulo" to false,
++            "mcp" to false,
++            "ejecucion_de_herramientas" to false,
++        ),
++    )
+ }
+-
+-data class AIService(
+-    val id: String,
+-    val name: String,
+-    val category: String,
+-    val pricing: String,
+-    val enabled: Boolean
+-)
+-
+-data class AISession(
+-    val id: String,
+-    val serviceId: String,
+-    val prompt: String,
+-    val messages: MutableList<AIMessage>,
+-    val createdAt: Long,
+-    val lastActive: Long
+-)
+-
+-data class AIMessage(
+-    val id: String,
+-    val role: String, // user | assistant | system
+-    val content: String,
+-    val timestamp: Long
+-)
+\ No newline at end of file
+diff --git a/android/app/src/main/java/com/ceroX/app/modules/kai/KaiModule.kt b/android/app/src/main/java/com/ceroX/app/modules/kai/KaiModule.kt
+index efff5cd..83f9a59 100644
+--- a/android/app/src/main/java/com/ceroX/app/modules/kai/KaiModule.kt
++++ b/android/app/src/main/java/com/ceroX/app/modules/kai/KaiModule.kt
+@@ -4,42 +4,15 @@ import com.ceroX.app.core.engine.ModuleHealth
+ import com.ceroX.app.core.engine.ModuleInterface
+ 
+ /**
+- * KaiModule — Integración de SimonSchubert/Kai en cero-X.
+- *
+- * Kai es un asistente de IA de código abierto con memoria persistente que
+- * ejecuta en Android, iOS, Windows, Mac, Linux y Web.
+- *
+- * Características integradas:
+- * - Memoria persistente — Kai recuerda detalles importantes entre conversaciones
+- * - Alma personalizable — Define la personalidad y comportamiento del IA
+- * - Fallback multi-servicio — 30 proveedores LLM con fallo automático
+- * - Inferencia on-device — Ejecuta modelos localmente en Android con LiteRT, sin internet
+- * - Ejecución de herramientas — Búsqueda web, notificaciones, eventos de calendario, comandos shell
+- * - Soporte MCP server — Conecta a servidores de herramientas remotos vía Modelo Context Protocol
+- * - Latido autónomo — Auto-revisiones periódicas que surfacen lo que necesita atención
+- * - Exportación/importación de configuración — Backup y restauración de ajustes como JSON
+- * - Almacenamiento cifrado — Conversaciones almacenadas localmente con cifrado
+- * - Texto a voz — Escucha las respuestas del IA
+- * - Linux Sandbox (Android) — Entorno Linux integrado (~3 MB vía proot, sin root)
+- * - Adjuntos de imagen — Adjunta imágenes a cualquier conversación
++ * Entrada histórica conservada para no romper inventarios antiguos.
++ * El asistente utilizable vive en `AIHubModule`; aquí no hay inferencia, memoria,
++ * cifrado, MCP ni proveedores que fingir. No es una integración del proyecto Kai.
+  */
+ class KaiModule : ModuleInterface() {
+-
+     override val name = "kai-assistant"
+-    override val version = "1.0.0-fusion"
+-    override val dependencies: List<String> = emptyList()
+-
+-    private val llmProviders = mutableListOf<KaiLLMProvider>()
+-    private val conversations = mutableListOf<KaiConversation>()
+-    private var onDeviceInferenceEnabled = false
+-    private var linuxSandboxEnabled = false
+-    private var memoryPersistent = true
++    override val version = "2.0.0-inventario-honesto"
+ 
+     override fun initialize(config: Map<String, Any>): Boolean {
+-        onDeviceInferenceEnabled = config["on_device_inference"] as? Boolean ?: false
+-        linuxSandboxEnabled = config["linux_sandbox"] as? Boolean ?: false
+-        memoryPersistent = config["memory_persistent"] as? Boolean ?: true
+-        registerDefaultProviders()
+         _initialized = true
+         return true
+     }
+@@ -55,108 +28,25 @@ class KaiModule : ModuleInterface() {
+         return true
+     }
+ 
+-    override fun healthCheck(): ModuleHealth {
+-        return ModuleHealth(
+-            name, version,
+-            if (_started) "healthy" else "stopped",
+-            mapOf(
+-                "llm_providers" to llmProviders.size,
+-                "conversations" to conversations.size,
+-                "on_device_inference" to onDeviceInferenceEnabled,
+-                "linux_sandbox" to linuxSandboxEnabled,
+-                "memory_persistent" to memoryPersistent,
+-                "mcp_support" to true,
+-                "tool_execution" to true,
+-                "encrypted_storage" to true,
+-                "text_to_speech" to true,
+-                "platforms" to listOf("Android", "iOS", "Windows", "Mac", "Linux", "Web")
+-            )
+-        )
+-    }
+-
+-    private fun registerDefaultProviders() {
+-        llmProviders.addAll(listOf(
+-            KaiLLMProvider("anthropic", "Anthropic", true),
+-            KaiLLMProvider("openai", "OpenAI", true),
+-            KaiLLMProvider("google", "Google Gemini", true),
+-            KaiLLMProvider("deepseek", "DeepSeek", true),
+-            KaiLLMProvider("mistral", "Mistral", true),
+-            KaiLLMProvider("xai", "xAI", true),
+-            KaiLLMProvider("openrouter", "OpenRouter", true),
+-            KaiLLMProvider("groq", "Groq", true),
+-            KaiLLMProvider("litert", "LiteRT On-Device", true),
+-            KaiLLMProvider("ollama", "Ollama Cloud", true)
+-        ))
+-    }
+-
+-    fun addProvider(provider: KaiLLMProvider) {
+-        llmProviders.add(provider)
+-    }
+-
+-    fun listProviders(): List<KaiLLMProvider> = llmProviders.toList()
+-
+-    fun createConversation(systemPrompt: String): KaiConversation {
+-        val conversation = KaiConversation(
+-            id = "conv_${System.currentTimeMillis()}",
+-            systemPrompt = systemPrompt,
+-            messages = mutableListOf(),
+-            createdAt = System.currentTimeMillis(),
+-            lastActive = System.currentTimeMillis()
+-        )
+-        conversations.add(conversation)
+-        return conversation
+-    }
+-
+-    fun listConversations(): List<KaiConversation> = conversations.toList()
+-
+-    fun toggleOnDeviceInference(enabled: Boolean) {
+-        onDeviceInferenceEnabled = enabled
+-    }
+-
+-    fun toggleLinuxSandbox(enabled: Boolean) {
+-        linuxSandboxEnabled = enabled
+-    }
+-
+-    /**
+-     * No se ejecuta nada: cero-X no lleva proot ni una rootfs.
+-     *
+-     * Devolvía un mensaje de comando ejecutado en el sandbox para cualquiera,
+-     * incluso para uno que no existiera. Un resultado de ejecución que no se ejecutó es lo peor que
+-     * puede enseñar una consola.
+-     */
+-    fun runLinuxCommand(command: String): LinuxCommandResult {
+-        if (!linuxSandboxEnabled) {
+-            return LinuxCommandResult(command, false, "Linux Sandbox no habilitado")
+-        }
+-        return LinuxCommandResult(command, false,
+-            "No hay entorno Linux en cero-X: no se lleva proot ni rootfs, asi que no se ejecuto nada")
+-    }
++    override fun healthCheck() = ModuleHealth(
++        name, version,
++        if (_started) "entrada histórica; usa ai-hub para conversar" else "stopped",
++        mapOf(
++            "asistente_real" to "ai-hub",
++            "proveedores_propios" to 0,
++            "mcp" to false,
++            "tool_execution" to false,
++            "encrypted_storage" to false,
++            "text_to_speech" to false,
++            "linux_sandbox" to false,
++        ),
++    )
++
++    /** Nunca afirma ejecutar un entorno que no está empaquetado. */
++    fun runLinuxCommand(command: String) = LinuxCommandResult(
++        command, false,
++        "No hay entorno Linux en cero-X: no se lleva proot ni rootfs, así que no se ejecutó nada",
++    )
+ }
+ 
+-data class KaiLLMProvider(
+-    val id: String,
+-    val name: String,
+-    val enabled: Boolean
+-)
+-
+-data class KaiConversation(
+-    val id: String,
+-    val systemPrompt: String,
+-    val messages: MutableList<KaiMessage>,
+-    val createdAt: Long,
+-    val lastActive: Long
+-)
+-
+-data class KaiMessage(
+-    val id: String,
+-    val role: String, // user | assistant | system
+-    val content: String,
+-    val timestamp: Long,
+-    val modelUsed: String? = null
+-)
+-
+-data class LinuxCommandResult(
+-    val command: String,
+-    val success: Boolean,
+-    val output: String
+-)
+\ No newline at end of file
++data class LinuxCommandResult(val command: String, val success: Boolean, val output: String)
+diff --git a/android/app/src/main/java/com/ceroX/app/ui/ia/PantallaIa.kt b/android/app/src/main/java/com/ceroX/app/ui/ia/PantallaIa.kt
+index 9bb18f4..b3f730d 100644
+--- a/android/app/src/main/java/com/ceroX/app/ui/ia/PantallaIa.kt
++++ b/android/app/src/main/java/com/ceroX/app/ui/ia/PantallaIa.kt
+@@ -119,6 +119,8 @@ fun PantallaIa(context: Context) {
+             .padding(20.dp),
+         verticalArrangement = Arrangement.spacedBy(16.dp),
+     ) {
++        AsistenteChat(context)
++
+         Text("Modelos en el teléfono", style = MaterialTheme.typography.headlineSmall)
+         Text(
+             "Se ejecutan aquí, en el dispositivo. Ninguna página, imagen o texto sale " +
+diff --git a/android/app/src/main/java/com/ceroX/app/ui/main/MainActivity.kt b/android/app/src/main/java/com/ceroX/app/ui/main/MainActivity.kt
+index 226c49e..a441d59 100644
+--- a/android/app/src/main/java/com/ceroX/app/ui/main/MainActivity.kt
++++ b/android/app/src/main/java/com/ceroX/app/ui/main/MainActivity.kt
+@@ -18,6 +18,7 @@ import androidx.compose.material.icons.Icons
+ import androidx.compose.material.icons.automirrored.filled.MenuBook
+ import androidx.compose.material.icons.filled.Refresh
+ import androidx.compose.material.icons.filled.Settings
++import androidx.compose.material.icons.filled.SmartToy
+ import androidx.compose.material3.Button
+ import androidx.compose.material3.ColorScheme
+ import androidx.compose.material3.ExperimentalMaterial3Api
+@@ -50,6 +51,7 @@ import com.ceroX.app.modules.theme.ThemeSwitcherFragment
+ import com.ceroX.app.modules.theme.UIThemeManager
+ import com.ceroX.app.ui.catalogo.CatalogoActivity
+ import com.ceroX.app.ui.estado.EstadoSistemaActivity
++import com.ceroX.app.ui.ia.PantallaIaActivity
+ import com.ceroX.app.ui.theme.CeroXTheme
+ 
+ /**
+@@ -101,6 +103,9 @@ class MainActivity : AppCompatActivity(), AplicaDiseno {
+                     onEstadoClick = {
+                         startActivity(Intent(this, EstadoSistemaActivity::class.java))
+                     },
++                    onIaClick = {
++                        startActivity(Intent(this, PantallaIaActivity::class.java))
++                    },
+                     onMostrarFragmento = { showFragment(it) },
+                 )
+             }
+@@ -165,6 +170,7 @@ fun CeroXApp(
+     onModeClick: () -> Unit,
+     onReadClick: () -> Unit = {},
+     onEstadoClick: () -> Unit = {},
++    onIaClick: () -> Unit = {},
+     onMostrarFragmento: (Fragment) -> Unit = {},
+ ) {
+     var seleccionado by remember { mutableStateOf(DESTINOS.first().id) }
+@@ -174,6 +180,9 @@ fun CeroXApp(
+             TopAppBar(
+                 title = { Text("cero-X") },
+                 actions = {
++                    IconButton(onClick = onIaClick) {
++                        Icon(Icons.Default.SmartToy, contentDescription = "IA")
++                    }
+                     IconButton(onClick = onReadClick) {
+                         Icon(Icons.AutoMirrored.Filled.MenuBook, contentDescription = "Leer")
+                     }
+diff --git a/android/app/src/test/java/com/ceroX/app/ui/estado/NavegacionTest.kt b/android/app/src/test/java/com/ceroX/app/ui/estado/NavegacionTest.kt
+index 2366aaf..35fc3b6 100644
+--- a/android/app/src/test/java/com/ceroX/app/ui/estado/NavegacionTest.kt
++++ b/android/app/src/test/java/com/ceroX/app/ui/estado/NavegacionTest.kt
+@@ -80,6 +80,18 @@ class NavegacionTest {
+         )
+     }
+ 
++    @Test
++    fun el_asistente_es_alcanzable_y_ejecuta_un_cliente_real() {
++        val main = fuente("ui/main/MainActivity.kt")
++        assertTrue("no hay camino del panel a IA", main.contains("PantallaIaActivity::class.java"))
++        assertTrue("falta la actividad de IA", manifiesto().contains(".ui.ia.PantallaIaActivity"))
++        val pantalla = fuente("ui/ia/AsistenteChat.kt")
++        assertTrue("el chat no usa el módulo", pantalla.contains("motor.conversar"))
++        assertTrue("la red bloquea la interfaz", pantalla.contains("Dispatchers.IO"))
++        val modulo = fuente("modules/aihub/AIHubModule.kt")
++        assertTrue("el módulo no llama al cliente", modulo.contains("cliente.conversar"))
++    }
++
+     @Test
+     fun la_pantalla_de_lectura_no_es_un_esqueleto() {
+         val lector = fuente("ui/reader/ReaderActivity.kt")

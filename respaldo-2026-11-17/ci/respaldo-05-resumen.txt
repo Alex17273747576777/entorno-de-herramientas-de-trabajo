@@ -1,0 +1,69 @@
+RESPALDO 5 — cero-X — 2026-11-13T20:27:26Z
+head respaldado: aae6a87ca4d51a5bf1dd9466cc1207ee62430908 (rama main, 136 commits)
+archivo: cero-X-respaldo-2026-11-13-aae6a87.tar.gz
+bytes: 11905193
+sha256: 5093596347ba6c1a4765ffb759ac7fb42ef8d041d47611745f6b8ff92c1d493a
+md5: 639481bfb64255d21c973e72f3662d1c
+
+Los cinco pasos de docs/RESPALDOS.md, en orden:
+
+1. EMPAQUETADO. tar czf desde /home/user sobre work/ y MANIFIESTO-respaldo.txt, con tres
+   exclusiones (android/.gradle, android/build, android/app/build). 2.821 entradas en el
+   archivo. Manifiesto de 52 líneas con HEAD, rama, commits, estado del árbol, último
+   cierre Gradle verificado (88 suites / 614 pruebas / 0 fallos / 14 omitidas, APK
+   57.102.093 B y androidTest 655.982 B con sus sha256), qué se incluye, qué se excluye y
+   por qué, y los pasos de restauración.
+
+2. BARRIDO DE SECRETOS. Cero coincidencias en nombres de fichero con los 7 patrones
+   (id_rsa, .pem, credentials, .env, tokens.txt, .netrc, secret). Sobre el contenido
+   extraído: AKIA 0, ghp_ 0, xox[baprs]- 0, AIza 0, y "BEGIN PRIVATE KEY" 5 ficheros —los
+   cinco mirados uno a uno y los cinco son CADENAS DE COMPROBACIÓN, no claves:
+   FirmaNuevaTest.kt:77 (w.contains), tres scripts de work/latest que buscan la cadena para
+   afirmar que no está, y el resumen del respaldo 4 que ya lo documentaba. Las credenciales
+   reales (.cerox-keys, .gh-credential) viven en /home/user y no en work/, así que no
+   entraron: 0 menciones de esas rutas en el archivo. work/cero-X-app/.git/config SÍ entra
+   (es parte del historial) y se comprobó que lleva 0 tokens: sólo la ruta al helper externo
+   y la URL https sin credencial embebida.
+
+3. RESTAURACIÓN PROBADA antes de subir, en /tmp/restore:
+   git fsck --full      → 0 "missing", 0 "broken link" (4 dangling, que es normal)
+   git rev-parse HEAD   → aae6a87ca4d51a5bf1dd9466cc1207ee62430908, idéntico al original
+   git rev-list --count → 136 = 136
+   git status           → 0 cambios = 0 cambios
+   diff -rq (sin .git ni build) → 0 diferencias
+   work/ci              → 164 ficheros = 164 ficheros
+   work/ci/frankie      → 20 = 20
+   work/edt HEAD        → c4d5e917449657ac1a7e0d2aeff78d97ce0c760f, idéntico
+   Copia de comprobación borrada tras verificar.
+
+4. SUBIDA Y VERIFICACIÓN POR DESTINO. google_drive.upload_file a la carpeta
+   1MTFiK3m6_CbBsWuklewEdW3azRAgKZpg («cero-X — respaldos»). Drive devolvió:
+   id=1mhhcq6LdZhIDpo4xeYClkftgg-b8tCo4, created=2026-11-13T20:27:26.673Z,
+   size=11905193 y md5Checksum=639481bfb64255d21c973e72f3662d1c —los dos idénticos a los
+   locales, así que la subida la confirmó el destino y no sólo nuestra intención.
+
+5. ANOTADO al final del bloque de registro (5 aperturas y 5 cierres con ancla completa,
+   los cinco head= en orden cronológico) y borrada la copia local del tar y el manifiesto.
+
+Qué cubre este respaldo que no cubría el 4 (fe225d4): los commits d641487, 79b084c y
+aae6a87, es decir el registro del respaldo 4, docs/OBJETIVO-TODO-EN-UNO.md (247 líneas, el
+objetivo todo-en-uno anotado con el censo de las 13 fuentes), la entrada de fase en
+docs/FASES.md, scripts/bajar-referencias.sh y tools/auditar-referencias.py. Y la evidencia
+nueva fuera de repo: work/ci/frankie/ con 20 ficheros (los JSON crudos de la API de GitHub
+para las 13 fuentes, el texto de la licencia UPL de Kiroku y ReDantotsu, la portada de
+playtorrio.xyz de 57.105 B, referencias.tsv con el SHA de los 7 clones y
+auditoria-manifiestos.tsv). Esa evidencia no la cubre Git y parte no es reproducible: si
+playtorrio.xyz cambia o el repo de Kiroku se mueve, el censo de hoy se pierde.
+
+Lo que NO está dentro: /var/tmp/referencias (los 7 clones, 746 MB, reproducibles con
+scripts/bajar-referencias.sh), /home/user/.local y /opt/cerox (SDK y cachés de Gradle, se
+rearman con scripts/preparar-entorno-android.sh) y las credenciales.
+
+Nota honesta: este commit que anota la entrada crea un HEAD nuevo sobre el respaldado, igual
+que en el ciclo anterior. No se respalda a sí mismo; lo cubre el remoto Git (está empujado a
+origin/main) y el respaldo siguiente.
+
+Fallo propio cazado antes de cerrar: el manifiesto se escribió primero con el sha256 del
+APK de androidTest rellenado a mano desde los 8 caracteres que se recordaban, inventando los
+48 restantes. Se sustituyó por el real copiado de docs/PARALELISMO.md:42 con grep -oE
+'[0-9a-f]{64}' y el tar se rehizo antes de subir. Documentado en docs/RESPALDOS.md.

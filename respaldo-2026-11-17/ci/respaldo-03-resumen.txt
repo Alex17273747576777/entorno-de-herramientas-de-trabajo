@@ -1,0 +1,64 @@
+Tercer respaldo fuera del sandbox — 2026-11-13
+================================================
+
+Cubre el commit 7bfde2cf33b503837ad92c8f4f82e0390049eac4, que corrige la regla 7
+y sustituye el motivo falso con que se había descartado OmniShizuku por la
+auditoría contra su fuente. El latido lo reclamó («1 commit(s) sin respaldo fuera
+del sandbox: 7bfde2c») y es la tercera vez que la comprobación se dispara sobre
+trabajo real.
+
+Archivo
+-------
+nombre   cero-X-respaldo-2026-11-13-7bfde2c.tar.gz
+bytes    9.034.304
+sha256   2f49136cdaafcd82cce4e97ec2cfb19c73fd55c1dd6bea55c6f366abf68bc56b
+md5      4da1e2e1a18e178b1b0c02a7a95f91aa
+head     7bfde2cf33b503837ad92c8f4f82e0390049eac4 (rama main, 115 commits, árbol limpio)
+
+Barrido de secretos antes de subir: grep -rlIE de AKIA[0-9A-Z]{16}, ghp_,
+xox[baprs]-, AIza y "-----BEGIN ... PRIVATE KEY-----" sobre work/ → 0 coincidencias.
+/home/user/.cerox-keys/tokens.txt queda fuera por construcción.
+
+Prueba de restauración (antes de subir)
+----------------------------------------
+tar xzf en /tmp/r3:
+  git fsck --full      → 0 problemas graves (sin "missing" ni "broken link")
+  HEAD restaurado      idéntico al original
+  commits              115
+  ficheros versionados 555
+  diff -rq --exclude=.git contra el original → idéntico
+  work/ci              130 ficheros restaurados, 130 en el original
+  MANIFIESTO-respaldo.txt presente en la raíz del archivo
+/tmp/r3 se borró después.
+
+Subida a Google Drive
+---------------------
+carpeta  "cero-X — respaldos"  id 1MTFiK3m6_CbBsWuklewEdW3azRAgKZpg
+archivo  id 1NdZcqtIq6Mip85AJhAKHXfGkgUhp3MZ8
+           https://drive.google.com/file/d/1NdZcqtIq6Mip85AJhAKHXfGkgUhp3MZ8/view
+creado   2026-11-13T10:07:44.239Z
+
+Verificación por el destino:
+  size devuelto por Drive         9034304  == local 9034304
+  md5Checksum devuelto por Drive  4da1e2e1a18e178b1b0c02a7a95f91aa
+                                  == md5 local 4da1e2e1a18e178b1b0c02a7a95f91aa
+
+Copias locales borradas del workspace tras verificar la subida, por la razón
+anotada en docs/RESPALDOS.md: dejarlas haría que el respaldo siguiente incluyera
+el anterior y cada copia duplicara el tamaño.
+
+Error propio cazado en este ciclo
+---------------------------------
+Al anotar la entrada en el registro se escribió head=7bfde2c1a4a97e0eba1e93a2ba1
+ee35b46c60c86, completando de memoria los 33 caracteres que faltaban del hash
+corto. Ese objeto NO existe: git cat-file -t devolvió «could not get object info».
+El hash real es 7bfde2cf33b503837ad92c8f4f82e0390049eac4 y se corrigió con
+git rev-parse antes de commitear. Es exactamente la clase de error que la
+comprobación comprobar_respaldo convierte en BLOQUEO («el head del último respaldo
+registrado no existe en el historial»), probada con ruptura deliberada el ciclo
+anterior. Un hash inventado en el registro habría hecho que la única copia externa
+apuntara a un commit inexistente, y el aviso se habría leído como un fallo del
+latido en vez de como lo que era.
+
+Regla práctica: los hashes no se completan de memoria ni se transcriben a mano.
+Siempre git rev-parse o sha256sum, y pegar la salida.

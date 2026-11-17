@@ -1,0 +1,56 @@
+=== anipirate ===
+8c8366fc60a261c5102325c50532643b846a76d0 docs: add high-res logo and update authoritative category matrix
+README.md
+logo.png
+=== awerkori-anime ===
+d2b689f3fb1e411b390bb8275ec86a65f7de0b17 Sync upstream
+LICENSE
+NOTICE
+README.md
+apk
+icon
+index.html
+index.json
+index.min.json
+repo.json
+=== awerkori-manga ===
+55b9127ee947795cb76944e3e55f019066c72cba Update extensions repo
+LICENSE
+NOTICE
+README.md
+icon
+index.html
+index.json
+index.min.json
+index.pb
+release-assets.json
+repo.json
+=== awerkori-manga-fuente ===
+781b32ad629601bcec2bdc78c01205926c85e909 Sync upstream
+.editorconfig
+.git-blame-ignore-revs
+.gitattributes
+.github
+.gitignore
+AGENTS.md
+CLAUDE.md
+CONTRIBUTING.md
+LICENSE
+LICENSE-APACHE
+NOTICE
+README.md
+build.gradle.kts
+common
+compiler
+core
+ext-bootstrap.py
+gradle.properties
+gradle
+gradlew
+gradlew.bat
+ktlintCodeStyle.xml
+lib-multisrc
+lib
+settings.gradle.kts
+src
+=== inventario.txt ===

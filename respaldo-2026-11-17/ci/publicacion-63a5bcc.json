@@ -1,0 +1,24 @@
+{
+  "commit": "63a5bcc9d285272e202eff5d74c64a29c8e62ee5",
+  "version": "1.0.6-beta-web-utilidades",
+  "pruebas_locales": {
+    "dirigidas": {"total": 20, "fallos": 0, "errores": 0, "saltadas": 0},
+    "completas": {"total": 504, "fallos": 0, "errores": 0, "saltadas": 6},
+    "diff_check": "sin errores"
+  },
+  "runs": {
+    "pruebas": 43227243467,
+    "apk_arm64": 43227269168,
+    "apk_universal": 43227273689
+  },
+  "resultado": {
+    "pruebas": "success",
+    "apk_arm64": "success",
+    "apk_universal": "success",
+    "release": "https://github.com/Alex17273747576777/cero-X-app/releases/tag/v1.0.6-beta-web-utilidades",
+    "app_arm64_bytes": 21522891,
+    "app_universal_bytes": 16876955,
+    "git": "local y origin/main sincronizados y limpios"
+  },
+  "nota": "Publicación y CI comprobadas; no equivale a prueba en teléfono. La VM llegó a ADB, pero no completó un arranque gráfico estable."
+}

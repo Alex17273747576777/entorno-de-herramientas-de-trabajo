@@ -1,0 +1,24 @@
+=== ruta A: instalación limpia (DDL de los .sq nuevos) ===
+    tablas: ['feed_categories', 'feed_saved_search', 'saved_search', 'sqlite_sequence']
+=== ruta B: actualización desde 41 (DDL viejo + 43.sqm) ===
+=== comparación de esquemas (lo que verifica SQLDelight) ===
+    ✓ PRAGMA table_info(feed_saved_search) idéntico en ambas rutas
+    ✓ PRAGMA table_info(feed_categories) idéntico en ambas rutas
+    ✓ índices idénticos: ['feed_saved_search_category_index', 'feed_saved_search_saved_search_index']
+=== los datos anteriores a la migración sobreviven ===
+    ✓ la fila antigua queda con los valores por defecto correctos: (1, 7, 1, 1, 0, 1)
+    ✓ la pestaña de sistema existe tras migrar
+=== las consultas nuevas funcionan ===
+    ✓ fss_selectAllGlobalByCategory
+    ✓ fss_countGlobalByCategory
+    ✓ fss_insert
+    ✓ cat_selectAll
+    ✓ cat_selectById
+    ✓ cat_insert
+    ✓ cat_delete
+    ✓ cat_update
+    ✓ cat_updateLang
+    ✓ cat_updateExplore
+    ✓ cat_selectLastInsertedRowId
+
+RESULTADO: SIN FALLOS

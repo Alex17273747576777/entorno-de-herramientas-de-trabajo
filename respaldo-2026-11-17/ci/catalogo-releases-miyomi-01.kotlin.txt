@@ -1,0 +1,268 @@
+// Instantánea de releases de Miyomi para el catálogo propio — 2026-11-13
+//
+// ESTADO: sin empalmar. Se generó y se midió; el empalme en
+// android/app/src/main/java/com/ceroX/app/modules/catalog/CatalogModule.kt no se
+// ejecutó. No es código del proyecto, es material de trabajo: por eso vive en
+// work/ci y no en src.
+//
+// FUENTE: https://miyomi.app/api/apps (User-Agent: cerox-catalog-audit), 2026-11-13.
+//   Raíz del JSON: dict con claves `success` y `data`; la lista está en `data`,
+//   NO en `apps`. Leer `apps` da 0 coincidencias en silencio: pasó dos veces.
+//   149 apps, 36 campos por app.
+//
+// MÉTODO DE CASAMIENTO: URL exacta normalizada (minúsculas, sin esquema ni www,
+//   sin barra final) entre el campo `repo` de las 52 fichas propias y `repoUrl`
+//   o `websiteUrl` de Miyomi. Nada de parecido de nombre: dos apps pueden
+//   llamarse igual y no ser la misma.
+//   Resultado: 25 casadas (16 por repoUrl, 9 por websiteUrl), 27 sin casar.
+//
+// REGLA DE HONESTIDAD: las 27 sin casar quedan explícitamente SIN_VERIFICAR.
+//   No se rellenan por semejanza. Y cuando Miyomi da versión nula o cadena
+//   vacía, aquí va null: no se inventa versión. Afecta a hayase (sin versión ni
+//   fecha, 0 descargas), miru (sin versión, última release 2024-01-19),
+//   dartotsu (versión "", 2026-07-24) y toru (sin versión, 2024-10-24). Las dos
+//   últimas releases antiguas son señal de abandono y conviene enseñarlas.
+//
+// SIN CASAR (27), a marcar SIN_VERIFICAR:
+//   kisara, aniyomi, dodoStream, shosetsu, ireader, openlib, tachiyomi_sy, taison, tsundoku, futon, kotatsu_redo, kototoro, lightnovelreader, neojqn, noveldokusha, kotinovelreader, tachiyomi, unyo, curd, ani_cli, jellyfin, kavita, lanraragi, gallery_dl, github_store, ehviewer, jhentai
+//
+// DATO QUE NINGUNA OTRA FUENTE DA: `forkOf` — 9 fichas lo declaran
+//   (mihon<-Tachiyomi; komikku, reikai, tachiyomi_az, yokai<-Mihon;
+//   anikku, animiru, animetail<-Aniyomi; dartotsu<-Dantotsu).
+//   El campo `category` de Miyomi NO es usable: llega vacío en 6 de las 25
+//   (houbi, reikai, nuvio, kotatsu, nyantv, komga) y como "App" o null en el
+//   resto. Las categorías propias, ya auditadas, no se tocan.
+//   `status` es siempre "approved": no discrimina nada.
+//
+// PARA EMPALMAR: hace falta declarar `data class DatosRelease(...)` en
+//   CatalogModule.kt, un mapa id -> DatosRelease con lo de abajo, y una línea de
+//   release en res/layout/item_catalog_app.xml, que ya tiene
+//   catalog_app_status, catalog_app_license y catalog_app_features.
+//   Cierre mínimo de la regla 9 después: testDebugUnitTest + assembleDebug +
+//   assembleDebugAndroidTest + comprobar_entorno.py + diff revisado + commit.
+
+        "mihon" to DatosRelease(
+            version = "v0.20.4",
+            ultimaRelease = "2026-10-13",
+            descargas = 22430733,
+            forkDe = "Tachiyomi",
+            estadoMiyomi = "approved",
+            campoDelCasamiento = "repoUrl",
+            urlCasada = "github.com/mihonapp/mihon",
+        ),
+        "komikku" to DatosRelease(
+            version = "v1.13.5",
+            ultimaRelease = "2026-07-17",
+            descargas = 1483292,
+            forkDe = "Mihon",
+            estadoMiyomi = "approved",
+            campoDelCasamiento = "repoUrl",
+            urlCasada = "github.com/komikku-app/komikku",
+        ),
+        "houbi" to DatosRelease(
+            version = "v1.21.17",
+            ultimaRelease = "2026-10-15",
+            descargas = 2939,
+            forkDe = null,
+            estadoMiyomi = "approved",
+            campoDelCasamiento = "repoUrl",
+            urlCasada = "github.com/pineappletwilight/houri",
+        ),
+        "reikai" to DatosRelease(
+            version = "v0.5.1",
+            ultimaRelease = "2026-10-13",
+            descargas = 2784,
+            forkDe = "Mihon",
+            estadoMiyomi = "approved",
+            campoDelCasamiento = "repoUrl",
+            urlCasada = "github.com/unseensnick/reikai",
+        ),
+        "mangayomi" to DatosRelease(
+            version = "v0.8.2",
+            ultimaRelease = "2026-10-12",
+            descargas = 432939,
+            forkDe = null,
+            estadoMiyomi = "approved",
+            campoDelCasamiento = "repoUrl",
+            urlCasada = "github.com/kodjodevf/mangayomi",
+        ),
+        "anikku" to DatosRelease(
+            version = "v0.1.7",
+            ultimaRelease = "2026-09-11",
+            descargas = 397914,
+            forkDe = "Aniyomi",
+            estadoMiyomi = "approved",
+            campoDelCasamiento = "websiteUrl",
+            urlCasada = "anikku-app.github.io",
+        ),
+        "cloudstream" to DatosRelease(
+            version = "v4.6.0",
+            ultimaRelease = "2026-07-10",
+            descargas = 6754461,
+            forkDe = null,
+            estadoMiyomi = "approved",
+            campoDelCasamiento = "repoUrl",
+            urlCasada = "github.com/recloudstream/cloudstream",
+        ),
+        "anymex" to DatosRelease(
+            version = "v3.0.4",
+            ultimaRelease = "2026-09-20",
+            descargas = 364396,
+            forkDe = null,
+            estadoMiyomi = "approved",
+            campoDelCasamiento = "websiteUrl",
+            urlCasada = "anymex.vercel.app",
+        ),
+        "dantotsu" to DatosRelease(
+            version = "v3.2.2+9136cb7",
+            ultimaRelease = "2026-10-10",
+            descargas = 67757,
+            forkDe = null,
+            estadoMiyomi = "approved",
+            campoDelCasamiento = "repoUrl",
+            urlCasada = "github.com/itsmechinmoy/dantotsu-updater",
+        ),
+        "hayase" to DatosRelease(
+            version = null,
+            ultimaRelease = null,
+            descargas = 0,
+            forkDe = null,
+            estadoMiyomi = "approved",
+            campoDelCasamiento = "websiteUrl",
+            urlCasada = "hayase.watch",
+        ),
+        "nuvio" to DatosRelease(
+            version = "0.6.7-beta",
+            ultimaRelease = "2026-10-14",
+            descargas = 1412185,
+            forkDe = null,
+            estadoMiyomi = "approved",
+            campoDelCasamiento = "websiteUrl",
+            urlCasada = "nuvio.tv",
+        ),
+        "seanime" to DatosRelease(
+            version = "v3.10.4",
+            ultimaRelease = "2026-10-14",
+            descargas = 6451525,
+            forkDe = null,
+            estadoMiyomi = "approved",
+            campoDelCasamiento = "websiteUrl",
+            urlCasada = "seanime.app",
+        ),
+        "miru" to DatosRelease(
+            version = null,
+            ultimaRelease = "2024-01-19",
+            descargas = 494695,
+            forkDe = null,
+            estadoMiyomi = "approved",
+            campoDelCasamiento = "repoUrl",
+            urlCasada = "github.com/miru-project/miru-app",
+        ),
+        "koreader" to DatosRelease(
+            version = "v2026.07.1",
+            ultimaRelease = "2026-08-01",
+            descargas = 6247790,
+            forkDe = null,
+            estadoMiyomi = "approved",
+            campoDelCasamiento = "websiteUrl",
+            urlCasada = "koreader.rocks",
+        ),
+        "tachiyomi_az" to DatosRelease(
+            version = "v8.9.1-AZ",
+            ultimaRelease = "2026-08-14",
+            descargas = 291815,
+            forkDe = "Mihon",
+            estadoMiyomi = "approved",
+            campoDelCasamiento = "repoUrl",
+            urlCasada = "github.com/az4521/tachiyomiaz",
+        ),
+        "yokai" to DatosRelease(
+            version = "v1.9.7.4",
+            ultimaRelease = "2026-09-23",
+            descargas = 696252,
+            forkDe = "Mihon",
+            estadoMiyomi = "approved",
+            campoDelCasamiento = "repoUrl",
+            urlCasada = "github.com/null2264/yokai",
+        ),
+        "kotatsu" to DatosRelease(
+            version = "9.4.1",
+            ultimaRelease = "2025-11-03",
+            descargas = 1101111,
+            forkDe = null,
+            estadoMiyomi = "approved",
+            campoDelCasamiento = "repoUrl",
+            urlCasada = "github.com/kotatsuapp/kotatsu",
+        ),
+        "animiru" to DatosRelease(
+            version = "v0.19.8.1",
+            ultimaRelease = "2026-09-14",
+            descargas = 330963,
+            forkDe = "Aniyomi",
+            estadoMiyomi = "approved",
+            campoDelCasamiento = "repoUrl",
+            urlCasada = "github.com/quickdesh/animiru",
+        ),
+        "animetail" to DatosRelease(
+            version = "v0.19.5.1",
+            ultimaRelease = "2026-08-05",
+            descargas = 179003,
+            forkDe = "Aniyomi",
+            estadoMiyomi = "approved",
+            campoDelCasamiento = "repoUrl",
+            urlCasada = "github.com/animetailapp/animetail",
+        ),
+        "dartotsu" to DatosRelease(
+            version = null,
+            ultimaRelease = "2026-07-24",
+            descargas = 25768,
+            forkDe = "Dantotsu",
+            estadoMiyomi = "approved",
+            campoDelCasamiento = "repoUrl",
+            urlCasada = "github.com/aayush2622/dartotsu",
+        ),
+        "nyantv" to DatosRelease(
+            version = "v1.0.2",
+            ultimaRelease = "2026-06-27",
+            descargas = 10296,
+            forkDe = null,
+            estadoMiyomi = "approved",
+            campoDelCasamiento = "websiteUrl",
+            urlCasada = "nyantv.vercel.app",
+        ),
+        "toru" to DatosRelease(
+            version = null,
+            ultimaRelease = "2024-10-24",
+            descargas = 3318,
+            forkDe = null,
+            estadoMiyomi = "approved",
+            campoDelCasamiento = "repoUrl",
+            urlCasada = "github.com/sweetbbak/toru",
+        ),
+        "zenshin" to DatosRelease(
+            version = "v3.0.0",
+            ultimaRelease = "2026-05-24",
+            descargas = 7400,
+            forkDe = null,
+            estadoMiyomi = "approved",
+            campoDelCasamiento = "websiteUrl",
+            urlCasada = "hitarth-gg.github.io/zenshin-website",
+        ),
+        "komga" to DatosRelease(
+            version = "1.24.1",
+            ultimaRelease = "2026-10-14",
+            descargas = 551026,
+            forkDe = null,
+            estadoMiyomi = "approved",
+            campoDelCasamiento = "websiteUrl",
+            urlCasada = "komga.org",
+        ),
+        "suwayomi" to DatosRelease(
+            version = "v2.1.1867",
+            ultimaRelease = "2026-09-30",
+            descargas = 623481,
+            forkDe = null,
+            estadoMiyomi = "approved",
+            campoDelCasamiento = "repoUrl",
+            urlCasada = "github.com/suwayomi/suwayomi-server",
+        ),

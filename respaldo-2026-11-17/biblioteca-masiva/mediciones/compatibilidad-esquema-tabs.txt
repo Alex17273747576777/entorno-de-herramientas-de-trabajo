@@ -1,0 +1,15 @@
+=== nombres de tabla (lo que decide la intercambiabilidad de backups) ===
+  ✓ feed_categories: ShinKu=sí AniZen=sí
+  ✓ feed_saved_search: ShinKu=sí AniZen=sí
+=== columna a columna ===
+  feed_categories: comunes=3 ['_id', 'name', 'sort']
+    sólo ShinKu: ['explore', 'lang']
+  feed_saved_search: comunes=7 ['_id', 'category', 'feed_order', 'global', 'saved_search', 'search_type', 'source']
+    sólo AniZen: ['last_top_url']
+=== las columnas que el plan exige para el tope por pestaña ===
+  ✓ category: ShinKu=True AniZen=True
+  ✓ feed_order: ShinKu=True AniZen=True
+  ✓ search_type: ShinKu=True AniZen=True
+=== RESULTADO ===
+  los nombres de tabla coinciden en ambas apps: True
+  las tres columnas del tope por pestaña están en ambas: True

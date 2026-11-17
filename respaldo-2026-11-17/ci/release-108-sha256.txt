@@ -1,0 +1,2 @@
+2a643ba30a0d0025ff961dc5bedc8f3ab69ffa537a2adcec13bf213b22f0750c  /home/user/work/verificacion-108/app-arm64-v8a.apk
+c7889415479d010af75a39f2d623f9544a0e453c320143983c1f6bd3e94e71f4  /home/user/work/verificacion-108/app-universal.apk

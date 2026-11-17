@@ -1,0 +1,111 @@
+diff --git a/app/src/main/java/eu/kanade/tachiyomi/ui/home/FeedManageScreenModel.kt b/app/src/main/java/eu/kanade/tachiyomi/ui/home/FeedManageScreenModel.kt
+index b2dc7ce..0a76e71 100644
+--- a/app/src/main/java/eu/kanade/tachiyomi/ui/home/FeedManageScreenModel.kt
++++ b/app/src/main/java/eu/kanade/tachiyomi/ui/home/FeedManageScreenModel.kt
+@@ -13,7 +13,9 @@ import kotlinx.coroutines.Job
+ import kotlinx.coroutines.flow.collectLatest
+ import kotlinx.coroutines.flow.combine
+ import kotlinx.coroutines.flow.update
++import logcat.LogPriority
+ import tachiyomi.core.common.util.lang.launchIO
++import tachiyomi.core.common.util.system.logcat
+ import tachiyomi.domain.source.interactor.DeleteFeedSavedSearchById
+ import tachiyomi.domain.source.interactor.DeleteFeedSavedSearchCategory
+ import tachiyomi.domain.source.interactor.GetFeedSavedSearchCategories
+@@ -27,6 +29,7 @@ import tachiyomi.domain.source.model.FeedSavedSearch
+ import tachiyomi.domain.source.model.FeedSavedSearchCategory
+ import tachiyomi.domain.source.model.FeedSavedSearchUpdate
+ import tachiyomi.domain.source.model.SavedSearch
++import tachiyomi.domain.source.service.FeedLimits
+ import tachiyomi.domain.source.service.SourceManager
+ import uy.kohesive.injekt.Injekt
+ import uy.kohesive.injekt.api.get
+@@ -139,6 +142,19 @@ class FeedManageScreenModel(
+         screenModelScope.launchIO {
+             // Get max order in new category to append at end
+             val targetFeed = getFeedSavedSearchGlobal.await(newCategoryId)
++            // ANZ -->
++            // Checked BEFORE the delete below: this move is implemented as delete + re-insert, so
++            // leaving the cap to InsertFeedSavedSearch alone would delete the entry and then refuse
++            // to re-insert it. The entry stays in its current tab instead.
++            if (targetFeed.size >= FeedLimits.MAX_SOURCES_PER_TAB) { // ANZ
++                logcat(LogPriority.WARN) {
++                    "Feed tab $newCategoryId is full " +
++                        "(max ${FeedLimits.MAX_SOURCES_PER_TAB}); entry ${feed.id} stays in " +
++                        "category ${feed.category}"
++                }
++                return@launchIO
++            }
++            // ANZ <--
+             val nextOrder = (targetFeed.maxOfOrNull { it.feedOrder } ?: -1) + 1
+ 
+             // Delete from old category (or update)
+diff --git a/domain/src/main/java/tachiyomi/domain/source/interactor/InsertFeedSavedSearch.kt b/domain/src/main/java/tachiyomi/domain/source/interactor/InsertFeedSavedSearch.kt
+index f5be491..2003a55 100644
+--- a/domain/src/main/java/tachiyomi/domain/source/interactor/InsertFeedSavedSearch.kt
++++ b/domain/src/main/java/tachiyomi/domain/source/interactor/InsertFeedSavedSearch.kt
+@@ -5,12 +5,31 @@ import logcat.asLog
+ import tachiyomi.core.common.util.system.logcat
+ import tachiyomi.domain.source.model.FeedSavedSearch
+ import tachiyomi.domain.source.repository.FeedSavedSearchRepository
++import tachiyomi.domain.source.service.FeedLimits
+ 
+ class InsertFeedSavedSearch(
+     val feedSavedSearchRepository: FeedSavedSearchRepository,
+ ) {
+ 
+     suspend fun await(feedSavedSearch: FeedSavedSearch): Long? {
++        // ANZ -->
++        // Capped here rather than at each call site because three of them insert into a tab
++        // (SourcesScreenModel.addToFeed, FeedManageScreenModel.duplicate and
++        // FeedManageScreenModel.updateFeedCategory) and a per-call-site guard missed one of them.
++        // Returns null on refusal, which is what await already returns on failure, so existing
++        // callers keep compiling and keep treating it as "not inserted".
++        if (feedSavedSearch.global) {
++            val inTab = feedSavedSearchRepository.getGlobal(feedSavedSearch.category)
++            if (inTab.size >= FeedLimits.MAX_SOURCES_PER_TAB) { // ANZ
++                logcat(LogPriority.WARN) {
++                    "Feed tab ${feedSavedSearch.category} is full " +
++                        "(max ${FeedLimits.MAX_SOURCES_PER_TAB}); refusing entry for source " +
++                        "${feedSavedSearch.source}"
++                }
++                return null
++            }
++        }
++        // ANZ <--
+         return try {
+             feedSavedSearchRepository.insert(feedSavedSearch)
+         } catch (e: Exception) {
+@@ -19,6 +38,8 @@ class InsertFeedSavedSearch(
+         }
+     }
+ 
++    // ANZ: deliberately NOT capped — awaitAll is the bulk/restore path, and refusing rows there
++    // would silently drop entries from a backup instead of refusing one user action.
+     suspend fun awaitAll(feedSavedSearch: List<FeedSavedSearch>) {
+         try {
+             feedSavedSearchRepository.insertAll(feedSavedSearch)
+diff --git a/domain/src/main/java/tachiyomi/domain/source/service/FeedLimits.kt b/domain/src/main/java/tachiyomi/domain/source/service/FeedLimits.kt
+new file mode 100644
+index 0000000..00d2352
+--- /dev/null
++++ b/domain/src/main/java/tachiyomi/domain/source/service/FeedLimits.kt
+@@ -0,0 +1,18 @@
++package tachiyomi.domain.source.service
++
++// ANZ -->
++/**
++ * Feed composition limits.
++ *
++ * AniZen had no cap at all: `InsertFeedSavedSearch.await` inserted unconditionally and every visible
++ * category is fetched on refresh (`FeedScreenModel.setupFeedSubscriptions`), so a tab could grow
++ * without bound. The unit that matters is the tab, not the whole feed: 25 sources per tab, unlimited
++ * tabs (`feed_categories` already models them).
++ *
++ * MAX_CONCURRENT_FETCHES_PER_TAB keeps a tab refresh bounded no matter how full the tab is.
++ */
++object FeedLimits {
++    const val MAX_SOURCES_PER_TAB: Int = 25 // ANZ
++    const val MAX_CONCURRENT_FETCHES_PER_TAB: Int = 6
++}
++// ANZ <--

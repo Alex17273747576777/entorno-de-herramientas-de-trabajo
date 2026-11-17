@@ -1,0 +1,39 @@
+Auditoría del catálogo repasada contra la API real del alojamiento
+Fecha de ejecución: 2026-11-13 02:37:25 UTC
+Commit base: 566a4c5  (cambios del catálogo aún sin commitear)
+Comando: CEROX_LIVE_CATALOGO=1 ./gradlew -I ../tools/low-memory.gradle :app:testDebugUnitTest --tests com.ceroX.app.modules.catalog.CatalogoLicenciasRedRealTest
+Resultado XML: pruebas=1 fallos=0 errores=0 omitidas=0 tiempo=15.589s
+Sin credenciales: endpoints públicos, límite de 60 peticiones/IP/hora; se consultó /rate_limit antes de gastar ninguna.
+
+Qué demuestra: que las 18 licencias grabadas en CatalogModule.kt siguen siendo
+las que responde la fuente, y que los 4 enlaces marcados muertos siguen muertos.
+No demuestra nada sobre el aparato: la pantalla del catálogo sigue sin revisarse en Android físico.
+
+--- salida de la prueba ---
+CATALOGO_AUDITORIA peticiones_disponibles=60 necesarias=25
+CATALOGO_AUDITORIA id=ani_cli http=200 spdx=GPL-3.0 archivado=false
+CATALOGO_AUDITORIA id=animetail http=200 spdx=Apache-2.0 archivado=false
+CATALOGO_AUDITORIA id=animiru http=200 spdx=GPL-3.0 archivado=false
+CATALOGO_AUDITORIA id=aniyomi http=404 sigue_muerto=true
+CATALOGO_AUDITORIA id=cloudstream http=200 spdx=GPL-3.0 archivado=false
+CATALOGO_AUDITORIA id=curd http=200 spdx=GPL-3.0 archivado=false
+CATALOGO_AUDITORIA id=dantotsu http=200 spdx=ninguna archivado=false
+CATALOGO_AUDITORIA id=dartotsu http=200 spdx=NOASSERTION archivado=false
+CATALOGO_AUDITORIA id=gallery_dl http=200 spdx=GPL-2.0 archivado=false
+CATALOGO_AUDITORIA id=houbi http=200 spdx=Apache-2.0 archivado=false
+CATALOGO_AUDITORIA id=kisara http=200 spdx=Apache-2.0 archivado=false
+CATALOGO_AUDITORIA id=komikku http=200 spdx=Apache-2.0 archivado=false
+CATALOGO_AUDITORIA id=kotatsu http=200 spdx=GPL-3.0 archivado=true
+CATALOGO_AUDITORIA id=mangayomi http=200 spdx=Apache-2.0 archivado=false
+CATALOGO_AUDITORIA id=mihon http=200 spdx=Apache-2.0 archivado=false
+CATALOGO_AUDITORIA id=miru http=200 spdx=AGPL-3.0 archivado=false
+CATALOGO_AUDITORIA id=openlib http=404 sigue_muerto=true
+CATALOGO_AUDITORIA id=reikai http=200 spdx=Apache-2.0 archivado=false
+CATALOGO_AUDITORIA id=suwayomi http=200 spdx=MPL-2.0 archivado=false
+CATALOGO_AUDITORIA id=tachiyomi http=404 sigue_muerto=true
+CATALOGO_AUDITORIA id=tachiyomi_az http=200 spdx=NOASSERTION archivado=false
+CATALOGO_AUDITORIA id=tachiyomi_sy http=404 sigue_muerto=true
+CATALOGO_AUDITORIA id=toru http=200 spdx=MIT archivado=false
+CATALOGO_AUDITORIA id=unyo http=200 spdx=BSD-3-Clause archivado=false
+CATALOGO_AUDITORIA id=yokai http=200 spdx=Apache-2.0 archivado=false
+CATALOGO_AUDITORIA resumen comprobados=25 vivos=21 muertos=4

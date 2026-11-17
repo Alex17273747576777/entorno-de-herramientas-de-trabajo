@@ -1,0 +1,131 @@
+diff --git a/domain/src/main/java/com/shinku/reader/domain/source/interactor/InsertFeedSavedSearch.kt b/domain/src/main/java/com/shinku/reader/domain/source/interactor/InsertFeedSavedSearch.kt
+index 7a1bcd9..a96bcc2 100644
+--- a/domain/src/main/java/com/shinku/reader/domain/source/interactor/InsertFeedSavedSearch.kt
++++ b/domain/src/main/java/com/shinku/reader/domain/source/interactor/InsertFeedSavedSearch.kt
+@@ -5,13 +5,36 @@ import logcat.asLog
+ import com.shinku.reader.core.common.util.system.logcat
+ import com.shinku.reader.domain.source.model.FeedSavedSearch
+ import com.shinku.reader.domain.source.repository.FeedSavedSearchRepository
++import com.shinku.reader.domain.source.service.FeedLimits
+ 
+ class InsertFeedSavedSearch(
+     private val feedSavedSearchRepository: FeedSavedSearchRepository,
+ ) {
+ 
++    /**
++     * Inserts one feed entry.
++     *
++     * A global feed is refused once its tab already holds [FeedLimits.MAX_SOURCES_PER_FEED] sources.
++     * The cap lives here rather than only in the screens because the UI checks it when a dialog opens
++     * while the row is written later, and the selected tab can change in between; keeping it in the
++     * single write path also means a future caller cannot inherit an uncapped insert.
++     *
++     * Returning null is already this interactor's failure signal, so no caller signature changes.
++     * Source specific feeds (global = false) are not capped, and neither is [awaitAll]: migrations and
++     * backup restores must never silently drop entries.
++     */
+     suspend fun await(feedSavedSearch: FeedSavedSearch): Long? {
+         return try {
++            if (feedSavedSearch.global &&
++                feedSavedSearchRepository.countGlobalByCategory(feedSavedSearch.category) >=
++                FeedLimits.MAX_SOURCES_PER_FEED
++            ) {
++                logcat(LogPriority.WARN) {
++                    "Feed tab ${feedSavedSearch.category} already holds " +
++                        "${FeedLimits.MAX_SOURCES_PER_FEED} sources, refusing source ${feedSavedSearch.source}"
++                }
++                return null
++            }
+             feedSavedSearchRepository.insert(feedSavedSearch)
+         } catch (e: Exception) {
+             logcat(LogPriority.ERROR) { e.asLog() }
+diff --git a/domain/src/test/java/com/shinku/reader/domain/source/interactor/InsertFeedSavedSearchTest.kt b/domain/src/test/java/com/shinku/reader/domain/source/interactor/InsertFeedSavedSearchTest.kt
+new file mode 100644
+index 0000000..29644f2
+--- /dev/null
++++ b/domain/src/test/java/com/shinku/reader/domain/source/interactor/InsertFeedSavedSearchTest.kt
+@@ -0,0 +1,84 @@
++package com.shinku.reader.domain.source.interactor
++
++import com.shinku.reader.domain.source.model.FeedSavedSearch
++import com.shinku.reader.domain.source.repository.FeedSavedSearchRepository
++import com.shinku.reader.domain.source.service.FeedLimits
++import io.kotest.matchers.shouldBe
++import io.mockk.coEvery
++import io.mockk.coVerify
++import io.mockk.mockk
++import kotlinx.coroutines.test.runTest
++import org.junit.jupiter.api.Test
++
++class InsertFeedSavedSearchTest {
++
++    private val repository = mockk<FeedSavedSearchRepository>(relaxed = true)
++    private val insertFeedSavedSearch = InsertFeedSavedSearch(repository)
++
++    private val limit = FeedLimits.MAX_SOURCES_PER_FEED
++
++    private fun feed(source: Long, category: Long = 1L, global: Boolean = true) = FeedSavedSearch(
++        id = -1,
++        source = source,
++        savedSearch = null,
++        global = global,
++        category = category,
++    )
++
++    @Test
++    fun `await inserts while the tab is below the cap`() = runTest {
++        coEvery { repository.countGlobalByCategory(1L) } returns (limit - 1).toLong()
++        coEvery { repository.insert(any()) } returns 42L
++
++        insertFeedSavedSearch.await(feed(source = 7)) shouldBe 42L
++
++        coVerify(exactly = 1) { repository.insert(any()) }
++    }
++
++    @Test
++    fun `await refuses at the cap without touching the repository`() = runTest {
++        coEvery { repository.countGlobalByCategory(1L) } returns limit.toLong()
++
++        insertFeedSavedSearch.await(feed(source = 7)) shouldBe null
++
++        coVerify(exactly = 0) { repository.insert(any()) }
++    }
++
++    @Test
++    fun `the cap is per tab, so a full tab does not block another one`() = runTest {
++        coEvery { repository.countGlobalByCategory(1L) } returns limit.toLong()
++        coEvery { repository.countGlobalByCategory(2L) } returns 0L
++        coEvery { repository.insert(any()) } returns 43L
++
++        insertFeedSavedSearch.await(feed(source = 7, category = 2L)) shouldBe 43L
++
++        coVerify(exactly = 1) { repository.insert(match { it.category == 2L }) }
++    }
++
++    @Test
++    fun `source specific feeds are not capped`() = runTest {
++        coEvery { repository.insert(any()) } returns 44L
++
++        insertFeedSavedSearch.await(feed(source = 7, global = false)) shouldBe 44L
++
++        coVerify(exactly = 0) { repository.countGlobalByCategory(any()) }
++    }
++
++    @Test
++    fun `awaitAll is not capped so migrations and restores cannot lose entries`() = runTest {
++        val batch = (1L..(limit * 2)).map { feed(source = it) }
++
++        insertFeedSavedSearch.awaitAll(batch)
++
++        coVerify(exactly = 1) { repository.insertAll(batch) }
++        coVerify(exactly = 0) { repository.countGlobalByCategory(any()) }
++    }
++
++    @Test
++    fun `await still returns null when the repository throws`() = runTest {
++        coEvery { repository.countGlobalByCategory(1L) } returns 0L
++        coEvery { repository.insert(any()) } throws IllegalStateException("db")
++
++        insertFeedSavedSearch.await(feed(source = 7)) shouldBe null
++    }
++}

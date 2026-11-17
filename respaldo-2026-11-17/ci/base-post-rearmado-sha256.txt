@@ -1,0 +1,3 @@
+6e859cd916eafe9da5f697c2c435c00e0299476bb4473ac0e58fb7fddd70f9ff  app-debug.apk
+6b02dceb49eb89741a0e34cadd756860b63bc05eaa3f27e578d2f894d20e3545  app-debug-androidTest.apk
+# idénticos a los de 81915cf: build reproducible tras rearmar el entorno

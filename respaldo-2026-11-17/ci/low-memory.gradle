@@ -1,0 +1,6 @@
+allprojects {
+    tasks.withType(Test).configureEach {
+        minHeapSize = "128m"
+        maxHeapSize = "384m"
+    }
+}

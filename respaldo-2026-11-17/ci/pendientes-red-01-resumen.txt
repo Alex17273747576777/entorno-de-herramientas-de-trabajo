@@ -1,0 +1,3 @@
+extension_sandbox.IntegracionRedRealTest: {'name': 'com.ceroX.app.modules.extension_sandbox.IntegracionRedRealTest', 'tests': '1', 'skipped': '0', 'failures': '0', 'errors': '0', 'timestamp': '2026-11-12T22:32:29.011Z', 'hostname': 'e2b.local', 'time': '2.659'}
+RED_REAL_OK manga=1618 anime=273 kotatsu=3662 rotas=1113
+aihub.ProveedorIaRedRealTest: {'name': 'com.ceroX.app.modules.aihub.ProveedorIaRedRealTest', 'tests': '1', 'skipped': '1', 'failures': '0', 'errors': '0', 'timestamp': '2026-11-12T22:32:28.976Z', 'hostname': 'e2b.local', 'time': '0.025'}

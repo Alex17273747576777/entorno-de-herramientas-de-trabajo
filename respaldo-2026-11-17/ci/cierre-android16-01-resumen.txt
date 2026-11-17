@@ -1,0 +1,72 @@
+Cierre limpio con las pruebas en Android 16 — 2026-11-13
+=========================================================
+
+Comando:
+  ./gradlew -I ../tools/low-memory.gradle clean :app:testDebugUnitTest \
+      :app:assembleDebug :app:assembleDebugAndroidTest
+Resultado: BUILD SUCCESSFUL in 3m 36s, EXIT=0, 83 tareas (81 ejecutadas).
+Log: work/ci/cierre-android16-01.log.gz (crudo 8.149.078 B, filtradas las trazas de pila).
+
+Suite
+-----
+suites=87  pruebas=611  fallos=0  errores=0  omitidas=14
+Los 87 XML de resultados se escribieron en la misma corrida (09:30:23), desde clean.
+Comparado con el cierre anterior (30d84c0, Robolectric 4.13, sdk 34): 86 suites y 608
+pruebas. La diferencia es exacta: +1 suite y +3 pruebas, las de la guarda nueva
+core/NivelDeSdkDePruebasTest. Ninguna prueba existente cambió de resultado al subir
+de Android 14 a Android 16.
+Las 14 omitidas son las opt-in de red (CEROX_NETWORK_TESTS, CEROX_LIVE_BOORU,
+CEROX_LIVE_CATALOGO) más MangaDexRealHostTest, igual que antes.
+
+APK (build limpio, comparables por la regla 12)
+----------------------------------------------
+app-debug.apk                57.102.001 B  19e7471ffb544e9072dafc4578db77237cb3b2ce9b71dba78a4bd78d599e8be1
+app-debug-androidTest.apk       655.982 B  8ab2d4d1198d27a285dcf8ee0768b9bc9e3678656a89b7199f799e9808954e35
+Ambos son IDÉNTICOS, byte a byte, a los registrados en
+work/ci/catalogo-cierre-sha256.txt para 30d84c0. Es la comprobación de que subir
+Robolectric de 4.13 a 4.16.1 y las @Config de 34 a 36 no alteró el artefacto que se
+envía: Robolectric es testImplementation y no llega al dex.
+
+Qué cambió en el proyecto
+------------------------
+- android/app/build.gradle: org.robolectric:robolectric 4.13 -> 4.16.1
+- 18 clases de src/test: @Config(sdk = [34]) -> @Config(sdk = [36])
+  (7 con la forma cualificada @org.robolectric.annotation.Config, 11 con la corta)
+- nuevo android/app/src/test/resources/robolectric.properties con sdk=36
+- nuevo android/app/src/test/java/com/ceroX/app/core/NivelDeSdkDePruebasTest.kt (3 pruebas)
+- scripts/preparar-entorno-android.sh: rango de swap 5-12 GiB -> 10-15 GiB, suelo de
+  9 GiB libres justificado por medida, y respaldo de 5 GiB si el rango no cabe
+
+Sonda de niveles (temporal, borrada tras medir)
+----------------------------------------------
+Robolectric 4.13, 4 niveles pedidos: 1 de 4. SDK 36 y 37 -> IllegalArgumentException
+en UnknownSdk.java:45.
+Robolectric 4.16.1, mismos 4 niveles: 3 de 4.
+  API 34 OK  (2,82 s)  Build.VERSION.RELEASE = 14
+  API 35 OK  (3,97 s)  Build.VERSION.RELEASE = 15
+  API 36 OK  (3,65 s)  Build.VERSION.RELEASE = 16   <- el que usa ahora el proyecto
+  API 37 FAIL        java.lang.IllegalArgumentException: API level 37 is not available
+                     at org.robolectric.plugins.UnknownSdk.verifySupportedSdk(UnknownSdk.java:45)
+El heap de tools/low-memory.gradle (maxHeapSize = '384m') bastó para API 36 sin tocarlo.
+Jars android-all-instrumented descargados a /opt/cerox/m2 (fuera del workspace, 683 MB):
+API 14 -> 150.646.262 y 151.142.227 B; API 15 -> 200.643.142 B; API 16 -> 213.431.622 B.
+No existe jar para API 17 en el repositorio de Robolectric.
+
+Entorno medido
+--------------
+RAM 1.982 MB, 2 CPUs. Swap /swapfile-cerox 12.582.908 KB activos (free -m: 12.287 MB).
+Disco /: 25 GB, 4,4 GB libres tras descargar los jars (82 % usado).
+platforms instaladas: android-36 y android-37.2-beta3 (ApiLevel 37.1, CodeName DEV,
+ExtensionLevel 23). El proyecto sigue en compileSdk 36 / targetSdk 36 / minSdk 26.
+
+Lo que NO se pudo hacer (medido, no supuesto)
+--------------------------------------------
+- Emulador/AVD/GSI/Cuttlefish: /dev/kvm no existe y /proc/cpuinfo tiene 0 flags vmx|svm.
+  adb devices vacío. mobolist.net/en es un catálogo comercial de precios y specs.
+- zram: sudo modprobe no existe, sin /sys/block/zram*, zramctl no instalado.
+- Android 17 beta 3 en pruebas: Robolectric no emula API 37 (ver sonda).
+- OmniShizuku: sólo publica *_debug.apk firmado con CN=Android Debug y 47 permisos;
+  sha256 7a0fce3109c7827e826f55a51f9b4bc3398311ceea8b9d14e3631f7330070f19.
+  No adoptado (regla 7) y sin aparato donde instalarlo.
+Detalles y criterio de salida en docs/PENDIENTES-EXTERNOS.md, sección
+«Emulador, Android 17 y OmniShizuku».

@@ -1,0 +1,59 @@
+Cuarto respaldo fuera del sandbox — 2026-11-13
+==============================================
+
+Cubre el commit fe225d4db600127d684efbe928e19e56fec8deb2 (rama main, 133 commits,
+árbol limpio), que cierra la fase de entorno para trabajo en paralelo: caché de build
+activada, pruebas fuera de la caché (outputs.cacheIf { false }), docs/PARALELISMO.md y
+docs/FASES.md al día. Es el primer respaldo posterior a la fusión del PR #7 y el primero
+que incluye work/edt (el espejo publicado, clonado y repuntado a main este turno).
+
+Archivo
+-------
+nombre   cero-X-respaldo-2026-11-13-fe225d4.tar.gz
+bytes    11.844.185
+sha256   240456fdb3de54f9d0a41f88fffd0924d0b279d99e8f99c3c2ae85c202f502d8
+md5      33131e0f660b44b1dfd4903e953a2e4a
+head     fe225d4db600127d684efbe928e19e56fec8deb2 (rama main, 133 commits, árbol limpio)
+
+Mayor que los tres anteriores (8,9-9,0 MB) porque incluye work/edt clonado con su .git.
+
+Barrido de secretos antes de subir (paso 2)
+-------------------------------------------
+grep -rlIE de AKIA[0-9A-Z]{16}, ghp_[A-Za-z0-9]{36}, xox[baprs]-, AIza[0-9A-Za-z_-]{35}
+y "BEGIN [A-Z ]*PRIVATE KEY" sobre work/ → 4 coincidencias, las 4 falsos positivos:
+son CADENAS DE COMPROBACIÓN, no claves (FirmaNuevaTest.kt w.contains("BEGIN PRIVATE KEY"),
+y tres scripts de work/latest que BUSCAN esa cadena para afirmar que no está). Ninguna
+clave real. tokens.txt y .gh-credential viven en /home/user, fuera de work/ → no se
+empaquetan. .git/config sin token embebido. entorno/local.sh sin secretos.
+
+Prueba de restauración ANTES de subir (paso 3, el que prueba algo)
+------------------------------------------------------------------
+tar xzf en /tmp/restore:
+  git fsck --full      → 0 problemas graves (dangling tree/commit son huérfanos esperables,
+                         no corrupción; lo que importa es que no hay "missing" ni "broken link")
+  HEAD restaurado      idéntico al original (fe225d4…)
+  commits              133 == 133
+  ficheros versionados 560 == 560
+  diff -rq --exclude=.git contra el original → sólo 3 "Only in": android/.gradle,
+                         android/build, android/app/build, que el tar EXCLUYE a propósito
+  work/ci              136 ficheros restaurados, 136 en el original
+  work/edt             presente (repo hermano incluido por primera vez)
+  MANIFIESTO-respaldo.txt presente en la raíz del archivo
+/tmp/restore se borró después.
+
+Subida a Google Drive (paso 4)
+------------------------------
+carpeta  "cero-X — respaldos"  id 1MTFiK3m6_CbBsWuklewEdW3azRAgKZpg
+archivo  id 1oescba14rMOs43FJhmQ9QMJbYF1I_Tk2
+           https://drive.google.com/file/d/1oescba14rMOs43FJhmQ9QMJbYF1I_Tk2/view
+creado   2026-11-13T14:40:48.064Z
+
+Verificación POR EL DESTINO (no por nuestra intención):
+  size devuelto por Drive         11844185  == local 11844185
+  md5Checksum devuelto por Drive  33131e0f660b44b1dfd4903e953a2e4a
+                                  == md5 local 33131e0f660b44b1dfd4903e953a2e4a
+
+Paso 5: entrada añadida AL FINAL del bloque de registro en docs/RESPALDOS.md (4ª entrada,
+las 3 anteriores intactas), y copia local del tarball borrada del workspace para que el
+respaldo siguiente no incluya éste. latido ya cuenta fe225d4 como respaldado (está en
+origin/main Y en el registro de Drive con restore_probado=si).
