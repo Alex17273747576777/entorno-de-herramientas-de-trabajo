@@ -79,3 +79,71 @@ diciendo qué no se comprobó. Tras el repunte a `main` el estado es el sano (0)
 - [`entorno/RECETA-DE-REARME.md`](entorno/RECETA-DE-REARME.md): qué rearmar y en qué orden tras un reinicio.
 - [`fallas/REGISTRO-DE-FALLAS.md`](fallas/REGISTRO-DE-FALLAS.md): 20 fallas reales y la comprobación que caza cada una.
 - [`RESPALDOS.md`](RESPALDOS.md): divergencia con el remoto, copias en Drive con sus md5, y autenticación sin escribir el token en ningún sitio.
+
+## yarn y avisos npm sin root, y el lockfile que Dependabot no puede leer (2026-11-17)
+
+*El arreglo vive en `cero-X-app` (`855547210c`) y su explicación en
+`docs/auditoria/DEPENDABOT-SERIALIZE-JAVASCRIPT.md`. Aquí va la receta de entorno, que es lo que se
+pierde.*
+
+### yarn 1.22.22 sin permisos de root
+
+`corepack enable` **no vale** en este contenedor: `EACCES: permission denied, symlink
+'../lib/node_modules/corepack/dist/pnpm.js' -> '/usr/bin/pnpm'`. Lo que sí:
+
+```bash
+mkdir -p /tmp/yi && cd /tmp/yi && npm install yarn    # → /tmp/yi/node_modules/.bin/yarn (1.22.22)
+```
+
+### Por qué hay que auditar el lock con una llamada propia
+
+`comun/kotlin-js-store/yarn.lock` está versionado **sin `package.json` al lado**. Consecuencia medida,
+no supuesta: el servicio de Dependabot falla con `DependencyFileNotFound`
+(`dependabot/dependabot-core#16798`) mientras el *dependency graph* **sí** abre alertas. `npm audit`
+tampoco puede (no hay manifiesto) y `yarn audit` quiere un proyecto instalado. La única vía es el
+endpoint masivo del registro:
+
+```bash
+curl -sS -X POST https://registry.npmjs.org/-/npm/v1/security/advisories/bulk \
+     -H 'content-type: application/json' -d '{"serialize-javascript":["6.0.2"]}'
+```
+
+**La versión va en ARRAY.** Con `"6.0.2"` en vez de `["6.0.2"]` el registro devuelve
+`400 Bad Request`. Y el endpoint contesta con los avisos que afectan a *cualquiera* de las versiones
+enviadas **sin decir cuál**, así que se manda un paquete por bloque con una sola versión. Ese auditor
+es `scripts/auditar-yarn-lock.mjs` en el repo (exit 0 limpio, 1 avisos, **2 cuando no pudo auditar**:
+nunca verde por no haber preguntado).
+
+### Al parchear un lockfile, la autoridad es la herramienta que lo genera
+
+Editar el `yarn.lock` a mano es un arreglo falso. Lo que se hizo: montar `/tmp/sjB` con
+`mocha@10.7.0` + `resolutions: {"serialize-javascript":"7.1.3"}`, dejar que **yarn** generara el
+bloque, y pegar ése en el lock real — comprobando `integrity` byte a byte contra el registro
+(`sha512-kYEnegjAxWFjUw3dSYdSM9zVlTrsxDbsSkq/qd3B7VanqyJ+JdDy6qVyuqVGBhSfuD/rLZQEKuXsO5KZFCrVYQ==`)
+y que mocha pasa en serial **y** en `--parallel`. Prueba A/B: `/tmp/sjA` sin resolución reproduce los 3
+avisos; `/tmp/sjB` con resolución da `yarn audit` 0.
+
+Corolario que sólo aparece al hacerlo: al subir de 6.x a 7.x **`randombytes` quedó huérfano** (7.x ya
+no depende de él). Si el lock regenerado por yarn no lo trae, hay que quitarlo del versionado o el
+lock deja de ser reproducible: 77 pares → **76**.
+
+### El arreglo de Gradle, y lo que no se pudo ejecutar
+
+```kotlin
+rootProject.plugins.withType<YarnPlugin> {
+    rootProject.the<YarnRootExtension>().apply { resolution("serialize-javascript", "7.1.3") }
+}
+```
+
+Va sobre `rootProject` porque cuando el build de Android incluye el módulo como `:comun`, la extensión
+Yarn vive en la raíz de Android. **No está compilado**: aquí no hay Gradle, así que ni
+`kotlinUpgradeYarnLock` ni `jsNodeTest` se ejecutaron. La regeneración autoritativa del lock es del
+build; lo que sí se ejecutó fue la generación con yarn real y su verificación contra el registro.
+
+### Un flujo de CI no existe hasta que corre
+
+`.github/workflows/pruebas.yml` sólo se dispara con `android/**`, así que colgar la auditoría ahí no
+habría vigilado nunca `comun/**`. Se creó `dependencias-js.yml` aparte (push/PR sobre el lock,
+`build.gradle.kts`, el script y el propio yml; `cron "7 6 * * 1"` porque un aviso nuevo puede
+publicarse contra una versión hoy limpia) y **se comprobó por API que corrió**: run `44076096239`,
+`completed/success` sobre `855547210c`. Mirar los `paths:` del disparador antes de reutilizar un flujo.

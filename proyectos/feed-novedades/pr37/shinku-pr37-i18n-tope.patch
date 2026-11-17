@@ -1,0 +1,429 @@
+From 83fe3c02bd8987e905c6a4cbf4d1b18662045e0b Mon Sep 17 00:00:00 2001
+From: Alex17273747576777 <Alex17273747576777@users.noreply.github.com>
+Date: Tue, 17 Nov 2026 11:46:39 +0000
+Subject: [PATCH 1/2] fix(i18n): stop hard-coding the feed cap in 15
+ translations
+
+too_many_in_feed quoted the limit as a literal number. base said 25 after the cap moved
+to FeedLimits.MAX_SOURCES_PER_FEED, but the 15 translations that carry the string still
+said 10 - the pre-2.8.3 legacy rule - so a Spanish, German, French, Japanese, Russian,
+Portuguese, Arabic, Turkish, Indonesian, Tamil, Croatian, Chinese (both scripts),
+Filipino or Assamese reader was told the app refuses at 10 sources when it actually
+refuses at 25.
+
+The number is now a %1$d token in all 16 locales and both rendering paths pass
+FeedLimits.MAX_SOURCES_PER_FEED, so a locale cannot advertise a limit the code does not
+enforce, and changing the constant updates every language at once.
+
+Only the numeral was replaced in each translation; the wording is untouched, one line
+per file.
+
+Two things this repo already had made the change small: presentation-core exposes a
+Composable stringResource(resource, vararg args) for the snackbar path in FeedTab, and
+SourceFeedScreenModel already imported FeedLimits for hasTooManyFeeds().
+
+The toast path needed a new overload in ToastExtensions. It takes formatArgs as a List
+and NOT as vararg args: Any, because MigrationListScreen:43 and SettingsEhScreen:918
+call context.toast(res, Toast.LENGTH_LONG) positionally and an Int would match both a
+duration: Int parameter and a vararg Any, making those calls ambiguous. A List cannot
+be mistaken for an Int, so every existing call site resolves exactly as it does today;
+context.toast(res) and context.toast(text, duration) are untouched.
+
+Verified by execution, not by reading: all 16 strings were extracted from the modified
+XML (unescaping \' and XML entities) and formatted with java.util.Formatter under each
+locale on JDK 17, which is the formatter moko's StringDesc.ResourceFormatted uses.
+16 of 16 render the limit with no leftover token, and two of them now get locale-native
+digits that a hand-written number could never have: Arabic renders 25 as U+0662 U+0665
+and Assamese as U+09E8 U+09EB. XML well-formedness was re-checked after the edit and
+each file differs from HEAD by exactly one line.
+
+Known limitation, flagged rather than silently rewritten: Turkish attaches a
+vowel-harmony suffix to the numeral (was 10'dan, now 25'dan). The suffix agrees with
+the digit it follows, so no single form is correct for every value of the constant -
+25 wants 'ten and 30 would want 'dan. A suffix-free phrasing such as 'En fazla %1$d
+kaynak eklenebilir' would be robust, but rewriting a translation without a native
+speaker is worse than disclosing it, so the numeral-only change stands and this is left
+for whoever owns the Turkish strings.
+
+Not verified: Gradle did not run here, so spotlessCheck and assembleDevDebug were not
+executed and the Kotlin changes are not compiled. The .editorconfig constraints the
+changed files are subject to were checked mechanically instead: UTF-8, 4-space indent,
+max_line_length 120, no trailing whitespace, final newline present.
+---
+ .../shinku/reader/ui/browse/feed/FeedTab.kt   |  8 +++++-
+ .../ui/browse/source/feed/SourceFeedScreen.kt |  4 +--
+ .../source/feed/SourceFeedScreenModel.kt      |  4 +--
+ .../reader/util/system/ToastExtensions.kt     | 25 +++++++++++++++++++
+ .../commonMain/moko-resources/ar/strings.xml  |  2 +-
+ .../commonMain/moko-resources/as/strings.xml  |  2 +-
+ .../moko-resources/base/strings.xml           |  2 +-
+ .../commonMain/moko-resources/de/strings.xml  |  2 +-
+ .../commonMain/moko-resources/es/strings.xml  |  2 +-
+ .../commonMain/moko-resources/fil/strings.xml |  2 +-
+ .../commonMain/moko-resources/fr/strings.xml  |  2 +-
+ .../commonMain/moko-resources/hr/strings.xml  |  2 +-
+ .../commonMain/moko-resources/in/strings.xml  |  2 +-
+ .../commonMain/moko-resources/ja/strings.xml  |  2 +-
+ .../moko-resources/pt-rBR/strings.xml         |  2 +-
+ .../commonMain/moko-resources/ru/strings.xml  |  2 +-
+ .../commonMain/moko-resources/ta/strings.xml  |  2 +-
+ .../commonMain/moko-resources/tr/strings.xml  |  2 +-
+ .../moko-resources/zh-rCN/strings.xml         |  2 +-
+ .../moko-resources/zh-rTW/strings.xml         |  2 +-
+ 20 files changed, 52 insertions(+), 21 deletions(-)
+
+diff --git a/app/src/main/java/com/shinku/reader/ui/browse/feed/FeedTab.kt b/app/src/main/java/com/shinku/reader/ui/browse/feed/FeedTab.kt
+index 99fb2d2..f52a77a 100644
+--- a/app/src/main/java/com/shinku/reader/ui/browse/feed/FeedTab.kt
++++ b/app/src/main/java/com/shinku/reader/ui/browse/feed/FeedTab.kt
+@@ -31,6 +31,7 @@ import kotlinx.collections.immutable.persistentListOf
+ import kotlinx.coroutines.flow.collectLatest
+ import kotlinx.coroutines.launch
+ import com.shinku.reader.domain.source.interactor.GetRemoteManga
++import com.shinku.reader.domain.source.service.FeedLimits
+ import com.shinku.reader.i18n.MR
+ import com.shinku.reader.i18n.sy.SYMR
+ import com.shinku.reader.presentation.core.i18n.stringResource
+@@ -220,7 +221,12 @@ fun Screen.feedTab(): TabContent {
+             }
+ 
+             val internalErrString = stringResource(MR.strings.internal_error)
+-            val tooManyFeedsString = stringResource(SYMR.strings.too_many_in_feed)
++            // The cap lives in one place (FeedLimits) and the message now reads it, so a locale
++            // can never advertise a number the code does not enforce.
++            val tooManyFeedsString = stringResource(
++                SYMR.strings.too_many_in_feed,
++                FeedLimits.MAX_SOURCES_PER_FEED,
++            )
+             LaunchedEffect(Unit) {
+                 screenModel.events.collectLatest { event ->
+                     when (event) {
+diff --git a/app/src/main/java/com/shinku/reader/ui/browse/source/feed/SourceFeedScreen.kt b/app/src/main/java/com/shinku/reader/ui/browse/source/feed/SourceFeedScreen.kt
+index 8d53d99..b699d67 100644
+--- a/app/src/main/java/com/shinku/reader/ui/browse/source/feed/SourceFeedScreen.kt
++++ b/app/src/main/java/com/shinku/reader/ui/browse/source/feed/SourceFeedScreen.kt
+@@ -115,8 +115,8 @@ class SourceFeedScreen(val sourceId: Long) : Screen() {
+                         )
+                     },
+                     onSavedSearchPress = { search ->
+-                        screenModel.onSavedSearchAddToFeed(search) {
+-                            context.toast(it)
++                        screenModel.onSavedSearchAddToFeed(search) { resource, formatArgs ->
++                            context.toast(resource, formatArgs)
+                         }
+                     },
+                     openMangaDexRandom = if (screenModel.sourceIsMangaDex) {
+diff --git a/app/src/main/java/com/shinku/reader/ui/browse/source/feed/SourceFeedScreenModel.kt b/app/src/main/java/com/shinku/reader/ui/browse/source/feed/SourceFeedScreenModel.kt
+index 7f9913b..37c1608 100644
+--- a/app/src/main/java/com/shinku/reader/ui/browse/source/feed/SourceFeedScreenModel.kt
++++ b/app/src/main/java/com/shinku/reader/ui/browse/source/feed/SourceFeedScreenModel.kt
+@@ -263,12 +263,12 @@ open class SourceFeedScreenModel(
+ 
+     fun onSavedSearchAddToFeed(
+         search: EXHSavedSearch,
+-        onToast: (StringResource) -> Unit,
++        onToast: (StringResource, List<Any>) -> Unit,
+     ) {
+         screenModelScope.launchIO {
+             if (hasTooManyFeeds()) {
+                 withUIContext {
+-                    onToast(SYMR.strings.too_many_in_feed)
++                    onToast(SYMR.strings.too_many_in_feed, listOf(FeedLimits.MAX_SOURCES_PER_FEED))
+                 }
+                 return@launchIO
+             }
+diff --git a/core/common/src/main/kotlin/com/shinku/reader/util/system/ToastExtensions.kt b/core/common/src/main/kotlin/com/shinku/reader/util/system/ToastExtensions.kt
+index 7009659..4eeaf05 100644
+--- a/core/common/src/main/kotlin/com/shinku/reader/util/system/ToastExtensions.kt
++++ b/core/common/src/main/kotlin/com/shinku/reader/util/system/ToastExtensions.kt
+@@ -19,6 +19,31 @@ fun Context.toast(
+     return toast(stringResource(resource), duration, block)
+ }
+ 
++/**
++ * Display a toast in this context, formatting the resource with arguments.
++ *
++ * Needed by messages that quote a number the code owns: without it every translation has to
++ * hard-code the limit, and 15 locales were advertising 10 sources while the code enforces 25.
++ *
++ * The arguments come as a [List] and NOT as `vararg args: Any` on purpose. Two existing call sites
++ * pass a duration positionally - `context.toast(res, Toast.LENGTH_LONG)` in MigrationListScreen and
++ * in SettingsEhScreen - and a vararg `Any` overload would make those calls ambiguous, because an
++ * Int matches both `duration: Int` and `vararg args: Any`. A List cannot be mistaken for an Int, so
++ * every existing call site keeps resolving to the overload it resolves to today.
++ *
++ * @param resource the text resource.
++ * @param formatArgs the arguments for the resource's format string.
++ * @param duration the duration of the toast. Defaults to short.
++ */
++fun Context.toast(
++    resource: StringResource,
++    formatArgs: List<Any>,
++    duration: Int = Toast.LENGTH_SHORT,
++    block: (Toast) -> Unit = {},
++): Toast {
++    return toast(stringResource(resource, *formatArgs.toTypedArray()), duration, block)
++}
++
+ /**
+  * Display a toast in this context.
+  *
+diff --git a/i18n-sy/src/commonMain/moko-resources/ar/strings.xml b/i18n-sy/src/commonMain/moko-resources/ar/strings.xml
+index 850fdef..92b7b15 100644
+--- a/i18n-sy/src/commonMain/moko-resources/ar/strings.xml
++++ b/i18n-sy/src/commonMain/moko-resources/ar/strings.xml
+@@ -378,7 +378,7 @@
+     <string name="no_source_categories">لا توجد فئات مصدر متاحة</string>
+     <string name="feed">الخلاصه</string>
+     <string name="feed_delete">حذف عنصر الخلاصة ؟</string>
+-    <string name="too_many_in_feed">هناك عدد كبير جدًا من المصادر في صفحة الخلاصة الخاصة بك، لا يمكن إضافة أكثر من 10</string>
++    <string name="too_many_in_feed">هناك عدد كبير جدًا من المصادر في صفحة الخلاصة الخاصة بك، لا يمكن إضافة أكثر من %1$d</string>
+     <string name="feed_tab_empty">ليس لديك أي مصادر في صفحة الخلاصه الخاصة بك ، انتقل إلى الجزء العلوي الأيسر لإضافة مصدر</string>
+     <string name="feed_add">اضف %1$s الى صفحة الخلاصه ؟</string>
+     <string name="pref_tag_sorting">فئة فرز الفئات</string>
+diff --git a/i18n-sy/src/commonMain/moko-resources/as/strings.xml b/i18n-sy/src/commonMain/moko-resources/as/strings.xml
+index 55be2d3..b82893b 100644
+--- a/i18n-sy/src/commonMain/moko-resources/as/strings.xml
++++ b/i18n-sy/src/commonMain/moko-resources/as/strings.xml
+@@ -384,7 +384,7 @@
+     <string name="invalid_category_name">অবৈধ শ্ৰেণী নাম</string>
+     <string name="feed">ফিড</string>
+     <string name="feed_delete">ফিড আইটেম মচি পেলামনে?</string>
+-    <string name="too_many_in_feed">আপোনাৰ ফিডত বেছি সংখ্যক উৎস আছে, ১০ টাতকৈ অধিক যোগ কৰিব নোৱাৰিব</string>
++    <string name="too_many_in_feed">আপোনাৰ ফিডত বেছি সংখ্যক উৎস আছে, %1$d টাতকৈ অধিক যোগ কৰিব নোৱাৰিব</string>
+     <string name="feed_tab_empty">আপোনাৰ ফিডত কোনো উৎস নাই, এটা যোগ কৰিবলৈ ওপৰৰ সোঁফালে যাউক</string>
+     <string name="feed_add">%1$s ফিডত যোগ কৰিমনে?</string>
+     <string name="pref_tag_sorting">টেগ শ্ৰেণীবিভাজন টেগসমূহ</string>
+diff --git a/i18n-sy/src/commonMain/moko-resources/base/strings.xml b/i18n-sy/src/commonMain/moko-resources/base/strings.xml
+index c7acc9d..860ab35 100644
+--- a/i18n-sy/src/commonMain/moko-resources/base/strings.xml
++++ b/i18n-sy/src/commonMain/moko-resources/base/strings.xml
+@@ -466,7 +466,7 @@
+     <!-- Feed Tab -->
+     <string name="feed">Feed</string>
+     <string name="feed_delete">Delete feed item?</string>
+-    <string name="too_many_in_feed">Too many sources in your feed, cannot add more than 25</string>
++    <string name="too_many_in_feed">Too many sources in your feed, cannot add more than %1$d</string>
+     <string name="feed_tab_empty">You don\'t have any sources in your feed, navigate to the top right to add one</string>
+     <string name="feed_add">Add %1$s to feed?</string>
+ 
+diff --git a/i18n-sy/src/commonMain/moko-resources/de/strings.xml b/i18n-sy/src/commonMain/moko-resources/de/strings.xml
+index 7a871e8..fc91635 100644
+--- a/i18n-sy/src/commonMain/moko-resources/de/strings.xml
++++ b/i18n-sy/src/commonMain/moko-resources/de/strings.xml
+@@ -442,7 +442,7 @@
+     <string name="tag_filtering_threshhold_error">Muss zwischen -9999 und 0 liegen!</string>
+     <string name="use_hentai_at_home_summary">Bilder durch das Hentai@Home-Netzwerk laden. Das Abschalten dieser Funktion reduziert die Anzahl an Seiten, die angesehen werden können. \nOptionen: \n- Jeder Client (empfohlen)\n- Nur Clients, die Standardports verwenden, erlauben (Möglicherweise langsamer. Wähle diese Option aus, falls du hinter einer Firewall/einem Proxy bist, die Nicht-Standard-Ports blocken.)</string>
+     <string name="similar_titles">Ähnliche Titel</string>
+-    <string name="too_many_in_feed">Zu viele Quellen in Ihrem Feed. Sie können nicht mehr als 10 hinzufügen</string>
++    <string name="too_many_in_feed">Zu viele Quellen in Ihrem Feed. Sie können nicht mehr als %1$d hinzufügen</string>
+     <string name="add_tags">Tags hinzufügen</string>
+     <string name="tag_watching_threshhold_error">Muss zwischen 0 und 9999 liegen!</string>
+     <string name="eh_image_quality_summary">Die Qualität der heruntergeladenen Bilder</string>
+diff --git a/i18n-sy/src/commonMain/moko-resources/es/strings.xml b/i18n-sy/src/commonMain/moko-resources/es/strings.xml
+index b7cbc0b..f88ee61 100644
+--- a/i18n-sy/src/commonMain/moko-resources/es/strings.xml
++++ b/i18n-sy/src/commonMain/moko-resources/es/strings.xml
+@@ -549,7 +549,7 @@
+     <string name="pref_crop_borders_webtoon">Recortar bordes Webtoon</string>
+     <string name="feed">Feed</string>
+     <string name="feed_delete">¿Borrar artículo de feed?</string>
+-    <string name="too_many_in_feed">Demasiadas fuentes en tu feed, no se pueden agregar más de 10</string>
++    <string name="too_many_in_feed">Demasiadas fuentes en tu feed, no se pueden agregar más de %1$d</string>
+     <string name="action_add_tags_message">¡Lee esto! ¡Etiquetas deben ser exactas, no hay coincidencias parciales, no puedes hacer netorare para excluir mujer:netorare o similar!\nEl estilo para etiquetas de nombre es\n\"mujer: solo mujer\"\n¡sin citas!\n¡Se pueden añadir multiples variantes de la misma etiqueta, así que puedes hacer \"etiqueta:netorare\" para NHentai y \"mujer:netorare\" para E-Hentai!</string>
+     <string name="select_none">Selecciona ninguno</string>
+     <string name="feed_tab_empty">No tiene fuentes en su feed, navegar a la parte superior derecha para añadir una</string>
+diff --git a/i18n-sy/src/commonMain/moko-resources/fil/strings.xml b/i18n-sy/src/commonMain/moko-resources/fil/strings.xml
+index e8ac031..72f4703 100644
+--- a/i18n-sy/src/commonMain/moko-resources/fil/strings.xml
++++ b/i18n-sy/src/commonMain/moko-resources/fil/strings.xml
+@@ -338,7 +338,7 @@
+     <string name="single_page">Isang pahina</string>
+     <string name="center_margin_wide_page">Idagdag sa malawak na Pahina</string>
+     <string name="archive_mode_load_into_memory">I-load sa memory</string>
+-    <string name="too_many_in_feed">Masyadong maraming source sa iyong feed, hindi maaaring magdagdag ng higit sa 10</string>
++    <string name="too_many_in_feed">Masyadong maraming source sa iyong feed, hindi maaaring magdagdag ng higit sa %1$d</string>
+     <string name="pref_center_margin_summary">Maglagay ng spacer upang mabawasan ang deadspace sa mga foldable na device.</string>
+     <string name="archive_mode_load_from_file">Magload mula sa file</string>
+     <string name="pref_archive_reader_mode_summary">Ang paraan kung paano naglo-load ang mga imahe sa loob ng mga archive, tulad ng CBZ o CBR</string>
+diff --git a/i18n-sy/src/commonMain/moko-resources/fr/strings.xml b/i18n-sy/src/commonMain/moko-resources/fr/strings.xml
+index ccf5250..da94a67 100644
+--- a/i18n-sy/src/commonMain/moko-resources/fr/strings.xml
++++ b/i18n-sy/src/commonMain/moko-resources/fr/strings.xml
+@@ -464,7 +464,7 @@
+     <string name="pref_mark_read_dupe_chapters">Marquer les chapitres en double comme lus</string>
+     <string name="pref_archive_reader_mode_summary">La manière dont les images contenues dans les archives, telles que CBZ ou CBR, sont chargées</string>
+     <string name="reset_info">Réinitialiser les informations</string>
+-    <string name="too_many_in_feed">Trop de sources dans votre flux, vous ne pouvez pas en ajouter plus de 10</string>
++    <string name="too_many_in_feed">Trop de sources dans votre flux, vous ne pouvez pas en ajouter plus de %1$d</string>
+     <string name="reader_bottom_buttons_summary">Personnaliser les boutons apparaissant au bas du lecteur</string>
+     <string name="action_share_combined_page">Partager la page combinée</string>
+     <string name="data_saver_stop_exclude">Arrêter d\'exclure de l\'économiseur de données</string>
+diff --git a/i18n-sy/src/commonMain/moko-resources/hr/strings.xml b/i18n-sy/src/commonMain/moko-resources/hr/strings.xml
+index ad68d79..86f3905 100644
+--- a/i18n-sy/src/commonMain/moko-resources/hr/strings.xml
++++ b/i18n-sy/src/commonMain/moko-resources/hr/strings.xml
+@@ -615,7 +615,7 @@
+     <string name="pref_hide_feed">Sakrij karticu feeda</string>
+     <string name="pref_feed_position_summery">Želiš li da kartica feeda bude prva kartica u pregledavanju? Time će se pojaviti kao zadana kartica prilikom otvaranja pregledavanja. Ne preporučuje se ako koristiš mobilne podatke ili mrežu s tarifom</string>
+     <string name="feed_delete">Izbrisati stavku feeda?</string>
+-    <string name="too_many_in_feed">Previše izvora u tvom feedu, ne možeš dodati više od 10</string>
++    <string name="too_many_in_feed">Previše izvora u tvom feedu, ne možeš dodati više od %1$d</string>
+     <string name="feed_tab_empty">Nemaš nijedan izvor u svom feedu, idi gore desno za dodavanje izvora</string>
+     <string name="feed_add">Dodati %1$s u feed?</string>
+     <string name="download_threads">Preuzmi teme</string>
+diff --git a/i18n-sy/src/commonMain/moko-resources/in/strings.xml b/i18n-sy/src/commonMain/moko-resources/in/strings.xml
+index 9329235..4edbc4e 100644
+--- a/i18n-sy/src/commonMain/moko-resources/in/strings.xml
++++ b/i18n-sy/src/commonMain/moko-resources/in/strings.xml
+@@ -643,7 +643,7 @@
+     <string name="center_margin_double_page">Tambahkan ke Halaman ganda</string>
+     <string name="center_margin_wide_page">Tambahkan ke Halaman lebar</string>
+     <string name="feed">Daftar Konten</string>
+-    <string name="too_many_in_feed">Terlalu banyak sumber di daftar konten Anda, tidak dapat menambahkan lebih dari 10</string>
++    <string name="too_many_in_feed">Terlalu banyak sumber di daftar konten Anda, tidak dapat menambahkan lebih dari %1$d</string>
+     <string name="entry_not_tracked">Entri tidak dilacak.</string>
+     <string name="favorites_sync_unable_to_add_to_remote">Tidak dapat menambahkan galeri ke remote server: \'%1$s\' (GID: %2$s)!</string>
+     <string name="relation_shared_universe">Semesta bersama</string>
+diff --git a/i18n-sy/src/commonMain/moko-resources/ja/strings.xml b/i18n-sy/src/commonMain/moko-resources/ja/strings.xml
+index c4f854d..8118bc3 100644
+--- a/i18n-sy/src/commonMain/moko-resources/ja/strings.xml
++++ b/i18n-sy/src/commonMain/moko-resources/ja/strings.xml
+@@ -394,7 +394,7 @@
+     <!-- Feed Tab -->
+     <string name="feed">フィード</string>
+     <string name="feed_delete">フィードのアイテムを削除しますか？</string>
+-    <string name="too_many_in_feed">フィードにソースが多すぎます。10 以上を追加できません。</string>
++    <string name="too_many_in_feed">フィードにソースが多すぎます。%1$d 以上を追加できません。</string>
+     <string name="feed_tab_empty">フィードにソースがありません。右上に移動して追加してください</string>
+     <string name="feed_add">フィードに %1$s を追加しますか？</string>
+     <!-- Sort by tags -->
+diff --git a/i18n-sy/src/commonMain/moko-resources/pt-rBR/strings.xml b/i18n-sy/src/commonMain/moko-resources/pt-rBR/strings.xml
+index 8ee922c..a4349fb 100644
+--- a/i18n-sy/src/commonMain/moko-resources/pt-rBR/strings.xml
++++ b/i18n-sy/src/commonMain/moko-resources/pt-rBR/strings.xml
+@@ -631,7 +631,7 @@
+     <string name="feed_delete">Excluir item do feed?</string>
+     <string name="feed_add">Adicionar %1$s ao feed?</string>
+     <string name="delete_tag">Excluir tag</string>
+-    <string name="too_many_in_feed">Muitas fontes no seu feed, não é possível adicionar mais de 10</string>
++    <string name="too_many_in_feed">Muitas fontes no seu feed, não é possível adicionar mais de %1$d</string>
+     <string name="action_stop">Parar</string>
+     <string name="rec_services_to_search">Serviços de recomendação para busca</string>
+     <string name="rec_hide_library_entries">Ocultar resultados já existentes em sua biblioteca</string>
+diff --git a/i18n-sy/src/commonMain/moko-resources/ru/strings.xml b/i18n-sy/src/commonMain/moko-resources/ru/strings.xml
+index 39836e9..ac86126 100644
+--- a/i18n-sy/src/commonMain/moko-resources/ru/strings.xml
++++ b/i18n-sy/src/commonMain/moko-resources/ru/strings.xml
+@@ -390,7 +390,7 @@
+     <!-- Feed Tab -->
+     <string name="feed">Лента</string>
+     <string name="feed_delete">Удалить элемент из ленты?</string>
+-    <string name="too_many_in_feed">Слишком большое количество источников в вашей ленте. Количество не должно превышать 10</string>
++    <string name="too_many_in_feed">Слишком большое количество источников в вашей ленте. Количество не должно превышать %1$d</string>
+     <string name="feed_tab_empty">Ваша лента не имеет отслеживаемых источников. Чтобы добавить источник нажмите «+»</string>
+     <string name="feed_add">Добавить %1$s в ленту?</string>
+     <!-- Sort by tags -->
+diff --git a/i18n-sy/src/commonMain/moko-resources/ta/strings.xml b/i18n-sy/src/commonMain/moko-resources/ta/strings.xml
+index 621a7f8..f57d274 100644
+--- a/i18n-sy/src/commonMain/moko-resources/ta/strings.xml
++++ b/i18n-sy/src/commonMain/moko-resources/ta/strings.xml
+@@ -452,7 +452,7 @@
+     <string name="invalid_category_name">தவறான வகை பெயர்</string>
+     <string name="feed">தீவனம்</string>
+     <string name="feed_delete">தீவன உருப்படியை நீக்கவா?</string>
+-    <string name="too_many_in_feed">உங்கள் ஊட்டத்தில் பல ஆதாரங்கள், 10 க்கு மேல் சேர்க்க முடியாது</string>
++    <string name="too_many_in_feed">உங்கள் ஊட்டத்தில் பல ஆதாரங்கள், %1$d க்கு மேல் சேர்க்க முடியாது</string>
+     <string name="feed_tab_empty">உங்கள் ஊட்டத்தில் உங்களிடம் எந்த ஆதாரங்களும் இல்லை, ஒன்றைச் சேர்க்க மேல் உரிமைக்கு செல்லவும்</string>
+     <string name="feed_add">உணவளிக்க %1$s ஐச் சேர்க்கவா?</string>
+     <string name="add_tag">குறிச்சொல்லைச் சேர்க்கவும்</string>
+diff --git a/i18n-sy/src/commonMain/moko-resources/tr/strings.xml b/i18n-sy/src/commonMain/moko-resources/tr/strings.xml
+index 42e3d1d..d1c4e68 100644
+--- a/i18n-sy/src/commonMain/moko-resources/tr/strings.xml
++++ b/i18n-sy/src/commonMain/moko-resources/tr/strings.xml
+@@ -317,7 +317,7 @@
+     <string name="feed_delete">Akış ögesi silinsin mi?</string>
+     <string name="add_tag">Etiket Ekle</string>
+     <string name="tag_sorting">Etiket sıralama</string>
+-    <string name="too_many_in_feed">Akışınızda çok fazla kaynak var, 10\'dan daha fazla eklenemiyor</string>
++    <string name="too_many_in_feed">Akışınızda çok fazla kaynak var, %1$d\'dan daha fazla eklenemiyor</string>
+     <string name="shift_double_pages">Bir sayfa kaydır</string>
+     <string name="pref_crop_borders_pager">Kenarları kırp (Sayfalı)</string>
+     <string name="pref_crop_borders_continuous_vertical">Kenarları kırp (Kesintisiz Dikey)</string>
+diff --git a/i18n-sy/src/commonMain/moko-resources/zh-rCN/strings.xml b/i18n-sy/src/commonMain/moko-resources/zh-rCN/strings.xml
+index 23abd46..55f5f18 100644
+--- a/i18n-sy/src/commonMain/moko-resources/zh-rCN/strings.xml
++++ b/i18n-sy/src/commonMain/moko-resources/zh-rCN/strings.xml
+@@ -343,7 +343,7 @@
+     <!-- Feed Tab -->
+     <string name="feed">订阅</string>
+     <string name="feed_delete">删除订阅项？</string>
+-    <string name="too_many_in_feed">你订阅的图源太多了，不能大于 10</string>
++    <string name="too_many_in_feed">你订阅的图源太多了，不能大于 %1$d</string>
+     <string name="feed_tab_empty">没有订阅任何图源，请使用右上角按钮添加一个</string>
+     <string name="feed_add">添加 %1$s 到订阅？</string>
+     <!-- Sort by tags -->
+diff --git a/i18n-sy/src/commonMain/moko-resources/zh-rTW/strings.xml b/i18n-sy/src/commonMain/moko-resources/zh-rTW/strings.xml
+index 39a7e0b..0ae51d2 100644
+--- a/i18n-sy/src/commonMain/moko-resources/zh-rTW/strings.xml
++++ b/i18n-sy/src/commonMain/moko-resources/zh-rTW/strings.xml
+@@ -385,7 +385,7 @@
+     <!-- Feed Tab -->
+     <string name="feed">訂閱</string>
+     <string name="feed_delete">刪除訂閱項？</string>
+-    <string name="too_many_in_feed">您的訂閱來源過多，不能多於 10 個</string>
++    <string name="too_many_in_feed">您的訂閱來源過多，不能多於 %1$d 個</string>
+     <string name="feed_tab_empty">訂閱中沒有任何來源，導覽到右上角新增一個</string>
+     <string name="feed_add">新增 %1$s 到訂閱？</string>
+     <!-- Sort by tags -->
+-- 
+2.47.3
+
+
+From 34cf4048cacbff7a87878b3f90a0e2023e43ceb4 Mon Sep 17 00:00:00 2001
+From: Alex17273747576777 <Alex17273747576777@users.noreply.github.com>
+Date: Tue, 17 Nov 2026 11:57:58 +0000
+Subject: [PATCH 2/2] chore(i18n): satisfy spotless so CI can reach the changed
+ files
+
+Unrelated to the string fix in the previous commit, and flagged as such.
+
+: i18n:spotlessKotlinCheck has been failing on this file's import order since before this
+branch: it fails identically on the run for PR #36 (build.gradle.kts, @@ -1,6 +1,6 @@,
+moving ExperimentalKotlinGradlePluginApi above the shinku.buildlogic imports), which was
+merged anyway. The violation is in a file this branch did not touch until now.
+
+It matters here because spotlessCheck runs before assembleDevDebug in build_check.yml, so
+the build dies on this file and never compiles the four Kotlin files the previous commit
+changes - and it never runs :i18n-sy:spotlessXmlCheck on the 16 strings.xml either. In
+the failing run only :core-metadata:* spotless tasks completed; 30 tasks ran in total and
+none of them touched i18n-sy.
+
+The change is exactly the patch spotless prints in its report: move
+'import org.jetbrains.kotlin.gradle.ExperimentalKotlinGradlePluginApi' above
+'import shinku.buildlogic.generatedBuildDir'. Nothing else in the file.
+
+Happy to drop this commit and send it as its own PR if you would rather keep the i18n
+change to strings only.
+
+Checked every other build.gradle.kts in the repository for the same unsorted-import
+condition: this was the only one.
+---
+ i18n/build.gradle.kts | 2 +-
+ 1 file changed, 1 insertion(+), 1 deletion(-)
+
+diff --git a/i18n/build.gradle.kts b/i18n/build.gradle.kts
+index f2e1228..f3aa2af 100644
+--- a/i18n/build.gradle.kts
++++ b/i18n/build.gradle.kts
+@@ -1,6 +1,6 @@
++import org.jetbrains.kotlin.gradle.ExperimentalKotlinGradlePluginApi
+ import shinku.buildlogic.generatedBuildDir
+ import shinku.buildlogic.tasks.getLocalesConfigTask
+-import org.jetbrains.kotlin.gradle.ExperimentalKotlinGradlePluginApi
+ 
+ plugins {
+     id("shinku.library")
+-- 
+2.47.3
+

@@ -208,3 +208,68 @@ anime-index.pb aniyomi` → salida 1; `generar … anime-extensoes … nox` → 
 **Global ponderado: 58 % (11-16) → 69 % (11-17).** Subió 11 puntos por dos fusiones y una release, y
 bajó en el frente Nox por un defecto mío. Lo que impide pasar de ~70 % no son los repos ajenos: son los
 **12 issues abiertos en tus propios repos** y AniZen, que no responde.
+
+---
+
+## Porcentaje recalculado a las 12:15Z del 17-11 (segunda mitad del turno)
+
+| # | Corriente | Peso | 11-17 mañana | **11-17 tarde** | Por qué se movió |
+|---|---|---:|---:|---:|---|
+| 1 | Biblioteca masiva — ShinKu | 14 | 95 | **95** | sin cambio: v2.8.3 publicado, #34 fusionado |
+| 2 | Feed — ShinKu | 12 | 90 | **92** | **PR #37 abierto** con las 16 cadenas tokenizadas y verificadas; sin fusionar |
+| 3 | Infraestructura edt | 10 | 90 | **90** | igual; se añadieron FALLA-011/012/013 y tres recetas de entorno |
+| 4 | Auditoría remota 6 repos | 10 | 70 | **78** | issues abiertas en repos propios: **12 → 8** (gltools 6, cero-X 1, la-bandita 1, normas 0) |
+| 5 | cero-X-app | 9 | 75 | **75** | sin cambio en este renglón; el lockfile va en el 13 |
+| 6 | La Bandita | 9 | 65 | **65** | sin cambio |
+| 7 | Guías/investigación | 7 | 85 | **85** | sin cambio |
+| 8 | Frente Nox `index.pb` | 7 | 50 | **50** | sin cambio desde la caída por FALLA-010 |
+| 9 | AniZen (feed + biblioteca) | 12 | 35 | **35** | nada adoptado, 0 respuestas, `master` sin mover desde el 31-10 |
+| 10 | Idiomas/sugerencias/estadísticas | 6 | 55 | **55** | sin cambio |
+| 11 | gltools-reborn (issues) | 3 | 15 | **35** | #4 y #7 cerrados con evidencia; #3 con el parte mejorado y **13 casos ejecutados**; #6 con la mitad medible publicada; auditor de diseño EXIT=0. Siguen 6 abiertos, casi todos por falta de dispositivo |
+| 12 | normas-de-diseno (issues) | 2 | 25 | **95** | **#1 y #2 cerrados**: auditor genérico + envoltorio fechado + segundo censo real + diff probado con cambios conocidos |
+| 13 | Dependabot/serialize-javascript | 1 | 20 | **80** | **corregido y vigilado**: `resolution(7.1.3)`, lock regenerado con yarn real (76 pares, 0 avisos), auditor propio, workflow nuevo **ejecutado en CI** (run 44076096239, success). No llega a 100 porque Gradle no se ejecutó aquí y `cero-X#6` sigue abierto por cuatro criterios que no dependen de mí |
+
+**Total de peso declarado: 102.** Suma ponderada: 7080 → **7444**, o sea
+**69.4 % → 73.0 %**. La aritmética la hace Python sobre esta misma tabla, no yo de
+cabeza: FALLA-012 es justamente publicar una cifra que no salió de la medición.
+
+### Lo que subió y por qué, con la evidencia a la vista
+
+- **normas-de-diseno 25 → 95** (peso 2). `#1` y `#2` cerrados y verificados por `GET` aparte. `#2`
+  pedía dos cosas y están las dos: `censo/2026-11-08.json.gz` y `censo/2026-11-17.json.gz` versionados
+  (sha256 del contenido sacado de git == el fichero en disco, y ese contenido se vuelve a leer: 42
+  categorías, 37.284 listados) y `procedimientos/07-diff-de-censos.py`, probado con 6 cambios
+  inyectados en `/tmp` antes de usarse con los reales. No llega a 100 porque con dos fotos no hay
+  tendencia y el recorrido no está en CI.
+- **Dependabot 20 → 80** (peso 1). De «diagnosticado por escrito» a «corregido, con auditor propio y
+  con el workflow **visto correr** en GitHub Actions». Lo que falta para 100 no es mío: `cero-X#6`
+  sigue abierto por cuatro criterios (clave privada legítima, compilación firmada con plan de
+  migración, catálogo autenticado, prueba positiva con extensión auténtica) y el primero depende de
+  que alguien entregue una clave por un canal seguro.
+- **gltools-reborn 15 → 35** (peso 3). Sube poco y a propósito: de 8 issues quedan **6 abiertos** y
+  casi todos exigen un teléfono (superposición, arranque, contraste real en panel, APK en ROM,
+  energía/permisos). Lo que sí se hizo hoy es medible: el auditor de diseño específico en
+  `SIN INCUMPLIMIENTOS` con su prueba de mutación, el genérico separado en R14/R14b, y el parte de
+  fallos con 13 casos ejecutados en JVM. **Ninguna de esas cosas cierra un issue que pide una captura.**
+- **Auditoría remota 70 → 78** (peso 10). Sólo por el recuento: **12 → 8** issues abiertas en repos
+  propios, contado por API sobre los 9 repos (sin forks) y no de memoria — la primera versión de esta
+  línea decía 7 y se había dejado fuera `la-bandita-archivo#1`. El reparto: `gltools-reborn` 6
+  (#1 #2 #3 #5 #6 #8), `cero-X-app` 1 (#6), `la-bandita-archivo` 1 (#1), `normas-de-diseno` 0. Aparte,
+  `bandwidth-hero-proxy2` tiene 3 PRs abiertos, que no son issues y no cuentan aquí.
+- **Feed ShinKu 90 → 92** (peso 12). El PR #37 existe y está verificado en lo que se puede verificar
+  sin Gradle, pero **no está fusionado**, y un PR abierto no es entrega.
+
+### Lo que este recuento NO oculta
+
+El PR #37 no se compiló, y no se va a compilar en CI tal como está el repo: `spotlessCheck` va antes
+que `assembleDevDebug` y hay **1.113 violaciones de formato en 621 ficheros** del `main` del
+mantenedor (910 sólo en `:app`), medidas con ktlint 1.8.0 —la versión fijada en su
+`libs.versions.toml`— y falsadas contra cuatro resultados reales de CI. Las cuatro corridas
+registradas en ese repo fallaron, incluida la del PR #36 que sí fusionó. Mi rama añade **0**
+violaciones (5 preexistentes en los cuatro ficheros, las mismas 5 en `c7ab60c9`). La receta y la tabla
+están en `proyectos/feed-novedades/pr37/KTLINT-COMO-ORACULO.md`.
+
+**Global ponderado: 58 % (11-16) → 69 % (11-17 mañana) → 73 % (11-17 tarde).** Lo que sigue sujetando
+el número no es lo que hago en los repos propios —ésos ya están casi todos cerrados— sino AniZen (peso
+12 al 35 %, sin una sola respuesta) y los 6 issues de gltools que necesitan un dispositivo que no
+existe en este contenedor.

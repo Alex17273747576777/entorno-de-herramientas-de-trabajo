@@ -1,0 +1,18 @@
+{
+ "en": "Too many sources in your feed, cannot add more than %1$d",
+ "es": "Demasiadas fuentes en tu feed, no se pueden agregar más de %1$d",
+ "de": "Zu viele Quellen in Ihrem Feed. Sie können nicht mehr als %1$d hinzufügen",
+ "fr": "Trop de sources dans votre flux, vous ne pouvez pas en ajouter plus de %1$d",
+ "ja": "フィードにソースが多すぎます。%1$d 以上を追加できません。",
+ "ru": "Слишком большое количество источников в вашей ленте. Количество не должно превышать %1$d",
+ "pt-BR": "Muitas fontes no seu feed, não é possível adicionar mais de %1$d",
+ "ar": "هناك عدد كبير جدًا من المصادر في صفحة الخلاصة الخاصة بك، لا يمكن إضافة أكثر من %1$d",
+ "tr": "Akışınızda çok fazla kaynak var, %1$d'dan daha fazla eklenemiyor",
+ "id": "Terlalu banyak sumber di daftar konten Anda, tidak dapat menambahkan lebih dari %1$d",
+ "ta": "உங்கள் ஊட்டத்தில் பல ஆதாரங்கள், %1$d க்கு மேல் சேர்க்க முடியாது",
+ "hr": "Previše izvora u tvom feedu, ne možeš dodati više od %1$d",
+ "zh-CN": "你订阅的图源太多了，不能大于 %1$d",
+ "zh-TW": "您的訂閱來源過多，不能多於 %1$d 個",
+ "fil": "Masyadong maraming source sa iyong feed, hindi maaaring magdagdag ng higit sa %1$d",
+ "as": "আপোনাৰ ফিডত বেছি সংখ্যক উৎস আছে, %1$d টাতকৈ অধিক যোগ কৰিব নোৱাৰিব"
+}

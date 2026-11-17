@@ -45,3 +45,44 @@ Las copias **no contienen ningún valor** de ésos (barrido antes de subir: 0 co
 de `github_pat_`, `ghp_`, `AKIA` y clave privada PEM en todo `proyectos/`). Aun así: no
 ejecutarlas con secrets reales en un entorno que registre la salida, y nunca pasar el
 token por una URL.
+
+## Cómo se prueba el parte de fallos sin emulador (2026-11-17)
+
+`RegistroFallos` toca Android por dos sitios: `Context.filesDir` para escribir y `android.os.Build`
+para las cabeceras. Con el `android-stub.jar` **no se puede instanciar `Context`**: el constructor
+lanza `RuntimeException: Stub!`, y da igual implementar sus 75 miembros abstractos (se pueden generar
+con `javap -p -cp android-stub.jar android.content.Context`, cortando la cláusula `throws` y
+cambiando `Outer$Inner` por `Outer.Inner`). El arnés se muere en `Ctx.<init>`.
+
+La salida no es un mock: es **hacer pura la parte que se quiere probar**. `componerParte()` recibe
+fecha, contexto, versión, API, modelo, clase, mensaje, pila y `sinMemoria` por parámetro, y no toca ni
+el reloj ni el disco ni `android.os.Build`. `guardar()` se queda con lo que sólo se puede hacer en un
+teléfono.
+
+```bash
+export JAVA_HOME=/var/tmp/jdk/jdk-17.0.13+11; export PATH=$JAVA_HOME/bin:$PATH
+/var/tmp/kc-2.1.20/kotlinc/bin/kotlinc -nowarn -cp /var/tmp/jars/android-stub.jar -d /tmp/out \
+    app/src/main/java/io/github/labandita/glreborn/RegistroFallos.kt <stub-RegistroErrores> <arnés>
+java -Dstdout.encoding=UTF-8 -cp "/tmp/out:<kotlin-stdlib.jar>:/var/tmp/jars/android-stub.jar" ArnesKt
+```
+
+Se compila el `RegistroFallos.kt **del repo**, no una copia; el arnés está en
+`herramientas/ArnesRegistroFallos.kt`. 13 casos, todos en verde: fotograma correcto en stack mixto,
+cabecera que no se cuela cuando la excepción es clase nuestra, `null` con stack sólo de Android y con
+pila vacía, `Caused by:` que también cuenta, línea `APP` antes del stack, cabeceras intactas, fallo
+normal que no habla de memoria, `OutOfMemoryError` que produce `MEMORIA`+`CONSEJO`, y pila de 9.000
+caracteres cortada a 6.000.
+
+Dos trampas medidas al hacerlo:
+
+- El stub de `RegistroErrores` **hay que pasarlo en la misma compilación**. Si se olvida, kotlinc da
+  `unresolved reference 'core'` en la línea del `anotar` y, de rebote, `cannot infer type for this
+  parameter` en el `runCatching` de dos líneas más arriba: el segundo error es cascada del primero y
+  hace mirar en el sitio equivocado.
+- `-Dstdout.encoding=UTF-8` (o `-Dfile.encoding`) hace falta para imprimir el parte: sin él, las
+  cabeceras `CUÁNDO`/`EXCEPCIÓN` salen mojadas y no se puede comparar texto. Y `javac` sobre un fuente
+  con acentos exige `-encoding UTF-8`, que por defecto usa US-ASCII y falla con `unmappable character`.
+
+**Lo que este arnés no cubre, dicho explícitamente:** `guardar()` —la escritura en `filesDir` y la
+llamada a `RegistroErrores.anotar`— no se ejecuta en ninguna parte de esta máquina. Se comprueba por
+lectura. Y no existe ningún parte real de un teléfono, que es lo que pide la incidencia #3.

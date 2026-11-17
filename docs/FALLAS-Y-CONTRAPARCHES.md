@@ -197,3 +197,68 @@ Pruebas ejecutadas el 17-11 a las 10:53Z, las cuatro con su resultado esperado:
 En mi binario ningún `Source` lleva el campo 6 ni el 7 (proto3 omite cadenas vacías y todas iban
 vacías), así que ese detalle no aplica a este artefacto; el defecto decisivo y real es `sources=8`
 frente a `9`. Se lo dije en el PR en vez de callarlo o de fingir que todo su diagnóstico aplicaba.
+
+## FALLA-011 · Comillas invertidas dentro de `git commit -m "…"` (2026-11-17, gltools-reborn)
+
+**Qué pasó:** escribí el mensaje de `d9c743f` con `-m "…"` y el texto llevaba los identificadores
+entre comillas invertidas, como se escribe en markdown. Bash no ve markdown: las interpretó como
+sustituciones de comando, ejecutó `componerParte`, `APP`, `extracto`, `OutOfMemoryError`, `Context`,
+`RuntimeException:` y una docena más como órdenes (todas dieron *command not found*, en stderr, a la
+vista) y sustituyó cada una por la cadena vacía. El commit se creó y se publicó con el mensaje hueco
+justo donde iban los nombres: «Ahora  escribe una l—nea  antes del stack».
+
+**Por qué no se cazó al momento:** el `git commit` devuelve 0 aunque el shell se queje en stderr, y
+la línea siguiente imprimía el SHA corto. Miré el SHA, no el mensaje.
+
+**Regla que queda:** los mensajes de commit largos se escriben en un fichero y se pasan con
+`git commit -F fichero`. Nunca `-m "…"` con markdown dentro. Y después de commitear, **leer el mensaje
+publicado** (`git log -1 --format=%B`) forma parte de la verificación, igual que comparar el SHA con
+`ls-remote`.
+
+**Contramedida ejecutada:** el mensaje correcto se publicó entero en
+`gltools-reborn#3` (comentario `issuecomment-6947651332`) diciendo qué pasó. **No** se enmendó el
+commit ni se hizo force-push: `d9c743f` ya estaba en `main`, y reescribir historia publicada para
+tapar un fallo propio es peor que dejar constancia del fallo.
+
+## FALLA-012 · Cifra y procedencia escritas de memoria al lado del comando que las medía (2026-11-17)
+
+Dos en la misma hora, las dos publicadas, las dos desmentidas por una medición que estaba corriendo
+en la misma línea de órdenes:
+
+1. **`censo/README.md` decía «máximo 352»** para el snapshot del 17-11. 352 es el máximo del snapshot
+   del **08-11**: copié la cifra de la foto anterior. Medido sobre el `.gz` nuevo: **361**
+   (`app.morphe.manager`). Corregido en `8cf71e4` dejando la corrección fechada a la vista.
+2. **El mensaje de `fe45074` decía que los `.pyc` de `tests/__pycache__` entraron en `92aee28`.**
+   Falso: entraron en **`9aa64f6`** (2026-11-10). El `git log --diff-filter=A` que lo desmentía se
+   ejecutó **antes** del commit, en el mismo script; escribí el texto antes de mirar su salida.
+
+**Regla que queda:** es la hermana de FALLA-009 (horas de bitácora de memoria) y se aplica igual a
+números y a SHAs: **si un dato va publicado, se copia de la salida del comando que lo mide, no de lo
+que uno recuerda.** Y cuando el comando que lo mide está en el mismo script que el texto, el texto se
+escribe *después* de leer la salida — o se genera con el mismo script.
+
+**Contramedida ejecutada:** ambas correcciones publicadas (`8cf71e4` en el repo, y la procedencia de
+los `.pyc` dicha en el cierre de `normas-de-diseno#2`, `issuecomment-6947454714`), sin reescribir los
+commits que llevaban el dato malo.
+
+## FALLA-013 · Un oráculo de lint sin su fichero de configuración (2026-11-17, ShinKu PR #37)
+
+**Qué pasó:** quise saber si mi cambio añadía violaciones de formato. Copié los cuatro ficheros a
+`/tmp/base` en su versión del `main` del mantenedor y pasé ktlint por los dos lados. La comparación
+dijo «base 94 violaciones, mío 7» — o sea, que mi cambio *arreglaba* 87. Era un disparate: en
+`/tmp/base` no copié el `.editorconfig`, así que ktlint aplicó reglas que el proyecto tiene
+**desactivadas** (`class-signature`, `function-signature`, `function-expression-body`…). Los dos lados
+de la comparación se midieron con reglas distintas.
+
+**La medición buena, con el `.editorconfig` copiado:** base 5, mío 5, mismas reglas en los mismos
+ficheros ⇒ mi cambio añade **0**. Las cinco ya estaban en el `main` del mantenedor.
+
+**Regla que queda:** para un lint o un formateador, **el fichero de configuración es parte del
+oráculo**: se copia con las fuentes o no vale nada. Y antes de creerle al oráculo, se falsifica contra
+un caso conocido — aquí, tres: `core-metadata` (que en CI **pasó**) da 0 local, `macrobenchmark` (que
+en CI **falló**) da 1 local en la misma línea y la misma regla, y `i18n` da 1 antes de mi arreglo y 0
+después. Con esos tres, el número de 1.113 violaciones en 621 ficheros del repo entero ya es creíble.
+
+**Contramedida ejecutada:** la tabla de falsación se publicó en `ShinKu#37`
+(`issuecomment-6947597445`) junto con el recuento por módulo, para que nadie tenga que fiarse de mi
+ktlint sin ver contra qué se comprobó.
