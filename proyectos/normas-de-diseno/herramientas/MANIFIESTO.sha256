@@ -5,14 +5,20 @@
 # sha256sum -c --strict ignora los comentarios: el manifiesto sigue siendo válido.
 # origen-repo: Alex17273747576777/normas-de-diseno
 # origen-rama: main
-# origen-commit: b3e224218f34ac97619aa6830d5f91307701e17d
+# origen-commit: bd9af9a47913d027bbdc2cc2316fc3544398e37e
 # origen-ruta 01-censar-catalogo-appteka.py: procedimientos/01-censar-catalogo-appteka.py
 # origen-ruta 02-elegir-y-desmontar.sh: procedimientos/02-elegir-y-desmontar.sh
 # origen-ruta 03-cerrar-tramo.sh: procedimientos/03-cerrar-tramo.sh
 # origen-ruta 04-incidencias.sh: procedimientos/04-incidencias.sh
+# origen-ruta 06-auditar-publicado.sh: procedimientos/06-auditar-publicado.sh
 # origen-ruta 06-auditar-reglas.sh: procedimientos/06-auditar-reglas.sh
-50568d575c9e3cc0045d2375680d2ed0b58b1acb8adfd876b8e5ac95ced3bba9  01-censar-catalogo-appteka.py
+# origen-ruta 07-diff-de-censos.py: procedimientos/07-diff-de-censos.py
+# origen-ruta auditar_diseno_generico.py: procedimientos/auditar_diseno_generico.py
+bcbf3470ae6e48d84be658e5f2c1f2ab225eb8d35083db7b5d4fee7f4d089fe5  01-censar-catalogo-appteka.py
 e071f24b3a73fb789cbaff03990cff93de84141fb823c8f6fdfc255b9b795ec7  02-elegir-y-desmontar.sh
 51d13ea22f5f2327a2e8f6d376e06ba849ca06805a1d1662d674ce73576e5d84  03-cerrar-tramo.sh
 d84c568f25217e1689a2e4d778c0753f39a08fc7896f674ef07939572ed6a93e  04-incidencias.sh
+b0a582c0cee00120e5fab5e4a0139b9bed0c883f30f31092b6c799171c85dc6e  06-auditar-publicado.sh
 217d42d3ebd30b06532bc890aba76bdfc174f1b6947efcbafda7fa7c06c41cb3  06-auditar-reglas.sh
+0e501f15c71daa7c376548db1978609afab6af8489f2ec5b5b348f5bbfd31898  07-diff-de-censos.py
+6625334b39e5193a3154360d2bb8b10ce1460f31987c3f00735bd1cb78f8874c  auditar_diseno_generico.py

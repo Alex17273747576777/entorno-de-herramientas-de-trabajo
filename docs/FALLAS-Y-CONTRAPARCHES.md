@@ -298,3 +298,111 @@ fichero**. Probada en los dos sentidos: negativa (clon tal cual → `EXIT=1` y
 sintética se borró y el tablero se restauró. Commit `bfaa811b`, re-sellado después
 (`lote-2026-11-17`, huella `1a50771abaea2f18…`) y `make verificar` en `EXIT=0` con 14.363 archivos,
 0 alterados y 0 sin sellar.
+
+## FALLA-015 · Publiqué «verificado» sin mirar la CI de mis propios repos (17-nov-2026, 23:24Z)
+
+**Qué pasó:** cerré la orden de emergencia con un parte que decía verificado: `local==remoto`,
+`make verificar EXIT=0`, `tests/pruebas.py EXIT=0`, `git fsck` limpio. Todo cierto y todo local.
+Una auditoría contra la API —no contra la memoria— destapó que **cuatro repos míos estaban en
+rojo** en ese momento, y uno de ellos sobre el commit exacto que yo había descrito como `EXIT=0`:
+`vara` fallaba sobre `bfaa811b` de la-bandita-archivo. Llevaban así: edt 6 corridas de 6, normas
+6 de 6, gltools 4, la-bandita desde el 15-nov (último verde `42869190307` sobre `4d257e9c`,
+10-nov). Nadie me lo había dicho; estaba a una consulta de distancia y no la hice.
+
+**Por qué es grave:** el parte de verificación es lo único que el dueño tiene para decidir. Un
+verde local presentado como verificación convierte un defecto publicado en un hecho certificado.
+Es la misma forma que la FALLA-010 (documentar una regresión como corrección) y que el sello verde
+sobre el tablero vaciado de la FALLA-014: **la autoridad citada no mide lo que el texto afirma**.
+
+**Regla que queda:**
+1. **Verde local ≠ verde publicado.** La verificación de un commit propio incluye
+   `GET /repos/<dueño>/<repo>/actions/runs?per_page=N` y, si hay `failure`, leer el log del job
+   antes de escribir la palabra «verificado».
+2. **El log de Actions se lee siguiendo el 302 de `/actions/jobs/{id}/logs` SIN la cabecera
+   `Authorization`** (con ella, el blob firmado responde 401).
+3. **Toda afirmación de verificación nombra qué se midió y dónde.** «Verificado» sin alcance es
+   publicidad. Si algo no se pudo medir, se escribe en la misma frase.
+4. Al empezar un turno, mirar las notificaciones (`GET /notifications?all=true`): 50 de ellas eran
+   «workflow run failed» de mis repos y llevaban ahí días.
+
+**Contramedida ejecutada:** los cuatro frentes diagnosticados y arreglados el mismo día, con la
+causa raíz medida y no supuesta. Ver `docs/DIAGNOSTICO-CI-2026-11-17.md`.
+
+---
+
+## FALLA-016 · Una ley que cuenta texto en bruto cuenta su propia definición (17-nov-2026)
+
+**Qué pasó:** la prueba de gltools-reborn «el vidrio es la excepción, no la norma» contaba
+`Regex("\\.vidrio(Alto)?\\(")` sobre las 14 fuentes de `ui/` y exigía ≤2. Daba 4 y estaba roja en
+cada push desde `d9c743f`. Los cuatro no eran vidrio: eran las dos **declaraciones**
+(`fun Modifier.vidrio(radio: Int = 22)` en `Tema.kt:161` y `:167`) y dos menciones en la **prosa**
+de un comentario de bloque de doce líneas (`Tema.kt:87`) que explica por qué se conserva el nombre.
+Usos reales en pantallas: **0**. La ley se rompía con su propia definición y con el comentario que
+la documenta. Y era frágil por doble motivo: descontando sólo las declaraciones el recuento daba
+**2 contra un tope de 2**, así que escribir `.vidrio()` una vez más en cualquier comentario volvía
+a ponerla en rojo sin tocar una pantalla.
+
+**No es un caso aislado:** el mismo fichero ya lo sabía y lo tiene escrito dos veces —la
+comprobación de glifos ignora lo que hay antes de `//` («en un comentario se puede hablar de
+glifos», línea 973) y la de desplazamientos busca «la LLAMADA, no la palabra» (línea 1338)—. La
+regla del vidrio simplemente no recibió el mismo trato.
+
+**Regla que queda:**
+1. **Toda ley que cuente apariciones cuenta sobre código**: fuera comentarios de línea y de bloque,
+   fuera el contenido de las cadenas de una y de tres comillas, y fuera las líneas que declaran lo
+   que se está contando.
+2. **Se falsifica en los dos sentidos**: inyectar la violación real tiene que ponerla en rojo, e
+   inyectar prosa que la nombre tiene que dejarla en verde. Un solo lado no prueba nada.
+3. **Un tope alcanzado por casualidad es un rojo aplazado.** Si el recuento da exactamente el tope,
+   se mira de qué está hecho el número antes de darlo por bueno.
+
+**Contramedida ejecutada:** auxiliar `soloCodigo()` + `DECLARA_MODIFICADOR` en `Pruebas.kt`,
+aplicado a los tres sitios que cuentan (la ley del vidrio, la comprobación 5 y `cuenta()` de
+1.9.2). Compilado con kotlinc 2.3.10/JDK 17 dentro de un arnés que lleva el código publicado
+**literalmente**, y corrido contra las fuentes reales más seis mutaciones: reales 0 → verde;
+3 llamadas reales → **rojo**; 5 menciones en `/* */` → verde; 2 llamadas → verde (el tope es 2);
+2 reales + 1 dentro de una cadena → verde; declaración nueva → verde; mención en triple comilla →
+verde. La regex vieja daba 4, 7, 9, 6, 7, 5 y 6 en esos mismos siete casos. Commit `feb46487`.
+En `cuenta()` el cambio es neutro hoy, medido: vidrio 0, bordes 2, cajas 39 con y sin auxiliar —
+pero con 39 contra un tope de 40, una mención de `RoundedCornerShape(20.dp)` en un comentario la
+habría puesto en rojo.
+
+---
+
+## FALLA-017 · Un documento que anuncia comprobaciones que el código no hace (17-nov-2026)
+
+**Qué pasó:** `docs/TAREAS.md` de la-bandita-archivo termina con «Las comprobaciones que hace este
+programa: 1. Sin huecos 2. Sin textos contradictorios». La regla 2 **no estaba en ninguna parte de
+`tools/tareas.py`**: `revisar()` sólo miraba huecos y repetidos. Y el tablero publicado la
+incumplía en 4 números (018, 026, 027 y uno más) medidos sobre las 90 filas.
+
+**Segundo defecto, peor:** el repo versiona el derivado (`docs/TAREAS.md`, 90 filas, 22.500 bytes)
+y **no versiona su materia prima**. Medido sobre el árbol de `main` (19.005 blobs,
+`truncated=False`): la carpeta `Arena-Reimagined/01-PUBLICACIONES` no existe. Ningún clon limpio
+puede regenerar el tablero, y por eso la compuerta «Tablero de tareas al día» no podía pasar nunca:
+salía 1 diciendo «no hay ninguna tarea declarada en las piezas vivas», que sonaba a contenido y era
+otra cosa —faltaba la carpeta entera—. Roja en cada push desde el 15-nov.
+
+**Es la misma clase que la incidencia #3 de ese repo** (`medir_piezas_24_34.py:18` promete un
+sha256 que no escribe): texto que afirma lo que el código no hace.
+
+**Regla que queda:**
+1. **Un documento generado sólo anuncia lo que el generador hace de verdad.** Si la lista de
+   comprobaciones vive en el texto que escribe el programa, cada línea de esa lista tiene que tener
+   su función al lado.
+2. **Un derivado se versiona con su materia prima, o se declara que no se puede regenerar.** Las dos
+   cosas son aceptables; lo que no es aceptable es publicar el derivado y dejar que la compuerta que
+   lo vigila se ponga roja para siempre con un mensaje que apunta a otro sitio.
+3. **Distinguir «no hay entradas» de «no pude mirar».** Un recuento en cero tiene dos causas y se
+   dicen con palabras distintas, porque una es un fallo y la otra es una limitación declarada.
+
+**Contramedida ejecutada:** `tools/tareas.py` distingue los casos (hay piezas y ninguna declara
+`#task` → fallo; no hay ninguna pieza en el clon → aviso con la cifra que trae el propio tablero,
+«se generó con 28 piezas vivas»), implementa la regla 2 sobre las piezas, añade la integridad del
+tablero contra sí mismo (cabecera, 4 columnas, ids de 3 dígitos, ningún texto vacío, TL;DR que
+case con el número de filas) y añade la correspondencia tablero↔piezas, que faltaba: antes un
+tablero viejo pasaba en verde porque sólo se miraba la numeración de las piezas. Nueve casos
+sintéticos, cada uno con su árbol propio, y verificado **sobre los bytes publicados** en `main`
+(`a215717e`): el tablero real sin piezas sale 0 con la declaración impresa. Commits `b2a0fee3` y
+`bfeb4c3f`. **Lo que sigue sin arreglo y es decisión del dueño:** o se versionan las piezas del
+ciclo vivo, o la correspondencia sólo se puede comprobar en la máquina que las tiene.

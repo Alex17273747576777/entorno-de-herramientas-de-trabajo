@@ -10,6 +10,10 @@ Uso:
     python3 01-censar-catalogo-appteka.py            # censo completo → censo.json
     python3 01-censar-catalogo-appteka.py --todas    # sin el filtro de código abierto
 
+Además de `censo.json` y `resumen.md` guarda un snapshot fechado `censo/censo-AAAA-MM-DD.json.gz`,
+determinista (claves ordenadas, mtime 0). Sin fecha no hay forma de saber qué cambió: ésa es la
+incidencia #2, y el diff lo da `07-diff-de-censos.py`.
+
 Lo que produce: `censo.json` con, por categoría, cuántas apps hay, cuántas son de código
 abierto y cuáles son, con su repositorio de origen. Y `resumen.md` para leer en dos minutos.
 """
@@ -109,6 +113,19 @@ def main() -> None:
         censo[nombre] = {"id": cid, "total": len(apps), "apps": apps}
         print(f"  {nombre:28} {len(apps):5}")
     json.dump(censo, open("censo.json", "w"), ensure_ascii=False, indent=1)
+
+    # Snapshot FECHADO (incidencia #2): un censo sin fecha no permite saber qué cambió. Se guarda
+    # en censo/censo-AAAA-MM-DD.json.gz con las claves ordenadas y el JSON determinista, para que
+    # dos censos del mismo día den el mismo byte a byte y el diff de 07-diff-de-censos.py sea
+    # comparable. La fecha es la del sistema; si se censo a caballo de medianoche, se renombra.
+    import datetime, gzip, os
+    fecha = datetime.datetime.now().strftime("%Y-%m-%d")
+    os.makedirs("censo", exist_ok=True)
+    ruta = f"censo/censo-{fecha}.json.gz"
+    estable = json.dumps(censo, ensure_ascii=False, sort_keys=True, separators=(",", ":"))
+    with gzip.GzipFile(ruta, "wb", mtime=0) as gz:
+        gz.write(estable.encode("utf-8"))
+    print(f"snapshot fechado: {ruta} ({os.path.getsize(ruta)} B comprimido)")
 
     total = sum(c["total"] for c in censo.values())
     con_repo = sum(1 for c in censo.values() for a in c["apps"].values() if a["fuente"])
