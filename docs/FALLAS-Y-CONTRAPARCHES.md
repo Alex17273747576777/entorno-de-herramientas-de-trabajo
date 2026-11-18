@@ -432,3 +432,38 @@ general (un glob, un ignore) en vez de tomarse de la lista real de lo que hay.
 3. **Después de cualquier ritual que escriba o selle, `git status --porcelain` y `git diff --stat`.**
    Esta vez la regla ya escrita es la que salvó el archivo: no fue una idea nueva, fue obedecer la
    anterior.
+
+---
+
+## FALLA-019 · Reparé a mano lo que ya tenía procedimiento escrito, en el repo que lo tenía (18-nov-2026, 00:09Z)
+
+**Qué pasó:** al revisar `work/cero-X-app` después del reinicio del entorno, `git` dijo
+`fatal: not a git repository`. Faltaban `.git/config` y `.git/refs/`. Escribí a mano un `.git/config`
+con el remoto y la identidad, y arreglé los modos con `chmod` fichero a fichero. **El repo ya traía
+`scripts/rearmar-git.sh`**, escrito el 2026-11-13 exactamente para esto, que además documenta en su
+cabecera la trampa en la que yo acababa de caer por otro camino: los modos perdidos **no se ven con
+`git status --porcelain`, sólo con `git diff --summary`**. Al ejecutarlo hizo siete cosas que mi
+arreglo a mano no hizo: 14 bits de ejecución, `tokens.txt` de 644 a 600 y su carpeta a 700 —o sea
+que **el arreglo de permisos de la emergencia no sobrevivió al reinicio** y el llavero volvió a ser
+legible por cualquier usuario hasta que el script lo corrigió—, recrear `/home/user/.gh-credential`,
+fijar `credential.helper`, tomar la identidad del autor de HEAD, `fetch --tags` con
+`GIT_TERMINAL_PROMPT=0` y el upstream de la rama. Y se negó a inventar el remoto: encontró 34 URLs
+distintas en los docs y salió 1 diciendo «no se elige sola», que es lo que su cabecera promete.
+
+**Regla que queda:**
+1. **Después de un reinicio del entorno, antes de tocar un repo, se corre su rearme.** Y si el repo
+   no lo tiene, se busca en el espejo. Reparar a mano una falla conocida es gastar seis
+   oportunidades de equivocarse en algo que ya está escrito y probado.
+2. **`git status --porcelain` no muestra los modos perdidos; `git diff --summary` sí.** Un árbol
+   «limpio» según `status` puede tener catorce ficheros sin bit de ejecución.
+3. **Los permisos del llavero se comprueban cada turno, no una vez.** `chmod 600` sobre
+   `.cerox-keys/tokens.txt` no sobrevive a la restauración del workspace; el 17-nov se puso a 600 y
+   el 18-nov estaba otra vez en 644.
+4. **El procedimiento de reparación no puede vivir sólo dentro del artefacto que se rompe.** Por eso
+   `rearmar-git.sh` se espeja en `proyectos/cero-X/herramientas/` con su entrada de manifiesto.
+
+**Contramedida ejecutada:** rearme corrido con la URL explícita → `REARME_OK: 3 acción(es) nuevas`,
+remoto y upstream puestos, `fetch --dry-run` sin diferencias, `git status --porcelain` 0 y
+`git diff --summary` 0 sobre `855547210c65` (== el `main` publicado), `git fsck` sin avisos, y 0
+apariciones del token en `.git/config`. Espejo ampliado a 9 ficheros con `comprobar-copias.sh
+--estricto-origen` en EXIT=0.
