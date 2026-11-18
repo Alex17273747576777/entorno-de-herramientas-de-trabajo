@@ -119,3 +119,66 @@ Después de publicar un commit propio, la verificación incluye
 `GET /repos/Alex17273747576777/<repo>/actions/runs?per_page=N`, y si hay `failure`, leer el log del
 job siguiendo el 302 **sin** la cabecera `Authorization`. Verde local no es verde publicado, y un
 parte que dice «verificado» tiene que nombrar qué se midió y dónde.
+
+---
+
+## 6 · Adenda de las 00:05Z del 18-nov (20:05 en Santo Domingo) · sello, índice y progreso
+
+La auditoría no terminó en los cuatro rojos. Arreglar el paso del tablero en la-bandita **destapó
+dos compuertas que llevaban semanas sin correr**, porque la corrida se detenía antes de llegar a
+ellas. Es la misma forma que la FALLA-015, aplicada a una tubería: un rojo tapaba los siguientes.
+
+**Paso 9, `Integridad del sello SHA-256`.** `sello roto: 1 alterados · alterado:
+.github/workflows/vara.yml`. El sello cubre `.github/` (7 archivos) y `docs/` (635) pero **no**
+`tools/`, así que cambiar `tareas.py` era gratis y cambiar el flujo no. Se re-selló con el
+procedimiento de la casa, `make ritual` (1 m 52 s), no con uno inventado. Dentro del ritual, la
+guarda contra el vaciado se negó a reescribir el tablero y el ritual la ignoró como está escrito que
+haga: **es la primera vez que esa guarda se prueba en el procedimiento real** y no en un árbol
+sintético. `git diff --exit-code docs/TAREAS.md` limpio, 90 filas intactas.
+
+**Paso 15, `Índice de documentos generado`.** `docs/INDICE.md` decía 163 documentos y 76
+herramientas; el generador dice 165 y 78. Faltaban `ACTA-RESELLADO-2026-11-14.md` (14-nov),
+`POLITICA-DUPLICADOS-Y-DATOS.md` (el documento de la incidencia #1), `derivar_plataformas.py` y
+`vara_idiomas.py`. La causa no era el olvido de nadie: `libro: tareas indice` eran prerrequisitos en
+cadena, y cuando `tareas` se negaba —lo correcto sin piezas— make abortaba el objetivo y
+`indice_docs.py` **no llegaba a correr nunca**. El índice llevaba desfasado desde el 14-nov y el
+paso que lo vigila no se había ejecutado jamás, porque la corrida moría un paso antes. La
+instrucción del propio paso («corré `make libro`») era lo único que no podía arreglarlo.
+
+`libro` pasa a correr los dos derivados en orden ignorando el fallo del primero. `make sellar`
+después (INDICE.md y el Makefile están dentro de la cobertura): huella `2bd700bda5ce28ec…`.
+`make verificar` completo: **EXIT=0**, 6.838 fichas válidas, integridad 14.363 archivos OK, G5 y G9
+en verde, vara y autoprueba diciendo las dos «fallos: NINGUNO». Publicados `91fc4673` y `ac259ae5`;
+la corrida de `ac259ae5` terminó **success en los 24 pasos**, con el sello nuevo firmado por Sigstore
+en la propia corrida y verificado en frío.
+
+**Un daño propio cazado por la regla de mirar el árbol:** al limpiar el clon antes de sellar borré
+`.tmp/` entero, y `.tmp/lote02.md` (1.095 bytes) estaba **versionado** —el `.gitignore` que lo cubre
+se añadió después de que el archivo entrara, y un ignore no desversiona nada—. Se restauró con
+`git checkout --` antes de commitear. Ver FALLA-018.
+
+### Progreso recalculado con la misma regla de puntuación
+
+Aritmética de Python sobre la tabla vigente (`docs/AUDITORIA-PROGRESO-2026-11-16.md` más su adenda
+de las 12:35Z), no de cabeza. Peso total declarado: 102.
+
+| # | Corriente | Peso | antes | **ahora** | Por qué se movió |
+|---|---|---:|---:|---:|---|
+| 3 | Infraestructura edt | 10 | 90 | **90** | **igual (90).** La evidencia cambió de sitio, no de nivel: lo que antes sostenía el 90 era verde local y resultó que el flujo `pruebas` llevaba **6 corridas de 6 en rojo** con `exit 126`. Arreglado y verde por corrida (`7a955fc8` success). Restaurar una verificación que no existía no es avanzar, es dejar de mentir. |
+| 4 | Auditoría remota 6 repos | 10 | 78 | **80** | **78 → 80.** Los seis repos propios con la CI verde, verificado por corrida y no por confianza: edt `7a955fc8` success, normas `bd9af9a4` success, gltools `feb46487` success, la-bandita `ac259ae5` **24 de 24 pasos** success, cero-X 6 de 6, bandwidth-hero-proxy2 CodeQL success. En contra: la auditoría destapó que el mantenimiento tenía ese agujero, y que `cero-X-app` incumple 5 reglas de diseño medidas. |
+| 5 | cero-X-app | 9 | 75 | **70** | **75 → 70, BAJA.** El auditor genérico ejecutado sobre el clon mide **5 incumplimientos** en el producto: `CeroXPrimary #6200EE` con matiz 265° dentro del rango prohibido (el violeta por defecto de Material), un `✓` como icono y un emoji en `ui/idiomas/IdiomasActivity.kt:431`, y contraste del acento 2,46:1 sobre fondo y 2,19:1 sobre superficie contra los 3:1 de WCAG 2.1. No se retocó ningún color: un acento tiene orden y arreglarlo con aritmética ya invirtió unos fondos una vez. Sin pantalla se mide y se declara. |
+| 6 | La Bandita | 9 | 70 | **74** | **70 → 74.** La vara completa en verde por primera vez desde el 10-nov: 24 pasos, incluido el firmado Sigstore del sello nuevo y su verificación en frío (G14). Sello recalculado con el ritual de la casa (`lote-2026-11-17`, 14.363 archivos, huella `2bd700bda5ce28ec…`, cadena intacta sobre `af2c5cfb0833f912…`). Tres comprobaciones nuevas en `tools/tareas.py`, la guarda contra el vaciado probada **dentro del ritual real** y no sólo en árboles sintéticos, `docs/INDICE.md` regenerado tras llevar desfasado desde el 14-nov, y `make libro` arreglado. Lo que sujeta el número: las piezas del ciclo vivo siguen sin versionarse —y `CUBIERTAS` en `tools/sello_reglas.py` las espera—, las piezas 32-40 sin reescribirse, y #2 y #3 abiertas. |
+| 11 | gltools-reborn (issues) | 3 | 35 | **38** | **35 → 38.** La ley de diseño de gltools ya mide llamadas y no prosa, falsada en siete casos (con tres llamadas reales inyectadas se pone en rojo) y verde en la CI con Gradle de verdad (`feb46487`). Sube poco: los 6 issues siguen exigiendo un dispositivo que este contenedor no tiene, y la ley llevaba 4 corridas roja sin que nadie la mirara. |
+| 12 | normas-de-diseno (issues) | 2 | 95 | **95** | **igual (95).** Su flujo `procedimientos` llevaba 6 de 6 en rojo por el mismo `exit 126`; ya está verde (`bd9af9a4`). Restaurado, no ampliado. |
+
+Los ocho renglones que no aparecen no se movieron: no hay evidencia nueva que los sostenga en un
+sentido ni en otro.
+
+**Suma ponderada: 7489 → 7509 sobre 102 de peso, o sea 73.4 % → 73.6 %
+(+0.2 puntos).** El salto es pequeño a propósito y conviene leerlo entero: tres
+renglones subieron por trabajo verificado en la CI y uno **bajó cinco puntos** porque la auditoría
+midió cinco incumplimientos de diseño en `cero-X-app` que nadie había mirado. Arreglar lo propio
+sube poco cuando mirar de verdad también destapa lo que está mal. Lo que sigue sujetando el número,
+sin cambios: AniZen al 35 % con peso 12 y cero respuestas, los 6 issues de gltools que exigen
+dispositivo, el Frente Nox al 50 % tras la FALLA-010, y ahora las piezas del ciclo vivo de La
+Bandita sin versionar.

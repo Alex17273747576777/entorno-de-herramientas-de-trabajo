@@ -1,9 +1,9 @@
 # CHECKPOINT ACTUAL
 
-- Tarea: Ronda 17-11 tarde (2): la-bandita #1 cerrada
-- Hecho: Clasificados los 545 duplicados (0 para borrar), caché declarada evidencia sellada, política de registro.db/.tmp escrita, guarda contra el vaciado del tablero probada en los dos sentidos, sello lote-2026-11-17 y make verificar EXIT=0; incidencias nuevas #2 y #3; FALLA-014 registrada; edt publicado en 3df2c66 y siguiente
-- Siguiente paso: Quedan: la-bandita #2 y #3, los 6 issues de gltools que exigen dispositivo, AniZen sin respuestas, y decidir si se ofrece el barrido spotlessApply de ShinKu como PR aparte
-- Escrito: 2026-11-17 12:35Z
+- Tarea: 2026-11-17 noche: los cuatro CI propios en rojo, diagnosticados y arreglados
+- Hecho: edt 7a955fc8 success · normas bd9af9a4 success · gltools feb46487 success (Gradle real) · la-bandita ac259ae5 24/24 success con sello firmado por Sigstore y verificado en frío; huella 2bd700bda5ce28ec, make verificar EXIT=0
+- Siguiente paso: progreso 73,4 → 73,6 % (+0,2): suben auditoría remota 78→80, La Bandita 70→74, gltools 35→38; BAJA cero-X-app 75→70 por 5 incumplimientos de diseño medidos (#6200EE matiz 265°, un ✓ como icono, contraste 2,46:1 y 2,19:1); FALLA-015/016/017/018 escritas; pendiente: versionar Arena-Reimagined/01-PUBLICACIONES o aceptar que el tablero no se puede regenerar en la CI
+- Escrito: 2026-11-18 00:06Z
 
 ## Historial (lo más nuevo arriba)
-- 2026-11-17 12:35Z — Ronda 17-11 tarde (2): la-bandita #1 cerrada — hecho: Clasificados los 545 duplicados (0 para borrar), caché declarada evidencia sellada, política de registro.db/.tmp escrita, guarda contra el vaciado del tablero probada en los dos sentidos, sello lote-2026-11-17 y make verificar EXIT=0; incidencias nuevas #2 y #3; FALLA-014 registrada; edt publicado en 3df2c66 y siguiente
+- 2026-11-18 00:06Z — 2026-11-17 noche: los cuatro CI propios en rojo, diagnosticados y arreglados — hecho: edt 7a955fc8 success · normas bd9af9a4 success · gltools feb46487 success (Gradle real) · la-bandita ac259ae5 24/24 success con sello firmado por Sigstore y verificado en frío; huella 2bd700bda5ce28ec, make verificar EXIT=0

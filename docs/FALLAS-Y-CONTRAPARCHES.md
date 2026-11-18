@@ -406,3 +406,29 @@ sintéticos, cada uno con su árbol propio, y verificado **sobre los bytes publi
 (`a215717e`): el tablero real sin piezas sale 0 con la declaración impresa. Commits `b2a0fee3` y
 `bfeb4c3f`. **Lo que sigue sin arreglo y es decisión del dueño:** o se versionan las piezas del
 ciclo vivo, o la correspondencia sólo se puede comprobar en la máquina que las tiene.
+
+---
+
+## FALLA-018 · Un `.gitignore` no desversiona: borré un archivo que estaba dentro (17-nov-2026)
+
+**Qué pasó:** antes de re-sellar la-bandita limpié el clon de basura propia con `rm -rf .tmp`, porque
+`.gitignore` lista `.tmp/`. Dentro había `lote02.md`, **1.095 bytes versionados**: el ignore se
+añadió en el commit de la incidencia #1, después de que el archivo ya estuviera dentro, y un ignore
+no saca nada del índice. Lo cazó `git status` después del ritual —la regla 3 de la FALLA-014— y se
+restauró con `git checkout -- .tmp/lote02.md` antes de commitear. El sello no lo cubre (`.tmp` no
+está en `CUBIERTAS`), así que el daño habría sido silencioso: un archivo del dueño borrado y un
+sello verde.
+
+**Es la segunda vez en dos días con la misma forma.** En el vaciado de emergencia, el respaldo iteró
+`work/*/` y por eso `work/referencias-inventario.txt` —suelto, sin copia en ningún repo— quedó fuera
+y se detectó después de borrar. Las dos veces el criterio de «qué es basura» se tomó de una regla
+general (un glob, un ignore) en vez de tomarse de la lista real de lo que hay.
+
+**Regla que queda:**
+1. **Antes de borrar un directorio, `git ls-files <dir>`.** Si devuelve algo, no es basura: está
+   versionado, y un `.gitignore` posterior no lo desversiona. Para eso hace falta `git rm --cached`.
+2. **El inventario de un borrado se hace con `find -type f` sobre el padre**, no con un glob de
+   directorios, y el listado de lo que queda **después** forma parte del procedimiento.
+3. **Después de cualquier ritual que escriba o selle, `git status --porcelain` y `git diff --stat`.**
+   Esta vez la regla ya escrita es la que salvó el archivo: no fue una idea nueva, fue obedecer la
+   anterior.
