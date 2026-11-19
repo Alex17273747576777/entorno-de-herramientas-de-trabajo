@@ -20,7 +20,7 @@
 1. El working tree local estaba limpio; `HEAD` y `origin/main` coincidían en `6d08fbc29c8714018e574c9bbe84e0499844f5c4`. `make limpiar` quitó `__pycache__` y `.tmp-prueba.md`; la credencial esperada permanece fuera del repositorio y no se leyó.
 2. GitHub REST vivo devolvió 9 repositorios públicos propios, 0 gists, 5 seguidores y 194 seguidos. Los ocho distintos del repositorio de trabajo son `anime-extensoes`, `AniZen`, `ShinKu`, `normas-de-diseno`, `cero-X-app`, `gltools-reborn`, `la-bandita-archivo` y `bandwidth-hero-proxy2`.
 3. El upstream `Harrys-HQ/ShinKu` tiene Issues habilitadas. Se revisaron 35 issues y se buscó coincidencia en títulos/cuerpos/PRs. La #21 está cerrada y describe otro fallo (un `NoSuchMethodError` al navegar/migrar tras importar Komikku; resuelto en v2.7.15), no el OOM durante restauración grande. La #39 es de chips de búsqueda guardada y no es relacionada.
-4. El POST autorizado para abrir el issue nuevo devolvió HTTP 403, `Resource not accessible by personal access token`; no se creó issue. El conector GitHub de Arena devolvió `unsupported`. No se reintentará ni se sortearán permisos. Se preparará un borrador fiel para que pueda publicarse cuando haya una vía autorizada.
+4. Se intentó un POST para abrir el issue nuevo con la credencial disponible; devolvió HTTP 403, `Resource not accessible by personal access token`; no se creó issue. La comprobación posterior de permisos en `Harrys-HQ/ShinKu` devolvió `push=false` y `triage=false`, por lo que esa credencial no estaba autorizada para escribir. El conector GitHub de Arena devolvió `unsupported`. No se reintentará ni se sortearán permisos. Se preparó un borrador fiel para publicarlo solo cuando haya una vía autorizada.
 
 ## Registro secuencial de hallazgos
 
