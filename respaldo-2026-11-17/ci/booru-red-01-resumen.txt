@@ -1,3 +1,0 @@
-TEST-com.ceroX.app.modules.booru.SafebooruRedRealTest.xml: {'name': 'com.ceroX.app.modules.booru.SafebooruRedRealTest', 'tests': '1', 'skipped': '0', 'failures': '0', 'errors': '0', 'timestamp': '2026-11-12T20:10:07.752Z', 'hostname': 'e2b.local', 'time': '0.948'}
-BOORU_REAL exito=true resultados=2 motivo=ninguno
-BOORU_IMAGEN http=200 tipo=image/jpeg bytesLeidos=10045 url=https://safebooru.org/thumbnails/816/thumbnail_27b6c56e46291fdcb43cc51daa0c6cbd.jpg

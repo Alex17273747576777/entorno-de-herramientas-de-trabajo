@@ -1,7 +1,0 @@
-Available Android Virtual Devices:
-    Name: cerox_api31_x86_64
-  Device: pixel_4 (Google)
-    Path: /home/user/.local/share/cerox-avd/cerox_api31_x86_64.avd
-  Target: Google APIs (Google Inc.)
-          Based on: Android 12.0 ("S") Tag/ABI: google_apis/x86_64
-  Sdcard: 512 MB

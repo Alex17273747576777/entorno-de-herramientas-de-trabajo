@@ -1,4 +1,0 @@
-3c509e4786a36cdadd3a34ab044d7521befea28fc36a2878da4a2fadfbb2ca4b  app/build/outputs/apk/debug/app-debug.apk
-6b02dceb49eb89741a0e34cadd756860b63bc05eaa3f27e578d2f894d20e3545  app/build/outputs/apk/androidTest/debug/app-debug-androidTest.apk
-app/build/outputs/apk/debug/app-debug.apk 57082325 bytes
-app/build/outputs/apk/androidTest/debug/app-debug-androidTest.apk 634852 bytes

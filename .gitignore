@@ -2,3 +2,16 @@ __pycache__/
 *.pyc
 .tmp-prueba.md
 .venv/
+
+# Credenciales y llaves: jamás viajan al remoto (mandato del dueño).
+.cerox-keys/
+**/.cerox-keys/
+.env
+.env.*
+tokens.txt
+tokens*.txt
+*.pem
+*.key
+*.p12
+*.pfx
+credentials*.json

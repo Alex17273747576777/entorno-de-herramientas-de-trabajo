@@ -1,1 +1,0 @@
-Captura cancelada tras >3 min sin bytes; no se considera evidencia visual.

@@ -1,9 +1,0 @@
-TEST-com.ceroX.app.modules.directories.DirectoriosRedRealTest.xml: tests=1 failures=0 errors=0 skipped=0
-DIRECTORIO_REAL miyomi entradas=220 aviso=ninguno
-DIRECTORIO_REAL justindex entradas=73 aviso=ninguno
-DIRECTORIO_REAL everythingmoe entradas=432 aviso=ninguno
-DIRECTORIO_REAL anipirate entradas=0 aviso=Fallo en directorio: HTTP 403. 
-DIRECTORIO_REAL wotaku entradas=469 aviso=ninguno
-DIRECTORIO_REAL fmhy entradas=3714 aviso=ninguno
-TEST-com.ceroX.app.modules.directories.DirectoryParsersTest.xml: tests=6 failures=0 errors=0 skipped=0
-TEST-com.ceroX.app.modules.directories.DirectoryRepositoryTest.xml: tests=1 failures=0 errors=0 skipped=0

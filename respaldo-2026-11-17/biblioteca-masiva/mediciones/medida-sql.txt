@@ -1,8 +1,0 @@
-SQLite 3.46.1 · biblioteca simulada: 50000 entradas favoritas, 5000 grupos, 50000 pertenencias
-  A) cargar TODA la pertenencia (getMemberships, 1 pasada): 22.38 ms  -> 50000 filas
-  B) colapsar a uno por grupo en memoria (dedupeByMergeGroup): 5.12 ms -> 5000 supervivientes
-  TOTAL ruta con pertenencia guardada (A+B): 27.50 ms para 50000 entradas
-  C) detección por escaneo de título (el patrón real de animes.sq:128): 14.30 ms POR entrada (150 muestras)
-     extrapolado a las 50000 entradas de la biblioteca: 714.8 s  (11.9 min)
-  D) cociente: el escaneo por título cuesta 330× más que la pertenencia guardada en esta máquina
-  E) una consulta getGroupId con el índice: 0.1184 ms

@@ -1,2 +1,0 @@
-NAME            TYPE SIZE USED PRIO
-/swapfile-cerox file   3G   0B   -2
