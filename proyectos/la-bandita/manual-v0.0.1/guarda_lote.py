@@ -8,7 +8,7 @@
 #     orden de la bitácora (un ROJO previo bloquea el siguiente VERDE salvo
 #     --aceptar-riesgo con motivo escrito), medición de /home/user contra el
 #     límite de 50.000.000 bytes y opción --exigir-git para exigir que los
-#     maestros estén versionados y espejados antes de dar el hito por cerrado.
+#     maestros estén bajo seguimiento local. No prueba commit ni push remoto.
 #   · NO verifica hechos, veracidad, originalidad real ni ritmo editorial.
 #     Verde aquí significa "las compuertas mecánicas y el orden pasaron",
 #     nunca "la pieza es verdadera ni buena". La revisión factual y la

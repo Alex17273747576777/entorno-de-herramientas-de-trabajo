@@ -1,5 +1,17 @@
 # CHECKPOINT ACTUAL
 
+## Estado prioritario de esta continuación — reglas y formato
+
+- El usuario eligió trabajar con los documentos conservados; no se afirma disponer del chat completo.
+- Manual y manifiesto leídos íntegros; corregidas incoherencias de polaridad, ficha, persistencia y estado de revisión. Guía: `proyectos/la-bandita/manual-v0.0.1/FORMATO-Y-CONTROL-DE-PUBLICACIONES.md`. Registro de alcance/resultados: `docs/LA-BANDITA-REVISION-REGLAS-Y-FORMATO.md`.
+- Vara reforzada para bloquear cierre incorrecto. Suite actual: **25/25**; `make prueba` OK; tres normas en VERDE mecánico. Pieza 01 sin editar ahora ROJO por cierre, como corresponde; sigue no aceptada.
+- La guarda real sigue por encima de 50.000.000 bytes (medición anterior al informe: 73.092.630); fixtures aislados no certifican producción. No confundir ese presupuesto editorial con la cuota de snapshot de 128 MB.
+- Lecciones 15/18 pendientes; lote 01–70 no rehecho. No inventar lecciones ni iniciar producción masiva por tener pruebas verdes.
+- Corrección de estado ajeno a este trabajo: ShinKu sí tiene issue #40, compatibilidad #41 y PR borrador #42 publicados. Las afirmaciones inferiores de «no publicado/403» son históricas y están superadas; no repetir el POST de esos reportes.
+- Persistir este avance en la rama de investigación sin incluir cambios ajenos de modo. **Siguiente paso:** resolver la integridad de lecciones y el presupuesto editorial antes de aceptar el manual y rehacer Pieza 01/par ES–EN.
+
+## Registro anterior (histórico; las cifras y estados siguientes no sustituyen el bloque prioritario)
+
 - **Tarea:** cerrar la aceptación del manual La Bandita v0.0.1 y los pendientes del lote 01–70. La auditoría viva de perfil/repositorios GitHub sigue **parcial**; estado, SHAs, hallazgos y límites están en `docs/AUDITORIA-GITHUB-LIVE.md`. No marcarla como completa. En `Harrys-HQ/ShinKu` (upstream) Issues están habilitadas; un POST intentado con la credencial consultada falló con HTTP 403 `Resource not accessible by personal access token`, no creó issue y no se reintentará con esa credencial; la API reportó `push=false` y `triage=false` para ese repo.
 - **Fecha de referencia:** la plataforma fija 2026-11-10, America/Santo_Domingo. El dueño aclaró que 2026-11-19 es una fecha prevista, no la fecha histórica del mandato ni la fecha actual. El reloj del host marca 2026-11-19 UTC y sigue nueve días adelantado; no se usa como corte editorial.
 - **Regla de persistencia vigente:** commit y push del progreso verificado a una rama nueva de GitHub; no empujar directamente a `main` mientras siga vigente la instrucción de trabajar en rama y abrir la publicación de forma revisable. Preservar todas las diferencias locales que no formen parte del commit documental. Tokens/llaves quedan fuera de Git y no se imprimen; el `.gitignore` bloquea `.cerox-keys/`, `.env*`, `tokens*.txt`, `*.pem`, `*.key`, `*.p12`, `*.pfx` y `credentials*.json`.

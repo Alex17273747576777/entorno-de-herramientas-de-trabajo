@@ -67,6 +67,51 @@ def _enmascarar_menciones(txt):
     return enmascarado, len(bloques), None
 
 
+def comprobar_cierre(txt):
+    """Comprueba orden textual; no decide si el meme o los créditos son buenos."""
+    errores = []
+    lineas = txt.splitlines()
+
+    def limpia(linea):
+        return re.sub(r"^[>\s]+", "", linea).strip().strip("*_ ")
+
+    firmas = [i for i, l in enumerate(lineas)
+              if limpia(l) == FIRMA_TEXTUAL + "."]
+    if len(firmas) != 1:
+        return ["Cierre: se exige una sola firma exacta, con punto final y en línea propia."]
+    firma = firmas[0]
+    encabezados = [(i, l) for i, l in enumerate(lineas) if re.match(r"^#{1,6}\s+", l)]
+    creditos = [i for i, l in encabezados
+                if re.match(r"^#{1,6}\s+(?:[^\w\s]+\s*)?(?:Créditos|Credits)\s*$", l, re.I)]
+    if len(creditos) != 1:
+        return ["Cierre: se exige una sola sección Créditos (Credits en inglés)."]
+    credito = creditos[0]
+    if credito <= firma or (encabezados and encabezados[-1][0] != credito):
+        errores.append("Cierre: Créditos debe ir después de firma/remate y ser la última sección.")
+    # El meme es el bloque inmediatamente anterior a la firma, no una lista del cuerpo.
+    antes = firma - 1
+    while antes >= 0 and not lineas[antes].strip():
+        antes -= 1
+    dialogos = 0
+    while antes >= 0 and re.match(r"^\s*(?:>\s*)?[—–]\s*\S", lineas[antes]):
+        dialogos += 1
+        antes -= 1
+    if dialogos not in (2, 3):
+        errores.append("Cierre: meme de dos o tres líneas de diálogo inmediatamente antes de la firma.")
+    remate = [l for l in lineas[firma + 1:credito] if l.strip() and l.strip() not in ("---", "***")]
+    if not 1 <= len(remate) <= 3 or any(re.match(r"^#{1,6}\s+", l) for l in remate):
+        errores.append("Cierre: remate de una a tres líneas entre firma y Créditos, sin secciones intermedias.")
+    bloque = "\n".join(lineas[credito + 1:])
+    if "Arena AI" not in bloque or "Alex17273747576777" not in bloque:
+        errores.append("Cierre: faltan los dos créditos canónicos dentro de Créditos.")
+    elif bloque.rfind("Arena AI") > bloque.rfind("Alex17273747576777"):
+        errores.append("Cierre: Arena AI precede al crédito final Alex17273747576777.")
+    no_vacias = [l for l in lineas if l.strip()]
+    if not no_vacias or "Alex17273747576777" not in no_vacias[-1]:
+        errores.append("Cierre: la última línea no vacía debe ser el crédito del dueño.")
+    return errores
+
+
 def auditar(path, meta_min=45001, tope_max=63000, modo_norma=False):
     with open(path, encoding="utf-8") as archivo:
         txt = archivo.read()
@@ -123,7 +168,7 @@ def auditar(path, meta_min=45001, tope_max=63000, modo_norma=False):
     if LEMA_IDENTIDAD in txt.lower():
         res["info"].append("Lema identitario presente (las estrellas adornan…).")
     # E2 meme del corte (dos líneas con raya de diálogo)
-    meme = re.findall(r"^>?\s*[—–-]\s.*$", txt, flags=re.M)
+    meme = re.findall(r"^\s*(?:>\s*)?[—–]\s*\S.*$", txt, flags=re.M)
     if len(meme) < 2:
         res["amarillo"].append("No se detecta meme del corte (esperadas >=2 líneas de diálogo con —).")
     else:
@@ -139,6 +184,9 @@ def auditar(path, meta_min=45001, tope_max=63000, modo_norma=False):
         res["amarillo"].append(f"Caracteres {n:,} sobre el tope sanitario {tope_max:,}. Prever despliegue fragmentado por red.")
     else:
         res["info"].append(f"Caracteres {n:,}: dentro de banda [{meta_min:,}–{tope_max:,}].")
+    # Cierre obligatorio del maestro; las normas no son piezas públicas.
+    if not modo_norma:
+        res["rojo"].extend(comprobar_cierre(txt))
     # veredicto
     if res["rojo"]: verd = "ROJO"; code = 1
     elif res["amarillo"]: verd = "VENTANA"; code = 2

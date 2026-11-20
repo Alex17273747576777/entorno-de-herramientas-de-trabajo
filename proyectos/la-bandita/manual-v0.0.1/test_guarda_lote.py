@@ -38,7 +38,8 @@ class GuardaLote(unittest.TestCase):
         if env:
             entorno.update(env)
         return subprocess.run(
-            [sys.executable, str(GUARDA), *args],
+            # Una prueba aislada mide su fixture, no otros proyectos del workspace.
+            [sys.executable, str(GUARDA), *args, "--raiz", str(self.dir)],
             capture_output=True, text=True, env=entorno)
 
     def escribir(self, nombre, texto):
@@ -56,6 +57,17 @@ class GuardaLote(unittest.TestCase):
         entrada = json.loads(self.bitacora.read_text(encoding="utf-8").strip())
         self.assertEqual(entrada["veredicto"], "VERDE")
         self.assertEqual(entrada["fecha_procedencia"].split(" ")[0], "CORTE_FECHA")
+
+    def test_almacenamiento_sobre_limite_bloquea(self):
+        es = self.escribir("es.md", maestro("español"))
+        en = self.escribir("en.md", maestro("english", 7))
+        with (self.dir / "limite.bin").open("wb") as f:
+            f.truncate(50_000_000)
+        salida = self.run_guarda("verificar", "--pieza", "01", "--es", str(es),
+                                 "--en", str(en), "--bitacora", str(self.bitacora))
+        self.assertEqual(salida.returncode, 1)
+        self.assertIn("almacenamiento", salida.stdout)
+        self.assertIn("detener la escritura", salida.stdout)
 
     def test_maestro_corto_da_rojo(self):
         es = self.escribir("c.md", "muy corto")
