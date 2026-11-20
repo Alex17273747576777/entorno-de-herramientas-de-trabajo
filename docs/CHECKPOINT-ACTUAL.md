@@ -1,5 +1,16 @@
 # CHECKPOINT ACTUAL
 
+## Continuación: sesión cronometrada — avances verificables
+
+- Inicio según reloj del host: 2026-11-20 13:24:29 UTC. El host discrepa de la fecha que establece la plataforma (2026-11-10); sus horas solo sirven para medir duración, no como corte factual editorial. Se consultó hora después de cada sección. No se afirma haber trabajado dos horas.
+- Ruta de aprendizaje de seis etapas publicadas y verificadas: https://github.com/Alex17273747576777/ruta-programacion-sistemas commit `2d0cb8fc2bac818f32cc9ec1f197427606ad372a`. Incluye proyectos, ejercicios con criterios y recursos oficiales; no se afirma que los estudiantes ya hayan construido proyectos.
+- Investigación estática de respaldos: `docs/SHINKU-COMPATIBILIDAD-ANALISIS-FUENTES.md`, EDT `99e293e03db561d1b97ea93f4c1878555da2d831`. Identificó repositorio Usagi `UsagiApp/Usagi` y snapshots fijados, con pruebas de ZIP/JSON en Kotatsu/Usagi y secciones adicionales Kototoro. No se probaron respaldos reales y no se afirma compatibilidad.
+- ShinKu: se cambió el salto recursivo de grupos por pila iterativa limitada a 64, se verifican números de campo protobuf y se añadieron casos JUnit; publicado en PR draft #42 como commit `a8e5eaf9febef6f86f85b77deeaa97e00c009073`. Harness JVM independiente con modelos sintéticos pasó ocho casos, repetido desde script reproducible; el test JUnit y el build Android no se ejecutaron. Reproducción EDT `de2a43565f1dfdec71ad0955591c7977f280ae0f`. El cap de profundidad necesita evaluación de compatibilidad, el decoder aún retiene Backup completo y no resuelve OOM/benchmark.
+- Pieza 01: tres familias de afirmaciones contrastadas con fuentes primarias en `docs/LA-BANDITA-PIEZA-01-FUENTES-PRIORITARIAS.md`, EDT `ebc1f8eef53cf4db751a24f0b4c0fd42b09dbb17`. No se modificó ni aceptó la pieza; corte 19-nov incompatible y hay fuentes temporales por resolver.
+- Cero X: revisión del checkout encontró manifiesto de 5 modelos pero cero archivos ONNX locales; README contenía afirmaciones históricas contradictorias. En rama `research/community-requests-2026-11-10`, commit `9382ee23bae1af72de60eab99f74dd6830308815` califica las afirmaciones de modelos y elimina predicción infundada de rendimiento en ARM. No prueba el APK actual ni completa producto, investigación o build.
+- Medición posterior: `du -sb /home/user` = 44.477.442 bytes, inferior al límite de 50.000.000. Dependencias temporales del harness se alojaron en `/tmp`, no son parte de la instantánea; script las descarga y verifica hashes.
+- Aún pendientes: Pieza 01 completa y lote aceptado; memoria realmente acotada y benchmark/restauración Android; fixtures reales de compatibilidad; Cero X funcional e investigación completa; FMHY offline completo bajo presupuesto; auditoría integral de ocho repositorios. No atribuir cierre por estos avances parciales.
+
 ## Último avance — encargo consolidado
 
 - Presupuesto editorial corregido: `du -sb /home/user` dio **42.595.802 bytes** después de retirar 31 archivos cotejados con blobs remotos; no se ajustó el límite de 50.000.000. Más tarde se creó un clon parcial FMHY y la medición creció a **44.434.573 bytes**; repetir al entregar. Detalle y restauración en `docs/CIERRE-PRESUPUESTO-EDITORIAL.md` y `docs/CIERRE-PRESUPUESTO-INVENTARIO.json`; el checkout reducido de ShinKu no compila sin rehidratar recursos retirados.
