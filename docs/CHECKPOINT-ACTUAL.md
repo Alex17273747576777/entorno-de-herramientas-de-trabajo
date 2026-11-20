@@ -1,5 +1,14 @@
 # CHECKPOINT ACTUAL
 
+## Último avance — encargo consolidado
+
+- Presupuesto editorial corregido: `du -sb /home/user` dio **42.595.802 bytes** después de retirar 31 archivos cotejados con blobs remotos; no se ajustó el límite de 50.000.000. Más tarde se creó un clon parcial FMHY y la medición creció a **44.434.573 bytes**; repetir al entregar. Detalle y restauración en `docs/CIERRE-PRESUPUESTO-EDITORIAL.md` y `docs/CIERRE-PRESUPUESTO-INVENTARIO.json`; el checkout reducido de ShinKu no compila sin rehidratar recursos retirados.
+- Se documentó la ausencia de las tres lecciones no identificadas, con búsqueda acotada en corpus local, Drive y Dropbox: `docs/LA-BANDITA-LECCIONES-AUSENTES.md`. Esto satisface la declaración de ausencia del nuevo encargo, pero **no identifica ni autentica las tres ni acepta el manual**.
+- Inventario de las 70 fusiones con hash, conteos mecánicos y motivo de no promoción en `docs/LA-BANDITA-LOTE-01-70-ESTADO.csv`: 0 aceptadas y 70 referencias; no se afirma una revisión factual individual a partir de ese inventario.
+- Respaldo verificado en EDT: `5871f165c9d22dcc64b8512880de68401312a57e` (presupuesto), `9f78ea6ad0c02e1aeb4184e4975adf5382ae423f` (lecciones/lote) y `d266bd019682d1c000b2e30cf33e23759258c3b6` (inventario recuperación).
+- FMHY: fork real https://github.com/Alex17273747576777/edit, README propio y proceso de actualización en `ce8fe1ba2b2ffbb159be89459bcb84e5e5f57feb`; clon local superficial/parcial con `origin` y `upstream` en `/home/user/work/fmhy-source`. Es disperso: **no contiene todos los índices offline**. El árbol completo anunciado suma 9.747.815 bytes en 350 blobs, por lo que no cabe en el margen disponible junto con el límite editorial y metadatos. No se presenta como clon offline completo.
+- Siguen sin cerrar: Pieza 01 factual/sustancia, maestros aceptados, solución OOM de memoria acotada y benchmark Android, compatibilidad con fixtures reales, evolución completa de 2.8.5-preview.1, app Cero X, investigación comunitaria, ruta de aprendizaje y auditoría completa de ocho repositorios. Los issues ShinKu #40/#41 y PR draft #42 ya existen: no duplicar. No hay evidencia suficiente para declarar cero pendientes.
+
 ## Estado prioritario de esta continuación — reglas y formato
 
 - El usuario eligió trabajar con los documentos conservados; no se afirma disponer del chat completo.
