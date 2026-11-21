@@ -8,7 +8,7 @@
 > **Estado:** el cuerpo operativo de las Partes 0–X ya está redactado; la aceptación final sigue pendiente y no se declara completo mientras haya incoherencias abiertas.
 > **Relación con lo anterior:** la v0.0.1 REEMPLAZA al «Manual de Campo v4.0» como norma vigente;
 > el v4.0 pasa a antecedente histórico archivado, decisión ratificada por el dueño (§5, decisión 3).
-> **Autocontrol mecánico:** en la última pasada de esta sesión, la suite completa de 10 pruebas y `py_compile` pasaron; `--modo-norma` dio VERDE al manual y a este manifiesto. El resultado no prueba coherencia semántica completa, preservación de las 18 lecciones ni veracidad de los hechos históricos.
+> **Autocontrol mecánico:** en la última pasada de esta sesión, la suite histórica de 10 pruebas y `py_compile` pasaron (no es el recuento actual de pruebas); `--modo-norma` dio VERDE al manual y a este manifiesto. El resultado no prueba coherencia semántica completa, preservación de las 18 lecciones ni veracidad de los hechos históricos.
 
 ---
 
@@ -179,16 +179,16 @@ El «procede» del dueño ratifica estas cinco decisiones y autoriza continuar l
 
 ## §6 — Mapa del manual v0.0.1 y estado de entregas
 
-El manifiesto fija las decisiones ratificadas; el cuerpo de Partes 0–X ya está redactado en el archivo operativo. El siguiente control es la aceptación cruzada de cada regla; hasta completarla, no se declara el manual terminado.
+El manifiesto fija las decisiones ratificadas; el cuerpo de Partes 0–X ya está redactado en el archivo operativo. El cotejo cruzado de 70/70 unidades tiene informe en `docs/REVISION-EDITORIAL-2026-11-10.md`; esta continuación leyó íntegros cuerpo y manifiesto y corrigió la incoherencia de polaridad de §3.6/§9.9, sin dar por cerrado el control de lecciones. La aplicación factual y de sustancia en piezas reales sigue pendiente; no se declara el manual terminado.
 
 | Parte | Contenido | Estado |
 |---|---|---|
 | -1 | Manifiesto de evolución y decisiones canónicas | 🔶 decisiones ratificadas; el registro se actualiza junto al cierre de aceptación |
-| 0 | Fundamentos como compuerta, prueba única, pilares y secuencia G0–G7 | 🔶 texto redactado; 70/70 encabezados tienen fila en la matriz; falta cerrar la revisión semántica y el cotejo de lecciones; la fecha 19-nov quedó rotulada como prevista, no como corte |
+| 0 | Fundamentos como compuerta, prueba única, pilares y secuencia G0–G7 | 🔶 texto redactado; 70/70 encabezados tienen fila en la matriz; cotejo de cobertura semántica documentado; falta cerrar la integridad de lecciones y la aceptación final; la fecha 19-nov quedó rotulada como prevista, no como corte |
 | I | Dueño, voz, estilo, humor, actitud y límites | 🔶 texto redactado; el conteo de lecciones está en conflicto (15 visibles/18 declaradas); aceptación pendiente de cotejo |
 | II | Anatomía de pieza por idioma, mapa, fichas, despliegue, notas y créditos | 🔶 hornada 2 redactada; ES agrupa Facebook·WhatsApp y separa Telegram; EN agrupa Reddit·Discord; X/Twitter excluida; aplicación en piezas pendiente |
 | III | Matriz permitida, condicional y prohibida | 🔶 hornada 2 redactada; aplicar y revisar consistencia |
-| IV | Evidencia, auditoría, vara y pruebas | 🔶 protocolo escrito; 8 pruebas de vara + 2 de cobertura estructural; la revisión factual y de sustancia sigue siendo humana aunque la suite pase |
+| IV | Evidencia, auditoría, vara y pruebas | 🔶 protocolo escrito; 8 pruebas originales de vara + 2 de cobertura estructural, ampliadas con 10 de cierre y 5 de guarda; la revisión factual y de sustancia sigue siendo humana aunque la suite pase |
 | V | Ambigüedades y regla de desempate | 🔶 hornada 3 redactada; revisar cobertura contra casos reales |
 | VI | Taxonomía A–F y familia E | 🔶 E07–E09 ya se clasifican en §6.3 (riesgo, incidente y brecha); su cierre probatorio depende de repetir auditoría íntegra y validar la cuenta de sustancia en piezas reales |
 | VII | Flujo de producción y checkpoint | 🔶 hornada 4 redactada; validar con la producción del lote 01–70 |
@@ -212,7 +212,7 @@ La Bandita no gana por tener el tratado más grande. Gana cuando una regla puede
 
 El dueño ordenó **terminar primero las tareas pendientes y revisar GitHub al final**. Este orden prevalece; la inspección de perfil, repositorios e interacciones externas no empieza mientras siga abierto cualquiera de los hitos anteriores.
 
-**Regla de persistencia del dueño (vigente):** todo avance se commitea y se pushea al remoto `origin/main` en cuanto existe y pasa sus controles; no se espera autorización. El respaldo comprimido y toda la documentación se suben igual. Lo único que jamás se sube son las credenciales: tokens y llaves permanecen solo en local y están bloqueados por `.gitignore`. Perder trabajo por no espejarlo es una falla grave; clonar para "recuperar" no sirve porque queda desactualizado.
+**Regla de persistencia:** todo avance comprobado se publica en GitHub sin esperar una autorización adicional. La instrucción posterior registrada en `docs/CHECKPOINT-ACTUAL.md` exige una rama revisable y no empujar directamente a `main`; esa instrucción sustituye aquí el destino histórico `origin/main`. Publicar progreso no significa desplegar en redes ni aprobar contenido. El respaldo comprimido y toda la documentación se suben igual. Lo único que jamás se sube son las credenciales: tokens y llaves permanecen solo en local y están bloqueados por `.gitignore`. Perder trabajo por no espejarlo es una falla grave; clonar para "recuperar" no sirve porque queda desactualizado.
 
 1. **Aceptar el manual v0.0.1:** cotejar las 70 filas de §9.9 con las reglas reales, ejecutar las pruebas estructurales y revisar coherencia; resolver la discrepancia 15/18 lecciones. El dueño aclaró que 2026-11-19 era una fecha prevista, no histórica ni de corte; conservar esa etiqueta y usar la fecha de plataforma para el trabajo actual. Después correr la vara sobre ambos archivos íntegros y actualizar este manifiesto. «Redactado» no se renombra como «completo» antes de cerrar la revisión y el cotejo.
 2. **Rehacer el lote 01–70 por idioma:** usar las 70 fusiones antiguas como referencia e inventario, no como texto final; investigar de nuevo lo mutable; producir una pieza ES y una EN por número; superar 45.000 caracteres de sustancia en cada idioma; cumplir créditos, fuentes, diversidad real y compuertas. Avanzar por checkpoints pequeños, sin derivadores genéricos ni reescritura automática por aprobación.
@@ -224,3 +224,9 @@ Hasta acabar los pasos 1–3, no se consulta el perfil ni se llama a APIs de Git
 ---
 
 *Documento de evolución v0.0.1 · estado y orden de trabajo revisados; la aceptación final del manual sigue pendiente.*
+
+## Actualización operativa de reglas y formato
+
+Fecha de referencia: 2026-11-10, America/Santo_Domingo; sin convertir nombres de carpetas o marcas del host en fechas de verificación. Guía de aplicación en `FORMATO-Y-CONTROL-DE-PUBLICACIONES.md`. La aprobación del usuario de trabajar con lo conservado permite continuar esta revisión, no declarar recuperado todo el chat ni ratificadas las tres lecciones ausentes.
+
+Se corrigen: polaridad de aceptación (§3.6), ficha documental, cierre ejecutable y separación entre seguimiento local y respaldo remoto. Las pruebas de guarda miden fixtures temporales y prueban además el rechazo de sobrepresupuesto; no certifican el almacenamiento de producción. El límite editorial de 50.000.000 bytes permanece; la cuota de plataforma de 128 MB es distinta.
