@@ -13,9 +13,10 @@
   - `Color.kt`: sustituido `CeroXPrimary` `#6200EE` por `#0891B2` (`hue=191.6°`, contraste WCAG `5.09:1` sobre `#121212`, `4.53:1` sobre `#1E1E1E`).
   - `IdiomasActivity.kt`: sustituido `Text("✓", ...)` por `Icon(Icons.Filled.Check, ...)`.
   - `auditar_diseno_generico.py --estricto` pasó con `0` incumplimientos (`RESULTADO: SIN INCUMPLIMIENTOS`) y el workflow `.github/workflows/pruebas.yml` en GitHub Actions (`:app:compileDebugKotlin` + `:app:testDebugUnitTest`) finalizó `success`. La incidencia `#6` permanece abierta según criterio explícito (requiere clave de publicación y prueba física en dispositivo).
-- **Sincronización de forks:**
+- **Sincronización de forks y verificación `ProjectNox-org` (`index.pb`):**
   - `Alex17273747576777/ShinKu:main` actualizado por fast-forward a `Harrys-HQ/ShinKu:main` (`58a3d14a66c063c82c8915f3817899288c3d12b5`); la implementación de mejoras sigue en `feat/selection-management-and-optimizations` (`c7000cff94`).
-  - `Alex17273747576777/anime-extensoes:repo` actualizado por fast-forward a `ProjectNox-org/anime-extensoes:repo` (`803b7394f859be20f8392a75d4928a3b279373d6`) tras verificar la presencia de `index.pb` y `repo.json`.
+  - `Alex17273747576777/anime-extensoes:repo` actualizado por fast-forward a `ProjectNox-org/anime-extensoes:repo` (`803b7394f859be20f8392a75d4928a3b279373d6`, `0 ahead / 0 behind`). Verificado su `index.pb` vivo: `17.909 B` gzip (`105.855 B` sin comprimir, SHA-256 `0c5b1e3b10c0916f621a0c657b666dd8a262974de3b52d037945484850f900d4`), **274 extensiones** y **328 fuentes** (`nsfw=193`, `isTorrent=7`, `sources` en campo `9`).
+  - Verificado `ProjectNox-org/manga-extensoes:repo` (`index.pb` y `repo.json`, `pushed_at` `2026-11-21T09:01:43Z`): `132.137 B` gzip (`919.384 B` sin comprimir, SHA-256 `14f65b28bb986450339e6df56ed154ddcc1df44929a8241a7243597835bf2b42`), **1.742 extensiones** y **2.821 fuentes** (`nsfw=639`, `sources` en campo `8`, esquema Mihon/Tachiyomi estándar, misma huella `signingKeyFingerprint` `144f44e8…21db5dad`).
   - `Alex17273747576777/AniZen:master` ya alineado con `salmanbappi/AniZen:master`; ramas WIP `feed-cap-per-tab` y `merge-groups-phase1` preservadas sin abrir PR parcial.
 
 ## Continuación 2026-11-21 — comparativa 4 repositorios, implementación ShinKu, pruebas unitarias y build APK
