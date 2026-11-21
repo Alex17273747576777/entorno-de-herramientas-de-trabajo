@@ -1,5 +1,21 @@
 # CHECKPOINT ACTUAL
 
+## Continuación 2026-11-21 — comparativa 4 repositorios, implementación ShinKu, pruebas unitarias y build APK
+
+- Fecha de referencia / inicio de sesión: `2026-11-21 05:22:41 UTC` (America/Santo_Domingo).
+- **Comparativa completa de 4 lectores** (`PineappleTwilight/hyoukan@42ea727d8`, `Suwayomi/Suwayomi-Tsumiru@c01ad256`, `unseensnick/Reikai@00206fe6a`, `Harrys-HQ/ShinKu@58a3d14a66`): archivada en `docs/SHINKU-COMPARATIVA-4-REPOS-Y-IMPLEMENTACION-2026-11-21.md`.
+- **Implementación en `Alex17273747576777/ShinKu`** (rama `feat/selection-management-and-optimizations`, base `Harrys-HQ/ShinKu@58a3d14a66`, commit `c7000cff94`):
+  - Ordenamiento de pestañas en `BrowseTab` (`feedTabInFront` + `switchToTabChannel`) vía `BrowseTabOrder`.
+  - Multi-selección y alta masiva (`BrowseSelectionState`, `BulkAddFavoritesHelper`, `BrowseSelectionToolbar`) en `BrowseSource`, `GlobalSearch` y `Feed`, con detección de duplicados/desfusionados, categorías por defecto/selección y resumen de resultados.
+  - Pantalla `LibraryManagementScreen` + `LibraryManagementScreenModel` + `LibraryDuplicateScanner` (Duplicados / Grupos de fusión / Fuentes faltantes) enlazada desde `MoreScreen`/`MoreTab` y `LibraryToolbar`/`LibraryTab`.
+  - Mejoras en Biblioteca (`LibraryToolbar` contador fuera de vista + Select all, `LibraryTab` `dockBottomPadding` = `0.dp` en selección, `LibraryContent` estado real de refresco vía `WorkManager` `LibraryUpdateJob.TAG`).
+  - Mejoras en Extensiones (`ExtensionsTab`/`ExtensionsScreenModel`/`ExtensionsScreen`: acciones promovidas Filter/Repos/Select, selección e instalación/actualización por lotes con `BackHandler`, y `AvailableExtensionInfoDialog`).
+- **Verificación Gradle (2026-11-21):**
+  - `:domain:testDebugUnitTest`: PASS.
+  - `:app:testDevDebugUnitTest`: PASS (incluyendo `BrowseSelectionStateTest`, `BrowseTabOrderTest`, `BulkAddFavoritesHelperTest` y `LibraryDuplicateScannerTest`).
+  - `:app:assembleDevDebug`: PASS (`ShinKu-dev-universal-debug.apk`, `arm64-v8a`, `armeabi-v7a`, `x86`, `x86_64`).
+  - Nota de build: `com.github.arkon.FlexibleAdapter:flexible-adapter:c8013533` en `gradle/libs.versions.toml` devuelve HTTP 404 en JitPack (`"No build artifacts found"`); las compilaciones y pruebas de `:app` se ejecutaron sustituyendo esa dependencia por `eu.davidea:flexible-adapter:5.1.0` (Maven Central HTTP 200) mediante `--init-script` sin alterar `libs.versions.toml` del fork. `:domain:spotlessKotlinApply` (en `FeedCategory.kt:L10`) y `:app:spotlessKotlinApply` (en `HttpPageLoader.kt:L119`, `SourceHealthScreenModel.kt:L36`) presentan errores previos de upstream fuera de los archivos modificados.
+
 ## Continuación: sesión cronometrada — avances verificables
 
 - Inicio según reloj del host: 2026-11-20 13:24:29 UTC. El host discrepa de la fecha que establece la plataforma (2026-11-10); sus horas solo sirven para medir duración, no como corte factual editorial. Se consultó hora después de cada sección. No se afirma haber trabajado dos horas.
