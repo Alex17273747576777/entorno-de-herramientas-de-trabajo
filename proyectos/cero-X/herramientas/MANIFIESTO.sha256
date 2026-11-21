@@ -5,6 +5,7 @@
 # sha256sum -c --strict ignora los comentarios: el manifiesto sigue siendo válido.
 # origen-repo: Alex17273747576777/cero-X-app
 # origen-rama: main
+# origen-estado: retirado (repositorio eliminado por el dueño el 2026-11-21)
 # Repuntado de fases-verificadas-2026-11-13 a main el 2026-11-13: esa rama quedó
 # congelada en 8d531c2 tras la fusión (PR #7). Un espejo "al día" con una rama muerta
 # dice verdad hoy y se queda atrás sin avisar el día que main cambie un fichero espejado

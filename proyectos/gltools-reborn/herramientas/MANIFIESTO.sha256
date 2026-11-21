@@ -5,6 +5,7 @@
 # sha256sum -c --strict ignora los comentarios: el manifiesto sigue siendo válido.
 # origen-repo: Alex17273747576777/gltools-reborn
 # origen-rama: main
+# origen-estado: retirado (repositorio eliminado por el dueño el 2026-11-21)
 # origen-commit: 4389482dd4e739e248657f924f2506b4ca754b59
 # origen-ruta LICENSE-de-origen.txt: LICENSE
 # origen-ruta auditar_releases.py: .github/scripts/auditar_releases.py

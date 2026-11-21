@@ -79,6 +79,14 @@ for m in proyectos/*/herramientas/MANIFIESTO.sha256; do
     fi
 
     # 2) Contra el origen.
+    estado=$(sed -n 's/^# origen-estado: //p' "$m" | head -1)
+    case "$estado" in
+        retirado*)
+            echo "  ok       $proyecto ($n ficheros: internos; $estado)"
+            al_dia=$((al_dia + 1))
+            continue
+            ;;
+    esac
     repo=$(sed -n 's/^# origen-repo: //p' "$m" | head -1)
     rama=$(sed -n 's/^# origen-rama: //p' "$m" | head -1)
     commit=$(sed -n 's/^# origen-commit: //p' "$m" | head -1)

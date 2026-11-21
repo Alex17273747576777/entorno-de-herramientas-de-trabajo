@@ -1,5 +1,19 @@
 # CHECKPOINT ACTUAL
 
+## Continuación 2026-11-21 (issues en upstream, norma Feynman completa 4/4 y retirada de repositorios)
+
+- **Issues abiertos en upstream (`Harrys-HQ/ShinKu`):**
+  - `https://github.com/Harrys-HQ/ShinKu/issues/43` — comparativa técnica completa de cuatro lectores (`PineappleTwilight/hyoukan@42ea727d8`, `Suwayomi/Suwayomi-Tsumiru@c01ad256`, `unseensnick/Reikai@00206fe6a`, `Harrys-HQ/ShinKu@58a3d14a66`) y enlace al parche en el fork.
+  - `https://github.com/Harrys-HQ/ShinKu/issues/44` — propuesta e implementación de mejoras (`BrowseTabOrder`, multi-selección y alta masiva, `LibraryManagementScreen` / `LibraryDuplicateScanner`, barra de biblioteca e instalación/actualización por lotes en Extensiones, `Alex17273747576777/ShinKu:feat/selection-management-and-optimizations@c7000cff94`).
+  - Copia archivada en `proyectos/shinku/` (`comparativa-repos-y-mejoras-shinku.md` y `0001-feat-browse-library-extensions-add-multi-select-entr.patch`), además de respaldos en Google Drive y Dropbox.
+- **Fork `Alex17273747576777/manga-extensoes`:**
+  - Creado fork real desde `ProjectNox-org/manga-extensoes` (`repo@6a0dcd1a1aa573790f0a4f13eb978590790927d5`) y verificado clon local junto con `index.pb` (`132.137 B` gzip / `919.384 B` sin comprimir, `1.742` extensiones, `2.821` fuentes).
+- **Método Richard Feynman completo (4 pasos obligatorios) aplicado y verificado por CI:**
+  - **`Alex17273747576777/ruta-programacion-sistemas`** (`main` en `53eb8f13578159123f3f911880b393813fd4e800`): los 4 pasos (`1. Seleccionar y estudiar`, `2. Enseñarlo con palabras simples`, `3. Identificar lagunas y volver a la fuente original`, `4. Simplificar y revisar con analogías`) añadidos como estándar obligatorio en `README.md` y en las 6 etapas (`etapas/01-fundamentos.md` .. `06-sistemas.md`), verificados con `tests/verificar_feynman.py` y workflow `.github/workflows/feynman.yml` (`success`).
+  - **`Alex17273747576777/la-bandita-archivo`** (`main` en `8d4a2263a17b6a085da6ca46dd85d42eb430e328`): los 4 pasos integrados como ley obligatoria en `CORAZON-LA-BANDITA.md`, `REGLAS/INDICE-DE-REGLAS.md`, `CIMIENTOS/04-VOZ-Y-CIERRE.md`, `PROCESOS/01-PIEZA.md`, `SKILLS/escribir-pieza/SKILL.md`, `README.md`, `docs/METODO-FEYNMAN-OBLIGATORIO.md`, `docs/ACTA-FEYNMAN-2026-11-21.md` y los **12 capítulos** de `guia-maestra/texto/capitulos/*.md`; verificador determinista `tools/feynman_verificar.py` + `tests/test_feynman.py` cableado en `.github/workflows/vara.yml`, con `guia_maestra.py --compuertas --generar --estricto` (`70/70 VERDE`), `atestar.py` (`14.365` archivos), `vara.py` (`fallos: NINGUNO`) y `autoprueba.py` en verde.
+- **Retirada voluntaria de repositorios por el dueño y actualización de copias:**
+  - `Alex17273747576777/cero-X-app` y `Alex17273747576777/gltools-reborn` eliminados en GitHub (HTTP 404). Actualizados `proyectos/comprobar-copias.sh` y los `MANIFIESTO.sha256` de `proyectos/cero-X/` y `proyectos/gltools-reborn/` para marcarlos con `estado_origen=retirado` sin romper `--estricto-origen` (`COPIAS_OK`).
+
 ## Continuación 2026-11-21 (cierre de pendientes GitHub multi-repo)
 
 - **`Alex17273747576777/bandwidth-hero-proxy2`** (`main` en `9855dc4e532ce0ba4e2540b65c855f0971dc46e0`):
