@@ -1,5 +1,23 @@
 # CHECKPOINT ACTUAL
 
+## Continuación 2026-11-21 (cierre de pendientes GitHub multi-repo)
+
+- **`Alex17273747576777/bandwidth-hero-proxy2`** (`main` en `b3f908aaf477c52753660f4e27881b8158fb561a`):
+  - Añadida prueba de regresión sin mock en `tests/index.test.js` (`jest.requireActual("node-fetch")` callable en CommonJS); suite local y CI Node 22 (`tests` y `CodeQL`) verdes (`22/22` tests).
+  - Cerrados sin fusionar los PRs de Dependabot `#1` (`sharp@0.34.5`, inferior a `0.35.5` en `main`), `#3` (`jest@30.3.0`, inferior a `30.5.2` en `main`) y `#4` (`node-fetch@3.3.2`, ESM-only incompatible con `require('node-fetch')` y Jest CJS VM sin `--experimental-vm-modules`).
+- **`Alex17273747576777/la-bandita-archivo`** (`main` en `97ddbccf4d963f26984031aea31cc734f317fd59`):
+  - Resuelta incidencia **#2**: `tools/atestar.py` (`huella_registro_db` en solo lectura sin mutar archivos WAL) y `tools/atestacion_verificar.py` registran y verifican por lote el recuento de filas por tabla (`6.838` fichas en 6 tablas) y el SHA-256 del volcado SQL determinista de `registry/registro.db`; sellado el lote `attestations/lote-2026-11-21.{json,tsv}` y actualizado `registry/_manifiesto-sha256.tsv`.
+  - Resuelta incidencia **#3** por la vía **(a)**: `tools/medir_piezas_24_34.py` escribe `payloads_sha256` en JSON nuevos y declara en su docstring que los `MEDICION-*-2026-11-08.json` sellados se conservan intactos.
+  - Pruebas unitarias en `tests/test_atestar_integridad.py` (`10/10` OK, cubriendo `VACUUM` sin rotura y detección de alteración de filas), `make verificar` y flujo de CI `vara` en GitHub Actions (`success`, incluyendo firma/verificación Sigstore) verdes; incidencias `#2` y `#3` cerradas.
+- **`Alex17273747576777/cero-X-app`** (`main` en `c055c99f24b899da8dc7f09bace251be28eb28a6`):
+  - `Color.kt`: sustituido `CeroXPrimary` `#6200EE` por `#0891B2` (`hue=191.6°`, contraste WCAG `5.09:1` sobre `#121212`, `4.53:1` sobre `#1E1E1E`).
+  - `IdiomasActivity.kt`: sustituido `Text("✓", ...)` por `Icon(Icons.Filled.Check, ...)`.
+  - `auditar_diseno_generico.py --estricto` pasó con `0` incumplimientos (`RESULTADO: SIN INCUMPLIMIENTOS`) y el workflow `.github/workflows/pruebas.yml` en GitHub Actions (`:app:compileDebugKotlin` + `:app:testDebugUnitTest`) finalizó `success`. La incidencia `#6` permanece abierta según criterio explícito (requiere clave de publicación y prueba física en dispositivo).
+- **Sincronización de forks:**
+  - `Alex17273747576777/ShinKu:main` actualizado por fast-forward a `Harrys-HQ/ShinKu:main` (`58a3d14a66c063c82c8915f3817899288c3d12b5`); la implementación de mejoras sigue en `feat/selection-management-and-optimizations` (`c7000cff94`).
+  - `Alex17273747576777/anime-extensoes:repo` actualizado por fast-forward a `ProjectNox-org/anime-extensoes:repo` (`803b7394f859be20f8392a75d4928a3b279373d6`) tras verificar la presencia de `index.pb` y `repo.json`.
+  - `Alex17273747576777/AniZen:master` ya alineado con `salmanbappi/AniZen:master`; ramas WIP `feed-cap-per-tab` y `merge-groups-phase1` preservadas sin abrir PR parcial.
+
 ## Continuación 2026-11-21 — comparativa 4 repositorios, implementación ShinKu, pruebas unitarias y build APK
 
 - Fecha de referencia / inicio de sesión: `2026-11-21 05:22:41 UTC` (America/Santo_Domingo).
