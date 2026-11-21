@@ -2,8 +2,9 @@
 
 ## Continuación 2026-11-21 (cierre de pendientes GitHub multi-repo)
 
-- **`Alex17273747576777/bandwidth-hero-proxy2`** (`main` en `b3f908aaf477c52753660f4e27881b8158fb561a`):
-  - Añadida prueba de regresión sin mock en `tests/index.test.js` (`jest.requireActual("node-fetch")` callable en CommonJS); suite local y CI Node 22 (`tests` y `CodeQL`) verdes (`22/22` tests).
+- **`Alex17273747576777/bandwidth-hero-proxy2`** (`main` en `9855dc4e532ce0ba4e2540b65c855f0971dc46e0`):
+  - Añadida prueba de regresión sin mock en `tests/index.test.js` (`jest.requireActual("node-fetch")` callable en CommonJS, `b3f908aa`).
+  - Añadidos `overrides` (`minimatch@^11.0.9`, `glob@^14.0.6`) en `package.json` + `package-lock.json` (`9855dc4e`), dejando `npm audit` en **0 vulnerabilidades** y **0 alertas abiertas de Dependabot** (incluidas `#1` y `#3`), con `22/22` tests y workflows **`tests`** y **`CodeQL`** en `success`.
   - Cerrados sin fusionar los PRs de Dependabot `#1` (`sharp@0.34.5`, inferior a `0.35.5` en `main`), `#3` (`jest@30.3.0`, inferior a `30.5.2` en `main`) y `#4` (`node-fetch@3.3.2`, ESM-only incompatible con `require('node-fetch')` y Jest CJS VM sin `--experimental-vm-modules`).
 - **`Alex17273747576777/la-bandita-archivo`** (`main` en `97ddbccf4d963f26984031aea31cc734f317fd59`):
   - Resuelta incidencia **#2**: `tools/atestar.py` (`huella_registro_db` en solo lectura sin mutar archivos WAL) y `tools/atestacion_verificar.py` registran y verifican por lote el recuento de filas por tabla (`6.838` fichas en 6 tablas) y el SHA-256 del volcado SQL determinista de `registry/registro.db`; sellado el lote `attestations/lote-2026-11-21.{json,tsv}` y actualizado `registry/_manifiesto-sha256.tsv`.
