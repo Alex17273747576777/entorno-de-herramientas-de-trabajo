@@ -1,7 +1,11 @@
-.PHONY: prueba medir limpiar copias copias-estrictas copias-tests latido todo
+.PHONY: prueba medir limpiar copias copias-estrictas copias-tests entorno latido todo
 
 prueba:
 	python3 tests/pruebas.py
+	python3 -m unittest discover -s tests -p "test_*.py" -v
+
+entorno:
+	bash bin/preparar-espacio-trabajo.sh --solo-verificar
 
 medir:
 	./bin/medir-pieza muestras/p*.md --tabla

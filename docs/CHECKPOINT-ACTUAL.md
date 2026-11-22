@@ -1,5 +1,20 @@
 # CHECKPOINT ACTUAL
 
+## Continuación 2026-11-21 (espacio de trabajo, reglas/publicaciones de La Bandita, Máster en Sistemas Expertos y auditoría FMHY)
+
+- **Configuración del espacio de trabajo (`Alex17273747576777/entorno-de-herramientas-de-trabajo`):**
+  - Añadido `bin/preparar-espacio-trabajo.sh` (`--solo-verificar`, `--sincronizar`, `--estricto-origen`), `docs/ENTORNO-ESPACIO-DE-TRABAJO.md`, objetivo `make entorno`, prueba `tests/test_espacio_trabajo.py` e integración directa en `.github/workflows/pruebas.yml`.
+- **Sitio web del Máster en Ingeniería de Sistemas Expertos (`Alex17273747576777/ruta-programacion-sistemas`):**
+  - Actualizado `main` a `a407b7e037fda16cd71cdb065bde428cca89abe2` (GitHub Pages: `https://alex17273747576777.github.io/ruta-programacion-sistemas/`).
+  - Incorporados `guias/09-sistemas-expertos-motores-inferencia-y-logica-difusa.md` (4/4 pasos Feynman), `cheatsheets/sistemas-expertos-ontologias-y-reglas.md`, el laboratorio ejecutable `laboratorios/sistema_experto/motor_inferencia.py` + `test_sistema_experto.py` (Forward & Backward Chaining con explicación *How*, combinación de Factores de Certeza MYCIN y controlador difuso Mamdani), 6 preguntas adicionales en `quizzes/banco_preguntas.json` (`36` preguntas totales), `25` módulos embebidos y **6º Playground Interactivo en vivo** (`#experto` — Simulador de Motor de Inferencia en `docs/index.html`).
+- **Reglas y publicaciones de La Bandita (`Alex17273747576777/la-bandita-archivo`):**
+  - Actualizado `main` a `df2c0b9cc827ea04a77ca295da99e10edb67af75`.
+  - Consolidadas las reglas de publicaciones vigentes vs. retiradas en `CORAZON-LA-BANDITA.md`, `REGLAS/INDICE-DE-REGLAS.md`, `docs/REGLAS-DE-PUBLICACION-Y-ARCHIVO.md` (4/4 pasos Feynman), `docs/ACTA-REGLAS-Y-PUBLICACIONES-2026-11-21.md`, `README.md` y `CHANGELOG.md` (`[3.1.0]`).
+  - Corregido `tools/vara_idiomas.py` para verificar los moldes canónicos de `ENTORNO-DE-TRABAJO/moldes/` en modo retiro vigente (sin falso rojo) y exigir G20–G23 cuando existan piezas o ruta explícita (`tests/test_vara_idiomas.py`), con `docs/INDICE.md` regenerado (`169` documentos, `79` herramientas) y resello SHA-256 `lote-2026-11-21` (`14.367` archivos OK).
+- **Auditoría FMHY.net (`fmhy/edit`) y Miyomi (`miyomiorg/Miyomi`):**
+  - Sugerencias individuales `Miyomi` (`#7385`), `AniPirate` (`#7386`), `Holodex` (`#7390`) y `AnisongDB` (`#7392`) movidas a Discord para pruebas por `nbats` (`closed`); reportes puntuales `#7387` y `#7388` aceptados (`closed`); lotes masivos `#7394`–`#7396` cerrados por volumen/geobloqueos con respuesta cortés y cierre en `#7396#issuecomment-7071228392`.
+  - Issues de expansión y saneamiento abiertos en `miyomiorg/Miyomi`: `#63`, `#64`, `#65`, `#66`.
+
 ## Continuación 2026-11-21 (issues en upstream, norma Feynman completa 4/4 y retirada de repositorios)
 
 - **Issues abiertos en upstream (`Harrys-HQ/ShinKu`):**

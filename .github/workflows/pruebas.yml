@@ -11,6 +11,8 @@ jobs:
         with:
           python-version: "3.12"
       - run: python tests/pruebas.py
+      - run: python3 -m unittest discover -s tests -p "test_*.py" -v
+      - run: bash bin/preparar-espacio-trabajo.sh --solo-verificar --estricto-origen
       # La capa de proyectos: que ninguna copia de herramienta haya derivado de su
       # canónica y que los tests que sí son autocontenidos corran aquí también.
       # Sale 1 si algo derivó y 2 si no encontró ningún manifiesto que comprobar.
