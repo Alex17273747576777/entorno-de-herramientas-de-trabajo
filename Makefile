@@ -1,4 +1,4 @@
-.PHONY: prueba medir limpiar copias copias-estrictas copias-tests entorno latido todo
+.PHONY: prueba medir limpiar copias copias-estrictas copias-tests entorno entorno-reporte latido todo
 
 prueba:
 	python3 tests/pruebas.py
@@ -6,6 +6,10 @@ prueba:
 
 entorno:
 	bash bin/preparar-espacio-trabajo.sh --solo-verificar
+
+entorno-reporte:
+	bash bin/preparar-espacio-trabajo.sh --solo-verificar --reporte-json /tmp/entorno-reporte.json
+
 
 medir:
 	./bin/medir-pieza muestras/p*.md --tabla
@@ -28,3 +32,6 @@ latido:
 		echo "latido: el proyecto no está en este equipo; la copia de herramientas/ se verifica con 'make copias'"
 
 todo: prueba copias-estrictas copias-tests
+
+shellcheck:
+	@if command -v shellcheck >/dev/null 2>&1; then shellcheck bin/*.sh proyectos/*.sh; else echo "shellcheck no instalado; omitiendo (opcional)"; fi

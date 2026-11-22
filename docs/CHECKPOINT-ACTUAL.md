@@ -1,5 +1,12 @@
 # CHECKPOINT ACTUAL
 
+## Actualización 2026-11-22 — preparación de entorno
+
+- `entorno/repositorios.json` centraliza los cuatro repositorios propios y perfiles `base`, `archivo`, `web`, `android` y `completo`.
+- `bin/preparar-espacio-trabajo.sh` admite `--perfil`, `--configurar-git` y `--reporte-json`; detecta `ruff`, `shellcheck` y Java además de la toolchain existente. Las herramientas no esenciales se informan como opcionales.
+- `tests/test_espacio_trabajo.py` cubre sintaxis, solo lectura, perfiles, reporte y configuración; `Makefile` añade `entorno-reporte` y `shellcheck`. Guía actualizada en `docs/ENTORNO-ESPACIO-DE-TRABAJO.md`.
+- Verificación pendiente de esta ronda: ejecutar suite, pruebas de shell y workflows tras publicar.
+
 ## Continuación 2026-11-21 (espacio de trabajo, reglas/publicaciones de La Bandita, Máster en Sistemas Expertos y auditoría FMHY)
 
 - **Configuración del espacio de trabajo (`Alex17273747576777/entorno-de-herramientas-de-trabajo`):**

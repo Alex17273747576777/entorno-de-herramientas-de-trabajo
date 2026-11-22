@@ -1,0 +1,10 @@
+{
+  "schema_version": 1,
+  "owner": "Alex17273747576777",
+  "repositorios": [
+    {"nombre": "entorno-de-herramientas-de-trabajo", "url": "https://github.com/Alex17273747576777/entorno-de-herramientas-de-trabajo.git", "perfil": ["base", "completo"]},
+    {"nombre": "la-bandita-archivo", "url": "https://github.com/Alex17273747576777/la-bandita-archivo.git", "perfil": ["archivo", "completo"]},
+    {"nombre": "ruta-programacion-sistemas", "url": "https://github.com/Alex17273747576777/ruta-programacion-sistemas.git", "perfil": ["web", "completo"]},
+    {"nombre": "normas-de-diseno", "url": "https://github.com/Alex17273747576777/normas-de-diseno.git", "perfil": ["android", "completo"]}
+  ]
+}
