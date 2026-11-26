@@ -1,5 +1,16 @@
 # CHECKPOINT ACTUAL
 
+## Actualización 2026-11-26 (publicación) — 12 Issues y 1 Discussion publicados en los 7 repositorios
+
+- **Publicación completada (estilo Richard Feynman + reglas individuales de cada repositorio):**
+  - `Harrys-HQ/ShinKu`: `#52` (intervalos por categoría) y `#53` (`ExtensionStoreRestorer`).
+  - `unseensnick/Reikai`: Discussion `#111` en `Ideas` (diagnóstico local sin telemetría + WebDAV ligero, conforme a `CONTRIBUTING.md` y plantilla única).
+  - `PineappleTwilight/hyoukan`: `#97` (consultas N+1 `getMergedMangaById`) y `#98` (diagnóstico local de fuentes/extensiones).
+  - `Foxlations/Foxlations`: `#2` (suite mínima `flutter test`) y `#3` (glosario por serie + WebDAV sync).
+  - `Kototoro-app/Kototoro`: `#735` (streaming/límite en `ExternalBackupDecoding`) y `#736` (AniSkip opcional en reproductor).
+  - `Arthurpendragon9876/DeepSync`: `#32` (importador `.bk.zip` en Yomi Windows + `SyncBackend` en escritorio) y `#33` (diagnóstico unificado `.cs3`/Aniyomi/Mihon/LNReader).
+  - `salmanbappi/AniZen`: `#97` (streaming en `BackupDecoder`) y `#98` (backend `WebDavSyncService`).
+
 ## Actualización 2026-11-26 (tarde) — regla de ramas de análisis y auditoría cruzada de 7 repositorios
 
 - **Política de ramas en forks:** las ramas en forks propios (p. ej. `Alex17273747576777/ShinKu`) no son para parches propios sino ramas de escaneo e investigación profunda para detectar mejoras y redactar issues útiles para los proyectos originales; **no deben podarse**.
