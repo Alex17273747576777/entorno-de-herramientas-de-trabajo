@@ -1,5 +1,11 @@
 # CHECKPOINT ACTUAL
 
+## Actualización 2026-11-26 — verificación de entorno, G13 y sincronización ShinKu
+
+- **`entorno-de-herramientas-de-trabajo` (`d178787` verificado):** ejecutados `make prueba` (`tests/pruebas.py` OK y `unittest` `20/20` OK), `make entorno` / `make entorno-reporte` (`COPIAS_OK: 3 manifiestos, 24 hashes internos`), `bash -n bin/*.sh` y `make copias-tests` (`test_censo_apk` 7/7 y `test_preparar_firma` OK). Workflow `.github/workflows/pruebas.yml` (run `45025277417`) confirmado en `success`. (`shellcheck` y `ruff` opcionales no presentes en el contenedor.)
+- **`la-bandita-archivo` (parche G13 aplicado y publicado):** aplicado `la-bandita-G13-fix-b47d4a5.patch` (SHA-256 `abdb505e5499...`) sobre `bc6214a6` y subido a `main` en `0de79249bbc6df7f6a673aa55ae2fadf39b99b7e`. Verificado antes de subir con `make verificar` (`6838` fichas válidas, `14368` archivos sellados en `lote-2026-11-23`, `vara.py` `fallos: NINGUNO`, `autoprueba.py` `fallos: NINGUNO`), `vara_idiomas.py` (`NADA ROJO`), `feynman_verificar.py` (`fallos: NINGUNO`) y `16/16` unit tests (`unittest`). Workflow `vara.yml` (run `45852717966`) disparado en CI.
+- **`ShinKu` (fork sincronizado y auditado):** `Alex17273747576777/ShinKu:main` sincronizado vía fast-forward con `Harrys-HQ/ShinKu:main` (`4b02e731ec`, `v2.8.6-preview.3`). Verificado en los 39 ficheros de `feat/selection-management-and-optimizations` (`c7000cff94`) que upstream ya integró la funcionalidad equivalente entre `v2.8.6-preview.1` (`8021f27785`) y `v2.8.6-preview.2` (`1cf62aecd1`). Pendiente: re-prueba física en Tecno Spark 20 Pro+ para `Harrys-HQ/ShinKu#46` (`v2.8.6-preview.2`, revisión límite `2026-12-09`) y seguimiento de `#43`, `#44`, `#48`, `#49`.
+
 ## Actualización 2026-11-22 — preparación de entorno
 
 - `entorno/repositorios.json` centraliza los cuatro repositorios propios y perfiles `base`, `archivo`, `web`, `android` y `completo`.
