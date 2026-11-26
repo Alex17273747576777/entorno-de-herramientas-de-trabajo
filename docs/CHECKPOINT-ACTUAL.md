@@ -1,5 +1,19 @@
 # CHECKPOINT ACTUAL
 
+## Actualización 2026-11-26 (tarde) — regla de ramas de análisis y auditoría cruzada de 7 repositorios
+
+- **Política de ramas en forks:** las ramas en forks propios (p. ej. `Alex17273747576777/ShinKu`) no son para parches propios sino ramas de escaneo e investigación profunda para detectar mejoras y redactar issues útiles para los proyectos originales; **no deben podarse**.
+- **`la-bandita-archivo` (`8d05e926`):** regenerado `docs/INDICE.md` (`170` docs / `79` herramientas) y re-sellado `lote-2026-11-26` (`14368` archivos OK); workflow `vara.yml` (run `45876266435`) confirmado en `completed / success`.
+- **Auditoría cruzada (estables, beta, preview y nightlies) de 7 repositorios:**
+  1. `Harrys-HQ/ShinKu` (`main` `4b02e731`, `v2.8.6-preview.3`): propuesta Feynman lista sobre intervalos de actualización por categoría (`Category.kt`, `SettingsLibraryScreen.kt`, respetando Freeze Zone).
+  2. `unseensnick/Reikai` (`main` `00206fe6`, `feat/0.6.0` `55430f36`, `Reikai-preview` `r5333`): propuesta Feynman lista para `Discussions → Ideas` (según `CONTRIBUTING.md`) sobre diagnóstico local sin telemetría de fuentes y `LnPluginHost`.
+  3. `PineappleTwilight/hyoukan` (`master` `cd4754b3`): reporte Feynman verificado sobre consultas N+1 `getMergedMangaById.await(...)` en `LibraryFilterHandler.kt:41-43`, `LibraryViewModel.kt:665`, `LibraryDownloadController.kt` y `LibrarySelectionController.kt`.
+  4. `Foxlations/Foxlations` (`main` `2e6cd343`, `v1.3.5+291`): propuesta Feynman lista para suite mínima `flutter test` (`test/` ausente hoy) cubriendo `BackupService` (`.fox`/`.tachibk`/`.mangayomi`/`.lnreader`) y utilidades puras.
+  5. `Kototoro-app/Kototoro` (`devel` `95e9231e`, `v2.5.3` + ramas activas): reporte Feynman verificado sobre `decoded.readByteArray()` completo en `ExternalBackupDecoding.kt:34` frente a decodificación en streaming/acotada.
+  6. `Arthurpendragon9876/DeepSync` (`main` `1039fbea`, `android-v0.1.4` + `beta3` + `desktop`): propuesta Feynman lista para portar `android-backup.js` a **Yomi (Windows)** y compartir réplicas `SyncBackend` entre escritorio y **Yugen (Android)**.
+  7. `salmanbappi/AniZen` (`master` `0c32b846`, `preview` `30645583`, `nightly` `9505b3da`): propuesta Feynman lista para streaming en `BackupDecoder.kt:42-50` (`it.readByteArray()` -> `BackupProtoReader`).
+- **Pendiente para publicar los 7 tickets:** el PAT *fine-grained* (`github_pat_...`) solo tiene escritura en repositorios propios y devuelve `HTTP 403` en repositorios de terceros; se requiere un token *classic* (`ghp_...` con `public_repo`) o publicación manual desde los borradores entregados.
+
 ## Actualización 2026-11-26 — verificación de entorno, G13 y sincronización ShinKu
 
 - **`entorno-de-herramientas-de-trabajo` (`d178787` verificado):** ejecutados `make prueba` (`tests/pruebas.py` OK y `unittest` `20/20` OK), `make entorno` / `make entorno-reporte` (`COPIAS_OK: 3 manifiestos, 24 hashes internos`), `bash -n bin/*.sh` y `make copias-tests` (`test_censo_apk` 7/7 y `test_preparar_firma` OK). Workflow `.github/workflows/pruebas.yml` (run `45025277417`) confirmado en `success`. (`shellcheck` y `ruff` opcionales no presentes en el contenedor.)
