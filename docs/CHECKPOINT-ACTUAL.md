@@ -1,5 +1,16 @@
 # CHECKPOINT ACTUAL
 
+## Actualización 2026-11-26 (ejecución con Android SDK + kotlinc 2.3.10)
+
+- **Entorno Android/Kotlin levantado desde el propio repo (`preparar-entorno-android.sh` + `COMPILAR-Y-FIRMAR.md`):**
+  - OpenJDK `21.0.13.1`, swap `9 GiB` (`/swapfile-cerox`), Android SDK en `/opt/android-sdk` (`platform-tools 37.0.3`, `platforms;android-36`, `platforms;android-37.0`, `platforms;android-37.2`, `build-tools;35.0.0`, `35.0.1`, `36.0.0`), más `kotlinc-jvm 2.3.10` en `/var/tmp/kc-2.3.10`.
+- **Resultados ejecutados (compilación + pruebas unitarias + reproducción en runtime):**
+  - `unseensnick/Reikai` (`feat/0.6.0` `55430f36`): `:core:common:testDebugUnitTest`, `:domain:testDebugUnitTest` y `:data:testDebugUnitTest` **PASARON** (`BUILD SUCCESSFUL`). Confirmado que `ExtensionStoreServiceTest` cubre clave firmante pero no `readByteArray()` sin cota (`#117`).
+  - `Harrys-HQ/ShinKu` (`main` `4b02e731`): `:core:common:compileDebugKotlin` OK (`testDebugUnitTest NO-SOURCE`); `:domain:testDebugUnitTest` **91/91 PASARON**. Ejecutado contra el JAR compilado de `:core:common`: `InMemoryPreferenceStore.getBoolean` OK y `getStringSet` lanza `kotlin.NotImplementedError` (`#56`). Detectado fallo real de resolución en `:app:compileDevDebugAidl` (`com.github.arkon.FlexibleAdapter:flexible-adapter:c8013533`) -> publicado [`#60`](https://github.com/Harrys-HQ/ShinKu/issues/60).
+  - `salmanbappi/AniZen` (`preview` `30645583`): compilación de código principal OK (`:i18n`, `:i18n-ank`, `:i18n-sy`, `:core:common`, `:source-api`, `:domain`). Detectado fallo real de compilación en pruebas unitarias (`:core:common:compileDebugUnitTestKotlin` en `NetworkHelperTest.kt:19,27,43` y `:domain:compileDebugUnitTestKotlin` en `FetchIntervalScheduledTest.kt:30,56`) -> publicado [`#105`](https://github.com/salmanbappi/AniZen/issues/105). Reproducido `NotImplementedError` de `InMemoryPreferenceStore.getStringSet` (`#101`) contra el JAR compilado de `:core:common`.
+  - `PineappleTwilight/hyoukan` (`master` `078e9c2`): Gradle en clon superficial sin submódulos falló en `external/webgpuviewer-houri`; compilado y ejecutado `BackupReader.kt` con `kotlinc 2.3.10`, probando que `readLength()` (`:122`) ya rechaza varints `< 0` o `>= 2^31` (`IOException: Invalid length 2147483648`) y `okio` comprueba `EOFException` antes de reservar memoria -> aclaración honesta publicada en [`hyoukan#99`](https://github.com/PineappleTwilight/hyoukan/issues/99#issuecomment-7203425667).
+  - `Arthurpendragon9876/DeepSync` (`main` `1039fbe`): compilado y ejecutado `InMemoryPreferenceStore.kt` con `kotlinc 2.3.10`, reproduciendo `kotlin.NotImplementedError` en `getStringSet` (`#36`).
+
 ## Actualización 2026-11-26 (Ola 3) — alineación total de reglas y 44 issues verificados en código (8+ por repositorio)
 
 - **Alineación integral de reglas (propios + 7 externos):**
