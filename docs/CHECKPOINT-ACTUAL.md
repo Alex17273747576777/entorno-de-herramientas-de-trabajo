@@ -1,5 +1,20 @@
 # CHECKPOINT ACTUAL
 
+## Actualización 2026-11-26 (barrido completo de pruebas restantes en los 7 repositorios)
+
+- **Ejecución completa de los módulos restantes en los 7 repositorios externos:**
+  - `unseensnick/Reikai` (`feat/0.6.0` `55430f36`): `:core:common`, `:domain`, `:data`, `:source-api` y `:presentation-core` (`TabTextTest`) **PASARON** `testDebugUnitTest` (`:source-local` y `:presentation-widget` `NO-SOURCE`); `:app:testFossDebugUnitTest` no existe (`foss` es buildType, se usa `testDebugUnitTest`) y `:app:compileDebugKotlin` excede >30m en esta VM (2 cores / `1.9 GiB` RAM + swap).
+  - `Harrys-HQ/ShinKu` (`main` `4b02e731`): `:domain:testDebugUnitTest` **91/91 PASARON**; `:core:common`, `:source-api`, `:source-local`, `:data`, `:presentation-core` y `:presentation-widget` compilaron limpio (`NO-SOURCE`); `:app:compileDevDebugAidl` falla resolviendo `com.github.arkon.FlexibleAdapter:flexible-adapter:c8013533` ([`#60`](https://github.com/Harrys-HQ/ShinKu/issues/60)).
+  - `PineappleTwilight/hyoukan` (`master` `078e9c2` con submódulos): `:core:common`, `:domain`, `:data`, `:presentation-core` y `:presentation-widget` **PASARON** `testDebugUnitTest`; **`:yakuyomi-engine:engine:testDebugUnitTest` ejecutó `75` pruebas con `1` fallo real** (`BubbleUniformityTest > degenerateInputs_returnFalse` en `BubbleUniformityTest.kt:67` por `BubbleUniformity.sampleRing()` en `BubbleUniformity.kt:112-127`) -> publicado [`hyoukan#105`](https://github.com/PineappleTwilight/hyoukan/issues/105) (Issues deshabilitados en `houri-engine`).
+  - `salmanbappi/AniZen` (`preview` `30645583`): `:data`, `:presentation-core` y `:presentation-widget` compilaron limpio (`NO-SOURCE`); `:core:common:compileDebugUnitTestKotlin` y `:domain:compileDebugUnitTestKotlin` fallan al compilar ([`#105`](https://github.com/salmanbappi/AniZen/issues/105)).
+  - `Kototoro-app/Kototoro` (`devel` `95e9231e`): ejecutadas **1,487 pruebas JVM** en 19 módulos con `LANG=C.UTF-8` (`reader-novel`, `core-backup`, `core-domain`, `desktop-runtime`, `parser-host`, `core-local`, `core-net`, `core-source`, `core-library`, `source-legado`, `source-tvbox`, `dex-convert`, `desktop-player`, `core-cloudflare`, `community-indexer`, `backdrop`, `core-db`, `core-ui`, `reader-core`): **1,486 pasaron**, `27` omitidas por plataforma/entorno, `1` timeout por carga de VM (`poll(15, SECONDS)` en `DesktopRuntimeTest.kt:200`, no bug). `:mihon-desktop-compat` y `:cloudstream-desktop` requieren `-PmihonCompatibilityDirectory=<dir>`.
+  - `Arthurpendragon9876/DeepSync` (`main` `1039fbe`):
+    - `desktop/shinkai`: **64** pruebas Node (`62` pasaron, `0` fallos, `2` omitidas por `DEEPSYNC_BRIDGE_JAR`).
+    - `desktop/yomi`: **62** pruebas Node (`60` pasaron, `0` fallos, `2` omitidas por `DEEPSYNC_BRIDGE_JAR`).
+    - `android/` (`:app:testDebugUnitTest`): ejecutadas **276 pruebas Android** con **`1` fallo real** (`GlobalSearchScopeTest > global results use the Explore source classification everywhere` en `GlobalSearchScopeTest.kt:37` tras refactor a `HomeMode` en `SearchViewModel.kt`) -> publicado [`DeepSync#40`](https://github.com/Arthurpendragon9876/DeepSync/issues/40).
+  - `Foxlations/Foxlations` (`main` `2e6cd34`): sin suite de pruebas Dart/Android en el repositorio (`ios/RunnerTests/RunnerTests.swift` únicamente); SDK Dart/Flutter no instalado en la VM.
+- **Total acumulado de publicaciones externas verificadas:** `61` Issues + `1` Discussion (`#111`) + `1` aclaración técnica (`hyoukan#99`).
+
 ## Actualización 2026-11-26 (ejecución con Android SDK + kotlinc 2.3.10)
 
 - **Entorno Android/Kotlin levantado desde el propio repo (`preparar-entorno-android.sh` + `COMPILAR-Y-FIRMAR.md`):**
