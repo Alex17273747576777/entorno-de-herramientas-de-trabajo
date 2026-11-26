@@ -1,5 +1,19 @@
 # CHECKPOINT ACTUAL
 
+## Actualización 2026-11-26 (Ola 3) — alineación total de reglas y 44 issues verificados en código (8+ por repositorio)
+
+- **Alineación integral de reglas (propios + 7 externos):**
+  - Repos propios (`normas-de-diseno`, `entorno-de-herramientas-de-trabajo`, `la-bandita-archivo`, `ruta-programacion-sistemas`): citas verificadas, declaración explícita de huecos no compilados/probados, método Richard Feynman en 4 pasos, N14 estructura sin marca, cero duplicados y limpieza de clones temporales.
+  - Repos externos (ramas `stable`, `beta`, `preview` y `nightly`): `ShinKu` (Freeze Zone + `v2.8.6-preview.3` `4b02e731`), `Reikai` (`feat/0.6.0` `55430f36`, Issues exclusivamente para bugs verificados bajo `2_report_issue.yml` + `prose-style.md` + `parked.md`/`#102`), `hyoukan` (`master` `078e9c2`, WebGPU/`TODO.md` + sin telemetría), `Foxlations` (`main` `2e6cd34`, formato conciso para mantenedor único), `Kototoro` (`devel` `95e9231e`, cero bugs de parsers de fuentes, foco en memoria/rendimiento/APK), `DeepSync` (`main` `1039fbe`, alcance 3 plataformas Yugen/Yomi/Shinkai), `AniZen` (`preview` `30645583`, conciencia de `spotless`/`detekt`).
+- **44 nuevos issues publicados en Ola 3 (total acumulado en auditoría cruzada: 56 issues + 1 Discussion `#111`, 8+ ítems por repositorio):**
+  - `unseensnick/Reikai` (8 bug reports estrictos en Issues): `#112`, `#113`, `#114`, `#115`, `#116`, `#117`, `#118`, `#119` (más Discussion `#111` en `Ideas`).
+  - `Harrys-HQ/ShinKu` (6 nuevos, 8 totales): `#54`, `#55`, `#56`, `#57`, `#58`, `#59`.
+  - `PineappleTwilight/hyoukan` (6 nuevos, 8 totales): `#99`, `#100`, `#101`, `#102`, `#103`, `#104`.
+  - `Foxlations/Foxlations` (6 nuevos, 8 totales): `#4`, `#5`, `#6`, `#7`, `#8`, `#9`.
+  - `Kototoro-app/Kototoro` (6 nuevos, 8 totales): `#737`, `#738`, `#739`, `#740`, `#741`, `#742`.
+  - `Arthurpendragon9876/DeepSync` (6 nuevos, 8 totales): `#34`, `#35`, `#36`, `#37`, `#38`, `#39`.
+  - `salmanbappi/AniZen` (6 nuevos, 8 totales): `#99`, `#100`, `#101`, `#102`, `#103`, `#104`.
+
 ## Actualización 2026-11-26 (publicación) — 12 Issues y 1 Discussion publicados en los 7 repositorios
 
 - **Publicación completada (estilo Richard Feynman + reglas individuales de cada repositorio):**
