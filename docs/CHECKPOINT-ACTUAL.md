@@ -1,5 +1,20 @@
 # CHECKPOINT ACTUAL
 
+## Actualización 2026-11-26 (respuestas corteses a comentarios + 14 issues y 1 Discussion con referencia Noirero/Miyorare)
+
+- **Respuestas corteses y profesionales a comentarios recibidos (`8` comentarios publicados):**
+  - `Harrys-HQ/ShinKu#43`, `#44`, `#46` (aclaración transparente de falta de acceso físico actual al Tecno Spark 20 Pro+ para retest en `2.8.6-preview.2`), `#47`, `#48`, `#49`, `#50`.
+  - `NovelSourcery/extensions-source#370` (agradecimiento a `@Rojikku` por aclarar licencia e índice firmado).
+- **Auditoría de `Noirero/Miyorare` (`main` `d55c6cb`) y publicación de issues de implementación (Feed nivel ShinKu, Sugerencias estilo AniZen, anti-duplicados con estabilidad de ordenamiento, e import/export bidireccional Mihon/Aniyomi ↔ Kototoro/Usagi con botones directos):**
+  - `Noirero/Miyorare`: [`#1057`](https://github.com/Noirero/Miyorare/issues/1057), [`#1058`](https://github.com/Noirero/Miyorare/issues/1058)
+  - `Harrys-HQ/ShinKu` *(post-Freeze Zone `v2.8.6`)*: [`#61`](https://github.com/Harrys-HQ/ShinKu/issues/61), [`#62`](https://github.com/Harrys-HQ/ShinKu/issues/62)
+  - `unseensnick/Reikai` *(Discussion en `Ideas` por `CONTRIBUTING.md`)*: [`#120`](https://github.com/unseensnick/Reikai/discussions/120)
+  - `PineappleTwilight/hyoukan`: [`#106`](https://github.com/PineappleTwilight/hyoukan/issues/106), [`#107`](https://github.com/PineappleTwilight/hyoukan/issues/107)
+  - `Foxlations/Foxlations`: [`#10`](https://github.com/Foxlations/Foxlations/issues/10), [`#11`](https://github.com/Foxlations/Foxlations/issues/11)
+  - `Kototoro-app/Kototoro`: [`#743`](https://github.com/Kototoro-app/Kototoro/issues/743), [`#744`](https://github.com/Kototoro-app/Kototoro/issues/744)
+  - `Arthurpendragon9876/DeepSync`: [`#41`](https://github.com/Arthurpendragon9876/DeepSync/issues/41), [`#42`](https://github.com/Arthurpendragon9876/DeepSync/issues/42)
+  - `salmanbappi/AniZen`: [`#106`](https://github.com/salmanbappi/AniZen/issues/106), [`#107`](https://github.com/salmanbappi/AniZen/issues/107)
+
 ## Actualización 2026-11-26 (barrido completo de pruebas restantes en los 7 repositorios)
 
 - **Ejecución completa de los módulos restantes en los 7 repositorios externos:**
