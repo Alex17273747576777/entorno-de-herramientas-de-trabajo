@@ -1,5 +1,18 @@
 # CHECKPOINT ACTUAL
 
+## Actualización 2026-11-27 (oleada 5 — Miyomi/anipirate, verificación de apps activas y 6 nuevos Issues)
+
+- **Monitoreo de comentarios y notificaciones:** revisadas notificaciones activas y los 8 repositorios base (`Noirero/Miyorare`, `Harrys-HQ/ShinKu`, `unseensnick/Reikai`, `PineappleTwilight/hyoukan`, `Foxlations/Foxlations`, `Kototoro-app/Kototoro`, `Arthurpendragon9876/DeepSync`, `salmanbappi/AniZen`); sin comentarios nuevos pendientes tras los agradecimientos en `Kototoro#736,#741,#744`.
+- **Auditoría práctica de nuevas apps del catálogo (`Nabeelshar/WebnovelReader`, `ReitanSora/koeyomi`, `Paduu29/KomaStream`, `HuzaifaKhalid1311/DropSauce`, `Torro101/MIYO`, `Yuneko-dev/Nekori`, `ollm/OpenComic`, `mienaiyami/Yomikiru`, `PineappleTwilight/houri`, `aayush2622/Dartotsu`, `chimahon/chimahon`):**
+  - Ejecutadas pruebas/herramientas locales: `MIYO/tools/captcha_probe.py` validado contra servidor HTTP local de prueba (`cf_clearance` + `403` Cloudflare); `WebnovelReader/test_translate_html_api.py --help` verificado; `houri/scripts/bugsanitizer/selftest.sh` ejecutado (el único fallo observado en PTY fue artefacto de `TERM=dumb` en el contenedor).
+- **Nuevos Issues publicados sin duplicados (`6`):**
+  - `ReitanSora/koeyomi#27` (`18d555b`): `handleCoverDelete` falla sin guard cuando falta la carpeta de portada, no recibe `await` de los llamadores (`manga/[mangaId].tsx`, `search.tsx`) y borra `coverImageUrl` usado en `history.tsx`.
+  - `ReitanSora/koeyomi#28` (`18d555b`): `ChapterItem.handleDownload` usa `Promise.allSettled` y marca descargas fallidas/parciales como `'downloaded'` (más doble barra `//` y falta de respaldo si el directorio local desaparece en `reader.tsx`).
+  - `Nabeelshar/WebnovelReader#7` (`e7477f9`): `RestoreDataService` permite Zip Slip en entradas `books/`, carga todo el ZIP en RAM y filtra `temp_restore_database.db` en caso de error.
+  - `Nabeelshar/WebnovelReader#8` (`e7477f9`): `EpubParser` antepone `/` en OPF en raíz (`rootPath == ""`), resuelve rutas contra el CWD mediante `File(...).canonicalFile` y rechaza EPUB 3 sin ID `"ncx"`.
+  - `Paduu29/KomaStream#2` (`60ade93`): `BatchDownloadWorker.ensureStopped()` lanza fuera de `runCatching`, filtrando `batchFile` y omitiendo la notificación de cancelación (además `LibraryController` sobrescribe `batchFile` antes de `ExistingWorkPolicy.KEEP` y `OfflineChapterStore.getDownloadedChapterPaths()` no excluye `.staging`/`.backup`).
+  - `HuzaifaKhalid1311/DropSauce#209` (`411387b`): `MihonBackupManager.decode` hace `readByteArray()` sin cota y lanza `EOFException` en archivos `<2` bytes; `RestoreService` pasa `contentResolver.openInputStream(source)` nullable sin comprobar a `ZipInputStream`.
+
 ## Actualización 2026-11-27 (reauditoría con Project Nox, seguimiento de parches y nuevas apps)
 
 - **Seguimiento de implementaciones:** `Kototoro#743` verificado en 5 PRs/commits (`54e3450`..`2ec347e`); `hyoukan#97–#104` verificado en `5ef8464`; en `DeepSync` (`74ae76e`), diagnosticado y reportado **`DeepSync#43`** (`CloudstreamDomainDialog.kt:55-58` `ClassCastException`).
