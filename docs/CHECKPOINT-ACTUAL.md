@@ -1,5 +1,11 @@
 # CHECKPOINT ACTUAL
 
+## Actualización 2026-11-26 (exploración `miyomi.app` y `anipirate.xyz` — estudio de diferenciación)
+
+- **Monitoreo de comentarios:** revisadas notificaciones y los 8 repositorios objetivo más `NovelSourcery/extensions-source#370`; sin respuestas externas nuevas pendientes tras los 8 comentarios publicados.
+- **Exploración de catálogos (`https://miyomi.app/` y `https://anipirate.xyz/`):** relevados 150+ programas en `miyomiorg/Miyomi` y 237 entradas en `anipirate.xyz/directory`, verificando directamente en GitHub proyectos representativos (`yomihon/yomihon`, `akitaonrails/FrankYomik`, `mednasserallah/tankobon`, `Gent8/Taison`, `5rahim/seanime`, `RyanYuuki/AnymeX`, `aayush2622/Dartotsu`, `reyyuuki/Azyx`, `Anxcye/anx-reader`, `readest/readest`, `NuvioMedia/NuvioMobile`, `gg-shub/anikentv`, `RockinChaos/Shiru`).
+- **Archivo del estudio comparativo sin clonación:** documentado en [`docs/ECOSISTEMA-MIYOMI-ANIPIRATE-DIFERENCIACION-2026-11-26.md`](ECOSISTEMA-MIYOMI-ANIPIRATE-DIFERENCIACION-2026-11-26.md) con propuestas diferenciadas según la identidad y fortalezas propias de cada uno de los 8 proyectos.
+
 ## Actualización 2026-11-26 (respuestas corteses a comentarios + 14 issues y 1 Discussion con referencia Noirero/Miyorare)
 
 - **Respuestas corteses y profesionales a comentarios recibidos (`8` comentarios publicados):**
