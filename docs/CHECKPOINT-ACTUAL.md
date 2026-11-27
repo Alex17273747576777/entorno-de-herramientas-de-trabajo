@@ -1,5 +1,11 @@
 # CHECKPOINT ACTUAL
 
+## Actualización 2026-11-27 (clonación, ejecución de pruebas y 7 Issues en proyectos del catálogo)
+
+- **Clonación y verificación práctica:** `akitaonrails/FrankYomik`, `RockinChaos/Shiru`, `dmzz-yyhyy/LightNovelReader`, `yomihon/yomihon`, `5rahim/seanime`, `Gent8/Taison` (archivado/solo lectura) y `readest/readest`.
+- **Nuevos Issues publicados (7):** `akitaonrails/FrankYomik#7,#8`, `RockinChaos/Shiru#186`, `dmzz-yyhyy/LightNovelReader#544`, `yomihon/yomihon#40,#41`, `5rahim/seanime#1010`.
+- **Seguimiento de los 8 repositorios base:** revisadas notificaciones y últimos commits (`Noirero/Miyorare` `b897be8`, `PineappleTwilight/hyoukan` `078e9c2`, `Kototoro-app/Kototoro` `95e9231`/`8e76706`, `Arthurpendragon9876/DeepSync` `1039fbe`, `salmanbappi/AniZen` `0c32b84`, `Harrys-HQ/ShinKu` `4b02e73`); sin comentarios nuevos sin responder.
+
 ## Actualización 2026-11-26 (exploración `miyomi.app` y `anipirate.xyz` — estudio de diferenciación)
 
 - **Monitoreo de comentarios:** revisadas notificaciones y los 8 repositorios objetivo más `NovelSourcery/extensions-source#370`; sin respuestas externas nuevas pendientes tras los 8 comentarios publicados.

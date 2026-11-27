@@ -41,3 +41,17 @@ Principio rector: en lugar de replicar exactamente las mismas funciones en los 8
    - **Oportunidad diferenciadora:** capitalizar Flutter para entregar **paridad ligera escritorio + móvil** y una **suite mínima automatizada `flutter test`** sobre sus parsers de migración (`.fox`/`.tachibk`/`.mangayomi`/`.lnreader`), tomando referencia de proyectos Flutter maduros como `Dartotsu` / `AnymeX`.
 8. **`Noirero/Miyorare`** *(Identidad: santuario personal híbrido Kotatsu/Mihon con Notas Personales, Favoritos Privados, Source Packs curados y Predicción de Capítulos)*
    - **Oportunidad diferenciadora:** reforzar lo que ya lo distingue en `miyomi.app`: **verificación de salud/confianza de `Source Packs` desde la app** y **enriquecimiento del calendario de predicción de capítulos** vinculado a las notas privadas y etiquetas de estado personal.
+
+## 4. Clonación, pruebas ejecutadas e Issues publicados en proyectos del ecosistema (2026-11-26/27)
+
+Además de los 8 repositorios base (`Noirero/Miyorare`, `Harrys-HQ/ShinKu`, `unseensnick/Reikai`, `PineappleTwilight/hyoukan`, `Foxlations/Foxlations`, `Kototoro-app/Kototoro`, `Arthurpendragon9876/DeepSync`, `salmanbappi/AniZen`), se clonaron y probaron aplicaciones distintivas relevadas desde `miyomi.app` y `anipirate.xyz`:
+
+| Repositorio | Clon y pruebas ejecutadas | Hallazgos e Issues abiertos (sin clonación) |
+| :--- | :--- | :--- |
+| `akitaonrails/FrankYomik` (`555be90`) | `go test ./...` **PASS** (`65.8s`); `PYTHONPATH=. pytest` (`182` unit tests): **175 passed, 7 failed** en `test_bytes_io.py` | `#7` (importación temprana de `fugashi` en `kindle/processor.py:35` rompe flujo puro `TRANSLATE`) y `#8` (glosario y lecturas por serie para el nicho *Hold-to-Peek Lens*) |
+| `RockinChaos/Shiru` (`a5ac501`) | Inspección de 76 JS + reproducción en Node v20.20.2 sobre `common/modules/anime/animeresolver.js` | `#186` (`alternativeTitles()` elimina `ona`/`ova`/`oav`/`movie` sin límites de palabra, corrompiendo títulos como `Akatsuki no Yona` y `Persona 5`) |
+| `dmzz-yyhyy/LightNovelReader` (`fa98bf5`) | `./gradlew :epub:test` con OpenJDK 21 y Gradle 9.5.1 | `#544` (`:epub:test` falla en Gradle 9 porque `GenerateSimpleBookTest.kt` y `XmlBuilderTest.kt` solo declaran `fun main()` sin `@Test`) |
+| `yomihon/yomihon` (`c743d91`) | Auditoría de `DictionarySearchScreenModel.kt`, `OcrScanManager.kt`, `AnkiDroidRepositoryImpl.kt` | `#40` (caché de diccionario conserva `existingTermExpressions` obsoleto) y `#41` (etiquetas contextuales de manga/capítulo en exportaciones AnkiDroid) |
+| `5rahim/seanime` (`main`) | `go test` en verde para `internal/continuity`, `internal/customsource`, `internal/directstream`, `internal/manga/...` y `internal/util/...` | `#1010` (extender `internal/continuity` al progreso manga página/capítulo + feed OPDS LAN opt-in de solo lectura) |
+| `Gent8/Taison` (`33f3bb3`) | Auditoría de `TaisonEntryLink.kt`, `DeepLinkScreenModel.kt` y `MangaScreen.kt` | Hallazgo verificado en `shareManga()` (`publicUrl` opcional omitido si `getMangaUrl()` falla); repositorio archivado en solo lectura (`HTTP 403`) |
+| `readest/readest` (`main`) | Inspección de suite `foliate-cbz-page-order.test.ts` y verificación de `test-koplugin.mjs` | Referencia multiplataforma de ordenamiento natural CBZ y continuidad entre dispositivos |
