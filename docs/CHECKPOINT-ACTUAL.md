@@ -1,5 +1,10 @@
 # CHECKPOINT ACTUAL
 
+## Actualización 2026-11-27 (reauditoría con Project Nox, seguimiento de parches y nuevas apps)
+
+- **Seguimiento de implementaciones:** `Kototoro#743` verificado en 5 PRs/commits (`54e3450`..`2ec347e`); `hyoukan#97–#104` verificado en `5ef8464`; en `DeepSync` (`74ae76e`), diagnosticado y reportado **`DeepSync#43`** (`CloudstreamDomainDialog.kt:55-58` `ClassCastException`).
+- **Pruebas ejecutadas en `ProjectNox-org` y Miyomi (`animelab`, `atahon`, `DropSauce`, `chimahon`, `Dartotsu`):** abiertos nuevos Issues deduplicados en `ProjectNox-org/nox-extension-developer#16`, `ProjectNox-org/project-nox-importer`, `diogorainhalopes/atahon` y `loeuf237/animelab` (`1,133 passed` en `pytest`).
+
 ## Actualización 2026-11-27 (respuestas a mantenedores y segunda oleada sin duplicados)
 
 - **Respuestas en GitHub (7 hilos):** `Noirero/Miyorare#1057,#1058`, `PineappleTwilight/hyoukan#104`, `Arthurpendragon9876/DeepSync#35` (cerrado tras verificación) y `#42`, `Harrys-HQ/ShinKu#60`, `unseensnick/Reikai#114`.

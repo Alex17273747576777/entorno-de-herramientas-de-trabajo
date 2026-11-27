@@ -69,3 +69,17 @@ Además de los 8 repositorios base (`Noirero/Miyorare`, `Harrys-HQ/ShinKu`, `uns
   - `Anxcye/anx-reader#1024` (`0c7fc1a` / `1.15.0+6358`): `AiKeyRotator.getNextKey()` puede devolver una clave vacía cuando coexiste un campo habilitado en blanco junto a otra clave válida (`lib/service/ai/ai_key_rotator.dart`).
   - `RyanYuuki/AnymeX#669` (`9274a66` / `3.2.1+43`): `getAiRecommendations()` omite `AnimeSproutOptions` en `cacheKey`, devolviendo recomendaciones cacheadas obsoletas al cambiar filtros (`lib/ai/animeo.dart`).
   - `RyanYuuki/AnymeX#670`: suite inicial `flutter_test` pura en `test/` para `GistSyncService` y mapeo multi-tracker (`AniList`/`MAL`/`Simkl`) protegida contra regresiones sin tocar extensiones.
+
+## 6. Reauditoría funcional con Project Nox y seguimiento de implementaciones (2026-11-27)
+
+- **Seguimiento de implementaciones recientes de mantenedores:**
+  - `Kototoro-app/Kototoro`: verificada la implementación de `#743` en los commits `54e3450`, `b4facd9` (`isUsagiBackupAppId`), `5d93377`, `cc9e0f3` y `2ec347e` (Usagi import + Discovery Feed 1/3–3/3).
+  - `PineappleTwilight/hyoukan`: verificada la implementación de `#97`–`#104` en `5ef8464` (`NovelPluginRuntime` en QuickJS aislado, `PlainBookConverter`, `SourceHealthStore`, `BoundedReads`).
+  - `Arthurpendragon9876/DeepSync`: revisados `af7f57e` (`diagnostics-33.patch`), `88aef64` (`cloudstream-in-extension-stores.patch`) y `74ae76e` (`Crash Report.md`); diagnosticado el origen exacto del `ClassCastException` y abierto **`Arthurpendragon9876/DeepSync#43`** (`CloudstreamDomainDialog.kt:55-58` pasa `ViewGroup.LayoutParams` en lugar de `LinearLayout.LayoutParams` a `TextInputLayout.addView`).
+- **Ejecución real del ecosistema Project Nox (`https://projectnox-org.github.io/`) y nuevas apps de Miyomi:**
+  - `ProjectNox-org/nox-extension-developer#16`: al ejecutar `python3 -m unittest discover -s tests -v`, `tests/test_nox_scaffold.py` falla en 2 pruebas LNReader (`'BLOCKED' != 'PASS'`) cuando falta `bwrap` en el host, a diferencia de `tests/test_nox_android_and_issues.py`.
+  - `ProjectNox-org/project-nox-importer#465` (o número asignado al crear): rastreo de `.orig`/`.rej` (`work-affinity-scheduler.ts.rej`) y artefactos temporales (`.tmp_*.mjs`, `*.pid`, `*.log`, capturas) en `main`.
+  - `ProjectNox-org/project-nox-tracker`: confirmados fallos locales en `tests/test_audit_sync.py:383` (`published_after_live_error` vs `stale_error`) y `tests/test_15_mandatory_cases.py:274-277` (issues cerradas en `data/issues.json`); no se abrió issue porque el repo tiene `issues=False` (`HTTP 410`).
+  - `ProjectNox-org/project-nox-requests` (`13/13` `test_issue_automation.py`) y `ProjectNox-org.github.io` (`8/8` `test_sync_repos.py`): pasaron íntegramente.
+  - `diogorainhalopes/atahon`: verificado fallo en `src/queries/extensions.ts` donde un único repo con error oculta toda la lista de extensiones (`useMergedExtensions`) y `baseRepoUrl` solo recorta `/index.min.json`.
+  - `loeuf237/animelab`: ejecutada la suite completa con `pytest` (`1,133` pasadas, `156/156` en subconjunto con `cryptography`); abiertos los fallos de guardado `skipif` por ausencia de `ffmpeg` en `test_verification.py` y `test_nm3u8dl_p10_p13.py`.
