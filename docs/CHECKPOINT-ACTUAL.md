@@ -1,5 +1,17 @@
 # CHECKPOINT ACTUAL
 
+## Actualización 2026-11-27 (oleada 6 — Azyx, Stump, OpenComic, Mangayomi, Chimahon y 5 nuevos Issues)
+
+- **Monitoreo de notificaciones y seguimiento:** revisadas 30 notificaciones recientes de GitHub y los 21 Issues de las oleadas 2–5 (`FrankYomik#7,#8`, `Shiru#186`, `LightNovelReader#544`, `yomihon#40,#41`, `seanime#1010`, `anx-reader#1024`, `AnymeX#669,#670`, `DeepSync#43`, `nox-extension-developer#16`, `project-nox-importer#995`, `atahon#24`, `animelab#84`, `koeyomi#27,#28`, `WebnovelReader#7,#8`, `KomaStream#2`, `DropSauce#209`); sin comentarios externos nuevos pendientes.
+- **Auditoría de nueva oleada (`reyyuuki/Azyx`, `stumpapp/stump`, `ollm/OpenComic`, `kodjodevf/mangayomi`, `Chimahon/chimahon`, `komikku-app/komikku`, `Yuneko-dev/Nekori`, `aayush2622/Dartotsu`):**
+  - Verificaciones con Node.js en `ollm/OpenComic` (`64f01da`): confirmado escape de `resourcePath('../../../etc/passwd')` fuera de `realPathZip` y división por cero (`Infinity`) en `scripts/download.mts` sin `Content-Length`.
+- **Nuevos Issues publicados sin duplicados (`5`):**
+  - `reyyuuki/Azyx#24` (`78f1580`): `restoreBackup(merge=true)` deduplica `offlineItems` por `number` (número de episodio/capítulo) y `categories` sin `isManga`; `LocalHistoryItem.mediaId` tiene índice único sin `mediaType`.
+  - `stumpapp/stump#1553` (`79ead35`): `convert_to_zip` en `core/src/media/processor/rar.rs` une `entry.filename` sin validar path traversal, colisiona por `file_stem` en caché y filtra `unpacked_path` ante errores.
+  - `ollm/OpenComic#683` (`64f01da`, `2.0.0`): `scripts/ebook/epub.js` (`resourcePath`/`findContentOpf`) carece de validación de contención dentro de `realPathZip`; `scripts/download.mts` produce `Infinity` sin `Content-Length` y carece de listener `error` en `fileStream`.
+  - `kodjodevf/mangayomi#1202` (`0ad144b`, `0.9.97+130`): `_mergeMangayomiBackup` descarta el historial de títulos ya existentes; `KotatsuRestoreService.restore` limpia preferencias de trackers y repositorios completos; `writeMangayomiBackupZip` filtra `.backup.db` en claro si falla el ZIP.
+  - `Chimahon/chimahon#157` (`bb0ed9c`): `EpubParser` filtra `FileOutputStream` y colisiona en `epub_img_cache/<nombre>`; `DirectoryExtractor` carece de validación `canonicalFile`; `TtuDriveClient` no escapa `\` antes de `'` en queries de Drive.
+
 ## Actualización 2026-11-27 (oleada 5 — Miyomi/anipirate, verificación de apps activas y 6 nuevos Issues)
 
 - **Monitoreo de comentarios y notificaciones:** revisadas notificaciones activas y los 8 repositorios base (`Noirero/Miyorare`, `Harrys-HQ/ShinKu`, `unseensnick/Reikai`, `PineappleTwilight/hyoukan`, `Foxlations/Foxlations`, `Kototoro-app/Kototoro`, `Arthurpendragon9876/DeepSync`, `salmanbappi/AniZen`); sin comentarios nuevos pendientes tras los agradecimientos en `Kototoro#736,#741,#744`.
