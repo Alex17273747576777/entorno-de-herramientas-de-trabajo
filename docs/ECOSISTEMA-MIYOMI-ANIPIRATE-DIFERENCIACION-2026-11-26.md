@@ -55,3 +55,17 @@ Además de los 8 repositorios base (`Noirero/Miyorare`, `Harrys-HQ/ShinKu`, `uns
 | `5rahim/seanime` (`main`) | `go test` en verde para `internal/continuity`, `internal/customsource`, `internal/directstream`, `internal/manga/...` y `internal/util/...` | `#1010` (extender `internal/continuity` al progreso manga página/capítulo + feed OPDS LAN opt-in de solo lectura) |
 | `Gent8/Taison` (`33f3bb3`) | Auditoría de `TaisonEntryLink.kt`, `DeepLinkScreenModel.kt` y `MangaScreen.kt` | Hallazgo verificado en `shareManga()` (`publicUrl` opcional omitido si `getMangaUrl()` falla); repositorio archivado en solo lectura (`HTTP 403`) |
 | `readest/readest` (`main`) | Inspección de suite `foliate-cbz-page-order.test.ts` y verificación de `test-koplugin.mjs` | Referencia multiplataforma de ordenamiento natural CBZ y continuidad entre dispositivos |
+
+## 5. Ronda de respuestas a mantenedores y nuevos Issues sin duplicados (2026-11-27)
+
+- **Respuestas publicadas (7 hilos):**
+  - `Noirero/Miyorare#1057` (confirmada estrategia sin duplicación y entregados esquemas anonimizados de Usagi, Kototoro V1/V3 y Aniyomi `.tachibk`).
+  - `Noirero/Miyorare#1058` (acordado separar descubrimiento hacia Explore, conservar agrupación visual no destructiva en Feed y priorizar `SuggestionsWorker` + carruseles diferidos).
+  - `PineappleTwilight/hyoukan#104` (agradecido el aterrizaje de `PlainBookConverter` y `NovelPluginRuntime`, respaldando evitar shims parciales de cheerio/ESM).
+  - `Arthurpendragon9876/DeepSync#35` (verificados todos los llamadores de `ensureChapterLoaded` en `Dispatchers.IO`/`Default`, agradecido y cerrado limpiamente) y `#42`.
+  - `Harrys-HQ/ShinKu#60` (confirmada resolución de `#53`–`#57` y `#60` en `v2.8.6-preview.4`).
+  - `unseensnick/Reikai#114` (agradecida la revisión de `#112`–`#119` y los parches en nightly `r5341`).
+- **Segunda oleada de clones y nuevos Issues verificados sin duplicados (3):**
+  - `Anxcye/anx-reader#1024` (`0c7fc1a` / `1.15.0+6358`): `AiKeyRotator.getNextKey()` puede devolver una clave vacía cuando coexiste un campo habilitado en blanco junto a otra clave válida (`lib/service/ai/ai_key_rotator.dart`).
+  - `RyanYuuki/AnymeX#669` (`9274a66` / `3.2.1+43`): `getAiRecommendations()` omite `AnimeSproutOptions` en `cacheKey`, devolviendo recomendaciones cacheadas obsoletas al cambiar filtros (`lib/ai/animeo.dart`).
+  - `RyanYuuki/AnymeX#670`: suite inicial `flutter_test` pura en `test/` para `GistSyncService` y mapeo multi-tracker (`AniList`/`MAL`/`Simkl`) protegida contra regresiones sin tocar extensiones.

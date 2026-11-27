@@ -1,5 +1,10 @@
 # CHECKPOINT ACTUAL
 
+## Actualización 2026-11-27 (respuestas a mantenedores y segunda oleada sin duplicados)
+
+- **Respuestas en GitHub (7 hilos):** `Noirero/Miyorare#1057,#1058`, `PineappleTwilight/hyoukan#104`, `Arthurpendragon9876/DeepSync#35` (cerrado tras verificación) y `#42`, `Harrys-HQ/ShinKu#60`, `unseensnick/Reikai#114`.
+- **Nuevos clones verificados (`NuvioMedia/NuvioMobile`, `Anxcye/anx-reader`, `RyanYuuki/AnymeX`) y 3 nuevos Issues sin duplicados:** `Anxcye/anx-reader#1024`, `RyanYuuki/AnymeX#669`, `RyanYuuki/AnymeX#670`.
+
 ## Actualización 2026-11-27 (clonación, ejecución de pruebas y 7 Issues en proyectos del catálogo)
 
 - **Clonación y verificación práctica:** `akitaonrails/FrankYomik`, `RockinChaos/Shiru`, `dmzz-yyhyy/LightNovelReader`, `yomihon/yomihon`, `5rahim/seanime`, `Gent8/Taison` (archivado/solo lectura) y `readest/readest`.
