@@ -43,7 +43,10 @@ if [ -n "$PROD" ] && [ -d "$PROD/.github" ]; then
   grep -q "verificar_version.py" "$PROD/.github/workflows/version.yml" 2>/dev/null \
     && bien "regla 3 · no se publica sin verificar el APK" || fallo "regla 3 sin puerta"
 else
-  no_comprobado "reglas 2 y 3 · falta REPO_PRODUCTO (el del producto, no éste)"
+  # REPO_PRODUCTO apunta al repo del producto (gltools-reborn). Ese repositorio lo borró su
+  # dueño el 2026-11-21, así que sin la variable no hay nada que auditar: es un hueco declarado,
+  # no un fallo de estas reglas. Con la variable puesta, el hueco se convierte en fallo.
+  no_comprobado "reglas 2 y 3 · falta REPO_PRODUCTO (el del producto, no éste): hueco declarado, no fallo"
 fi
 if [ -d /opt/android-sdk ]; then
   fallo "regla 10 · hay SDK local: se estaría compilando aquí"

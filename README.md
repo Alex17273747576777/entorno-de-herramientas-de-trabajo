@@ -126,7 +126,11 @@ TODO BIEN
 ## 🚪 Lo que esta caja NO es
 
 - **No es un generador de publicaciones.** Detecta y mide. No escribe prosa: escribir 46.000 caracteres que valgan la pena exige medir datos reales primero, y eso no se automatiza honestamente.
-- **No consulta la API de GitHub todavía.** La siguiente herramienta de la caja (`bin/medir-repo`) sí lo hará; hoy mide texto, que es donde estaba el problema.
+- **La caja mide texto; el repo también mide repos, pero fuera de `bin/`.** `bin/medir-pieza`
+  sólo mide prosa. La medición contra la API vive en `entorno/medir.py` (y `entorno/medir-velocidad.py`),
+  bajo `entorno/` y no bajo `bin/`, que es donde se busca. El `bin/medir-repo` prometido abajo
+  **no existe**: lo que existe es ese script de `entorno/`, sin envoltorio en `bin/`.
+  *(Corregido el 2026-11-27: este README decía que la caja «no consulta la API todavía» y era falso.)*
 - **No tiene dependencias.** Ni `pip`, ni `requirements.txt`, ni entorno virtual. A propósito: la caja tiene que funcionar dentro de cinco años en una máquina ajena.
 
 ---
@@ -171,6 +175,10 @@ licencia permisiva no habría sido válida: no se puede relicenciar como permisi
 código GPL-3.0 que ya está dentro. Procedencia de cada copia y razonamiento completo en
 [`proyectos/LICENCIAS.md`](proyectos/LICENCIAS.md).
 
-Los seis repos de la cuenta son **públicos por decisión del dueño**, lo que obliga a
-que ninguno contenga jamás un secreto:
+Los repos de la cuenta son **públicos por decisión del dueño** —nueve al corte del
+2026-11-27: seis propios y tres forks—, lo que obliga a que ninguno contenga jamás un secreto.
+El número no se escribe de memoria: `entorno/repositorios.json` declara los cuatro que se
+preparan en el espacio de trabajo y la API devuelve el total. Cuando este README decía «seis»
+ya eran nueve; y de los tres repos borrados el 2026-11-21 (`cero-X-app`, `gltools-reborn`,
+`bandwidth-hero-proxy2`) sólo quedan sus herramientas copiadas en `proyectos/`.
 [`docs/POLITICA-DE-ALMACENAMIENTO.md`](docs/POLITICA-DE-ALMACENAMIENTO.md).
